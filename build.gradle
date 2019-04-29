@@ -1,0 +1,30 @@
+plugins {
+	id 'java'
+	id 'eclipse'
+	id 'idea'
+}
+
+sourceCompatibility = targetCompatibility = '1.8'
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+if (!hasProperty('mainClass')) {
+	ext.mainClass = 'ru.zaxar163.core.JVMPlayGround'
+}
+
+repositories {
+	mavenLocal()
+	mavenCentral()
+}
+
+dependencies {
+	compile 'org.ow2.asm:asm:7.1'
+}
+
+jar {
+	manifest.attributes("Main-Class": getProperty('mainClass'))
+	from(configurations.runtime.collect { it.isDirectory() ? it : zipTree(it) }) {
+		exclude "META-INF/*"
+		exclude "module-info.class"
+	}
+	exclude('ru/zaxar163/util/generating/**')
+}
