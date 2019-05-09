@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.function.Supplier;
 
 import ru.zaxar163.crasher.Crasher;
+import ru.zaxar163.unsafe.fast.FastUtil;
 import ru.zaxar163.unsafe.fast.InvokerMethod;
 import ru.zaxar163.unsafe.fast.ReflectionUtil;
 import ru.zaxar163.unsafe.xlevel.ThreadList;
@@ -28,6 +29,8 @@ public final class JVMPlayGround {
 		} catch (final Throwable e) {
 			e.printStackTrace();
 		}
+		System.out.println(FastUtil.fastEquals(new byte[] { 2, 5, 5, 6, 7 }, new byte[] { 2, 5, 5, 7, 7 }));
+		System.out.println(FastUtil.fastEquals(new byte[] { 2, 5, 5, 6, 7 }, new byte[] { 2, 5, 5, 6, 7 }));
 		Crasher.crashZip();
 	}
 
