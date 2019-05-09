@@ -1,18 +1,13 @@
 package ru.zaxar163.unsafe.xlevel;
 
-import java.lang.invoke.MethodHandle;
-
 import ru.zaxar163.core.LookupUtil;
+import ru.zaxar163.unsafe.fast.proxies.ProxyList;
 
 public class VMThread {
-	private static final MethodHandle eetop;
+	private static final long eetop;
 
 	static {
-		try {
-			eetop = LookupUtil.ALL_LOOKUP.findGetter(Thread.class, "eetop", Long.TYPE);
-		} catch (final Throwable e) {
-			throw new NativeAccessError("Thread.eetop field not found");
-		}
+		eetop = ProxyList.UNSAFE.objectFieldOffset(LookupUtil.getField(Thread.class, "eetop"));
 	}
 
 	public static long current() {
@@ -20,11 +15,7 @@ public class VMThread {
 	}
 
 	public static long of(final Thread javaThread) {
-		try {
-			return (long) eetop.invokeExact(javaThread);
-		} catch (final Throwable e) {
-			throw new NativeAccessError(e);
-		}
+		return ProxyList.UNSAFE.getLong(javaThread, eetop);
 	}
 
 	private VMThread() {

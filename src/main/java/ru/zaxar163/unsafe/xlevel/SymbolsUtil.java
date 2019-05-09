@@ -23,7 +23,7 @@ public class SymbolsUtil {
 				final java.lang.reflect.Field objField = Ptr2Obj.class.getDeclaredField("obj");
 				objFieldOffset = INSTANCE.fieldOffset(objField);
 			} catch (final NoSuchFieldException e) {
-				throw new NativeAccessError("Couldn't obtain obj field of own class");
+				throw new Error("Couldn't obtain obj field of own class");
 			}
 		}
 

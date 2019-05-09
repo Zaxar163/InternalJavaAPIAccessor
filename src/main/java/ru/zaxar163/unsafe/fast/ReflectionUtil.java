@@ -17,7 +17,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
 import org.objectweb.asm.ClassWriter;
-import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
@@ -79,7 +78,7 @@ public class ReflectionUtil {
 	private static final String nameInit;
 	private static final Set<Field> objectFields = Collections
 			.unmodifiableSet(new HashSet<>(Arrays.asList(Object.class.getDeclaredFields())));
-	private static final Map<Class<?>, Object> objs = new ConcurrentHashMap<>();
+	private static final Map<Class<?>, Object> objs;
 	private static final long overrideAccessibleObjectOffset;
 
 	private static final long rootOffsetMethod;
@@ -119,6 +118,8 @@ public class ReflectionUtil {
 			methodModifiersO = ProxyList.UNSAFE.objectFieldOffset(LookupUtil.getField(Method.class, "modifiers"));
 			methodClazzO = ProxyList.UNSAFE.objectFieldOffset(LookupUtil.getField(Method.class, "clazz"));
 			nameInit = "<init>";
+			objs = new ConcurrentHashMap<>();
+			objs.put(Class.class, ProxyList.UNSAFE.getInt(Object.class, 8L));
 		} catch (final Throwable t) {
 			throw new Error(t);
 		}
@@ -173,18 +174,6 @@ public class ReflectionUtil {
 		}
 	}
 
-	public static InvokerConstructor instancer(final Class<?> decl, final InvokerMethod mn) {
-		try {
-			return args -> {
-				final Object ret = ProxyList.UNSAFE.allocateInstance(decl);
-				mn.invoke(ret, args);
-				return ret;
-			};
-		} catch (final Throwable t) {
-			throw new Error(t);
-		}
-	}
-
 	/**
 	 * Call init, but non instance it (requires to be instanced before)...
 	 */
@@ -199,7 +188,7 @@ public class ReflectionUtil {
 			ProxyList.UNSAFE.putObject(ret, methodNameO, nameInit);
 			ProxyList.UNSAFE.putObject(ret, methodParamsO, cn.getParameterTypes());
 			ProxyList.UNSAFE.putObject(ret, methodExceptionsO, cn.getExceptionTypes());
-			ProxyList.UNSAFE.putObject(ret, methodModifiersO, 0);
+			ProxyList.UNSAFE.putObject(ret, methodModifiersO, 0 & Modifier.STRICT); // why it works with it?
 			ProxyList.UNSAFE.putObject(ret, methodClazzO, cn.getDeclaringClass());
 			return ret;
 		} catch (final Throwable e) {
@@ -212,20 +201,6 @@ public class ReflectionUtil {
 		final String className = ProxyData.nextName(true);
 		final ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
 		cw.visit(Opcodes.V1_8, Opcodes.ACC_PUBLIC, className, null, ProxyData.MAGIC_SUPER, null);
-		final MethodVisitor init = cw.visitMethod(Opcodes.ACC_PUBLIC, "<init>", "()V", null, null);
-		init.visitCode();
-		init.visitVarInsn(Opcodes.ALOAD, 0);
-		init.visitMethodInsn(Opcodes.INVOKESPECIAL, ProxyData.MAGIC_SUPER, "<init>", "()V", false);
-		init.visitInsn(Opcodes.RETURN);
-		init.visitMaxs(2, 2);
-		init.visitEnd();
-
-		final MethodVisitor empty = cw.visitMethod(Opcodes.ACC_PUBLIC, "empty", "()V", null, null);
-		empty.visitCode();
-		empty.visitVarInsn(Opcodes.ALOAD, 0);
-		empty.visitInsn(Opcodes.RETURN);
-		empty.visitMaxs(-1, -1);
-		empty.visitEnd();
 		int i = 0;
 		for (final Field field : klass.getFields()) {
 			if (objectFields.contains(field) || excluded.contains(field.getName()))
@@ -245,15 +220,7 @@ public class ReflectionUtil {
 	public static Supplier<Object> sameSizeObject(final ClassLoader loader, final Class<?> klass,
 			final Collection<String> excluded) {
 		final Class<?> proxy = sameSizeClass(loader, klass, excluded);
-		final InvokerConstructor inst = ReflectionUtil.instancer(proxy,
-				ReflectionUtil.wrapConstructorNonInstance(proxy.getDeclaredConstructors()[0]));
-		return () -> {
-			try {
-				return inst.newInstance();
-			} catch (final Throwable e) {
-				throw new RuntimeException(e);
-			}
-		};
+		return () -> ProxyList.UNSAFE.allocateInstance(proxy);
 	}
 
 	public static Method setAccessible(final Method m) {

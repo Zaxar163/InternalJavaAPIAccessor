@@ -30,8 +30,8 @@ public class InterfaceEmitter {
 			if (objectMethods.contains(name.name) || exclusions.contains(name.name))
 				return;
 			final StringBuilder codeBuilder = new StringBuilder();
-			codeBuilder.append("	").append("@RealName(\"" + name.name + "\") ")
-					.append(handle.type().returnType().getSimpleName());
+			codeBuilder.append("	");
+			codeBuilder.append("@RealName(\"" + name.name + "\") ").append(handle.type().returnType().getSimpleName());
 			if (!classes.contains(name.type.returnType()))
 				classes.add(name.type.returnType());
 			codeBuilder.append(" ").append(name.name).append("(");

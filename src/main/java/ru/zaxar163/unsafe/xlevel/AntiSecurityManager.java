@@ -1,5 +1,6 @@
 package ru.zaxar163.unsafe.xlevel;
 
+import ru.zaxar163.core.LookupUtil;
 import ru.zaxar163.unsafe.fast.proxies.ProxyList;
 
 public class AntiSecurityManager {
@@ -8,9 +9,9 @@ public class AntiSecurityManager {
 	static {
 		try {
 			secManagerBase = ProxyList.UNSAFE.staticFieldBase(System.class);
-			secManagerOffset = ProxyList.UNSAFE.staticFieldOffset(System.class.getDeclaredField("security"));
+			secManagerOffset = ProxyList.UNSAFE.staticFieldOffset(LookupUtil.getField(System.class, "security"));
 		} catch (final Throwable t) {
-			throw new NativeAccessError(t);
+			throw new Error(t);
 		}
 	}
 

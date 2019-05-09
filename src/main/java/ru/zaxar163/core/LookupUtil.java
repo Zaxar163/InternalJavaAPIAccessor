@@ -117,6 +117,11 @@ public final class LookupUtil {
 		return MethodHandleProxies.wrapperInstanceTarget(handle);
 	}
 
+	public static Constructor<?> getConstructor(final Class<?> cls, final Class<?>... types) {
+		return Arrays.stream(getDeclaredConstructors(cls)).filter(e -> Arrays.equals(e.getParameterTypes(), types))
+				.findFirst().get();
+	}
+
 	public static Class<?>[] getDeclaredClasses(final Class<?> clazz) {
 		try {
 			return (Class<?>[]) DECLAREDCLASSES_GETTER.invoke(clazz);
@@ -152,6 +157,11 @@ public final class LookupUtil {
 	public static Field getField(final Class<?> clazz, final String name) {
 		Objects.requireNonNull(name, "name");
 		return Arrays.stream(getDeclaredFields(clazz)).filter(e -> name.equals(e.getName())).findFirst().get();
+	}
+
+	public static Method getMethod(final Class<?> cls, final String name, final Class<?>... types) {
+		return Arrays.stream(getDeclaredMethods(cls)).filter(e -> name.equals(e.getName()))
+				.filter(e -> Arrays.equals(e.getParameterTypes(), types)).findFirst().get();
 	}
 
 	public static Class<?> ifaceFromWrapped(final Object handle) {

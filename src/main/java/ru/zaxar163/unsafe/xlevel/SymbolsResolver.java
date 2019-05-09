@@ -28,7 +28,7 @@ public class SymbolsResolver {
 			findNative = LookupUtil.ALL_LOOKUP.findStatic(ClassLoader.class, "findNative",
 					MethodType.methodType(Long.TYPE, ClassLoader.class, String.class));
 		} catch (final Throwable e) {
-			throw new NativeAccessError("Method ClassLoader.findNative not found", e);
+			throw new Error("Method ClassLoader.findNative not found", e);
 		}
 	}
 
@@ -36,7 +36,7 @@ public class SymbolsResolver {
 		try {
 			return (long) findNative.invokeExact(classLoader, name);
 		} catch (final Throwable e) {
-			throw new NativeAccessError(e);
+			throw new Error(e);
 		}
 	}
 
