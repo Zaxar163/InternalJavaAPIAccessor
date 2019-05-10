@@ -21,7 +21,7 @@ public final class JVMPlayGround {
 					.sameSizeObject(ClassLoader.getSystemClassLoader(), Class.class, Collections.emptyList());
 			final InvokerMethod clI = ReflectionUtil
 					.wrapConstructorNonInstance(Class.class.getDeclaredConstructors()[0]);
-			final Class<?> a = (Class<?>) ReflectionUtil.changeObjFullUnsafe(Class.class, classSameInstancer.get());
+			final Class<?> a = (Class<?>) ReflectionUtil.changeObjUnsafe(Class.class, classSameInstancer.get());
 			clI.invoke(a, ClassLoader.getSystemClassLoader());
 			System.out.println(a.getClassLoader());
 			clI.invoke(a, new URLClassLoader(new URL[0]));

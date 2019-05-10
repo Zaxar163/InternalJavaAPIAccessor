@@ -14,6 +14,7 @@ import java.util.Objects;
 
 import ru.zaxar163.unsafe.fast.InvokerConstructor;
 import ru.zaxar163.unsafe.fast.ReflectionUtil;
+import ru.zaxar163.unsafe.fast.proxies.ProxyList;
 
 public final class LookupUtil {
 	public static final Lookup ALL_LOOKUP;
@@ -75,8 +76,7 @@ public final class LookupUtil {
 			final Field trustedF = Arrays.stream(getDeclaredFields(Lookup.class))
 					.filter(e -> !e.isAccessible() && e.getName().toLowerCase(Locale.US).contains("trust")).findFirst()
 					.get();
-			trustedF.setAccessible(true);
-			trusted = trustedF.getInt(null);
+			trusted = ProxyList.UNSAFE.getInt(ProxyList.UNSAFE.staticFieldBase(Lookup.class), ProxyList.UNSAFE.staticFieldOffset(trustedF));
 		} catch (final Throwable t) {
 		}
 		LOOKUP_SUPERPERM_CONSTRUCTOR = SUPER_PERMS_CONSTRUCTORI;

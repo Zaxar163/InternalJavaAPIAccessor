@@ -119,7 +119,7 @@ public class ReflectionUtil {
 			methodClazzO = ProxyList.UNSAFE.objectFieldOffset(LookupUtil.getField(Method.class, "clazz"));
 			nameInit = "<init>";
 			objs = new ConcurrentHashMap<>();
-			objs.put(Class.class, ProxyList.UNSAFE.getInt(Object.class, 8L));
+			objs.put(Class.class, Object.class);
 		} catch (final Throwable t) {
 			throw new Error(t);
 		}
