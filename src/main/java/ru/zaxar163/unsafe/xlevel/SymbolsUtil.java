@@ -17,7 +17,7 @@ public class SymbolsUtil {
 				.getAddress(INSTANCE.type("Universe").global("_narrow_oop._base"));
 		private static final int _narrow_oop_shift = INSTANCE
 				.getInt(INSTANCE.type("Universe").global("_narrow_oop._shift"));
-		private static long objFieldOffset;
+		private final static long objFieldOffset;
 		static {
 			try {
 				final java.lang.reflect.Field objField = Ptr2Obj.class.getDeclaredField("obj");
