@@ -76,7 +76,8 @@ public final class LookupUtil {
 			final Field trustedF = Arrays.stream(getDeclaredFields(Lookup.class))
 					.filter(e -> !e.isAccessible() && e.getName().toLowerCase(Locale.US).contains("trust")).findFirst()
 					.get();
-			trusted = ProxyList.UNSAFE.getInt(ProxyList.UNSAFE.staticFieldBase(Lookup.class), ProxyList.UNSAFE.staticFieldOffset(trustedF));
+			trusted = ProxyList.UNSAFE.getInt(ProxyList.UNSAFE.staticFieldBase(Lookup.class),
+					ProxyList.UNSAFE.staticFieldOffset(trustedF));
 		} catch (final Throwable t) {
 		}
 		LOOKUP_SUPERPERM_CONSTRUCTOR = SUPER_PERMS_CONSTRUCTORI;

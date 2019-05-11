@@ -201,7 +201,7 @@ class GeneratorAdapter extends LocalVariablesSorter {
 	 * @param types a set of types.
 	 * @return the internal names of the given types.
 	 */
-	private static String[] getInternalNames(final Type[] types) {
+	public static String[] getInternalNames(final Type[] types) {
 		final String[] names = new String[types.length];
 		for (int i = 0; i < names.length; ++i)
 			names[i] = types[i].getInternalName();
@@ -212,7 +212,7 @@ class GeneratorAdapter extends LocalVariablesSorter {
 	private final int access;
 
 	/** The argument types of the visited method. */
-	private final Type[] argumentTypes;
+	public final Type[] argumentTypes;
 
 	/** The types of the local variables of the visited method. */
 	private final List<Type> localTypes = new ArrayList<>();

@@ -13,6 +13,7 @@ public final class ClassUtil {
 	private final static MethodHandle FINDLOADEDCLASS;
 	private final static MethodHandle FINDLOADEDCLASS_SCL;
 	private final static MethodHandle FORNAME;
+	public static final boolean JAVA9;
 
 	static {
 		try {
@@ -48,6 +49,12 @@ public final class ClassUtil {
 		} catch (final Throwable e) {
 		}
 		DEFINECLASS_NATIVE1 = TDEFINECLASS_NATIVE1;
+		boolean java9 = false;
+		try {
+			Class.forName("java.lang.StackWalker");
+			java9 = true;
+		} catch (Throwable e) { }
+		JAVA9 = java9;
 	}
 
 	public static Class<?> defineClass(final ClassLoader cl, final String name, final byte[] b, final int off,
