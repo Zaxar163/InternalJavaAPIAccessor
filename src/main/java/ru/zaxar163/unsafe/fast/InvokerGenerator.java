@@ -21,8 +21,9 @@ public final class InvokerGenerator {
 		invoke = Method.getMethod(InvokerMethod.class.getDeclaredMethods()[0]);
 		invokerD = method(ReflectionUtil.ifaceAccessor);
 	}
-	static void emit(final Type clazz, final Method method, final int type, final ClassVisitor cw,
-			final boolean isVoid, Type thiz) {
+
+	static void emit(final Type clazz, final Method method, final int type, final ClassVisitor cw, final boolean isVoid,
+			final Type thiz) {
 		final GeneratorAdapter m = new GeneratorAdapter(Opcodes.ACC_PUBLIC, invoke, null,
 				new Type[] { Type.getType(Throwable.class) }, cw);
 		m.visitCode();
@@ -35,6 +36,14 @@ public final class InvokerGenerator {
 			m.visitInsn(Opcodes.ACONST_NULL);
 		m.returnValue();
 		m.visitEnd();
+	}
+
+	static InvokerMethod invoker(final Object inv) {
+		try {
+			return (InvokerMethod) invokerD.invoke(inv);
+		} catch (final Throwable e) {
+			throw new Error(e);
+		}
 	}
 
 	static MethodHandle method(final Class<?> iface) {
@@ -56,13 +65,14 @@ public final class InvokerGenerator {
 		init.visitInsn(Opcodes.RETURN);
 		init.visitMaxs(2, 2);
 		init.visitEnd();
-		emit(Type.getType(iface), Method.getMethod(LookupUtil.getDeclaredMethods(iface)[0]), switchType(LookupUtil.getDeclaredMethods(iface)[0]), cw,
+		emit(Type.getType(iface), Method.getMethod(LookupUtil.getDeclaredMethods(iface)[0]),
+				switchType(LookupUtil.getDeclaredMethods(iface)[0]), cw,
 				LookupUtil.getDeclaredMethods(iface)[0].getReturnType().equals(Void.TYPE), Type.getObjectType(name));
 		cw.visitEnd();
 		final byte[] code = cw.toByteArray();
 		try {
-			final Class<?> clazz = ProxyList.UNSAFE.defineClass(name, code, 0,
-					code.length, DelegateClassLoader.INSTANCE, null);
+			final Class<?> clazz = ProxyList.UNSAFE.defineClass(name, code, 0, code.length,
+					DelegateClassLoader.INSTANCE, null);
 			return LookupUtil.ALL_LOOKUP.findConstructor(clazz, MethodType.methodType(void.class, iface));
 		} catch (final Throwable e) {
 			throw new RuntimeException(e);
@@ -80,13 +90,5 @@ public final class InvokerGenerator {
 	}
 
 	private InvokerGenerator() {
-	}
-	
-	static InvokerMethod invoker(Object inv) {
-		try {
-			return (InvokerMethod) invokerD.invoke(inv);
-		} catch (Throwable e) {
-			throw new Error(e);
-		}
 	}
 }

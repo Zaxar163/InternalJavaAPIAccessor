@@ -27,8 +27,7 @@ public class ProxyList {
 					.findFirst().get();
 			unsafeInst.setAccessible(true);
 			final Object theUnsafe = unsafeInst.get(null);
-			UNSAFE = new FastStaticProxy<>(DelegateClassLoader.INSTANCE, unsafe, UnsafeProxy.class)
-					.instance(theUnsafe);
+			UNSAFE = new FastStaticProxy<>(DelegateClassLoader.INSTANCE, unsafe, UnsafeProxy.class).instance(theUnsafe);
 			final Map<String, Object> toFillF = new HashMap<>();
 			for (final Field f : fieldsUnsafe) {
 				if (f.equals(theUnsafe))

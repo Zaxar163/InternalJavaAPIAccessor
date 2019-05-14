@@ -138,29 +138,29 @@ public class ReflectionUtil {
 		}
 	}
 
+	private static final Class<?> accGenerator;
+	private static final MethodHandle constuctorGenerator;
 	private static final MethodHandle copyMethod;
+	private static final MethodHandle generatorMethod;
+	static final Class<?> ifaceAccessor;
 	private static final long methodClazzO;
 	private static final long methodExceptionsO;
 	private static final long methodModifiersO;
 	private static final long methodNameO;
 	private static final long methodParamsO;
+
 	private static final String nameInit;
+
 	private static final Set<Field> objectFields = Collections
 			.unmodifiableSet(new HashSet<>(Arrays.asList(Object.class.getDeclaredFields())));
+
 	private static final Map<Class<?>, Object> objs;
+
 	private static final long overrideAccessibleObjectOffset;
-
 	private static final long rootOffsetMethod;
-
 	private static final long slotOffsetConstructor;
-
 	private static final long slotOffsetMethod;
 
-	private static final Class<?> accGenerator;
-	private static final MethodHandle generatorMethod;
-	static final Class<?> ifaceAccessor;
-	private static final MethodHandle constuctorGenerator;
-	
 	static {
 		try {
 			slotOffsetConstructor = ProxyList.UNSAFE.objectFieldOffset(LookupUtil.getField(Constructor.class, "slot"));
@@ -259,23 +259,23 @@ public class ReflectionUtil {
 		return m;
 	}
 
-	public static InvokerMethod wrapMethod(Method m) {
-		try {
-			return (InvokerMethod) InvokerGenerator.invoker( generatorMethod.invoke(accGenerator.cast(constuctorGenerator.invoke()),
-					m.getDeclaringClass(), m.getName(), m.getParameterTypes(), m.getReturnType(), m.getExceptionTypes(),
-					m.getModifiers()));
-		} catch (Throwable e) {
-			throw new Error(e);
-		}
-	}
-
-	public static InvokerConstructor wrapConstructor(Constructor<?> constructor) {
+	public static InvokerConstructor wrapConstructor(final Constructor<?> constructor) {
 		final InvokerMethod inst = wrapMethod(methodify(constructor));
 		final Class<?> decl = constructor.getDeclaringClass();
 		return (args) -> {
-			Object ret = ProxyList.UNSAFE.allocateInstance(decl);
+			final Object ret = ProxyList.UNSAFE.allocateInstance(decl);
 			inst.invoke(ret, args);
 			return ret;
 		};
+	}
+
+	public static InvokerMethod wrapMethod(final Method m) {
+		try {
+			return InvokerGenerator.invoker(generatorMethod.invoke(accGenerator.cast(constuctorGenerator.invoke()),
+					m.getDeclaringClass(), m.getName(), m.getParameterTypes(), m.getReturnType(), m.getExceptionTypes(),
+					m.getModifiers()));
+		} catch (final Throwable e) {
+			throw new Error(e);
+		}
 	}
 }

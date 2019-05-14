@@ -63,11 +63,13 @@ class Method {
 	/**
 	 * Returns the descriptor corresponding to the given type name.
 	 *
-	 * @param type           a Java type name.
-	 * @param defaultPackage true if unqualified class names belong to the default
-	 *                       package, or false if they correspond to java.lang
-	 *                       classes. For instance "Object" means "Object" if this
-	 *                       option is true, or "java.lang.Object" otherwise.
+	 * @param type
+	 *            a Java type name.
+	 * @param defaultPackage
+	 *            true if unqualified class names belong to the default package, or
+	 *            false if they correspond to java.lang classes. For instance
+	 *            "Object" means "Object" if this option is true, or
+	 *            "java.lang.Object" otherwise.
 	 * @return the descriptor corresponding to the given type name.
 	 */
 	private static String getDescriptorInternal(final String type, final boolean defaultPackage) {
@@ -99,7 +101,8 @@ class Method {
 	/**
 	 * Creates a new {@link Method}.
 	 *
-	 * @param constructor a java.lang.reflect constructor descriptor
+	 * @param constructor
+	 *            a java.lang.reflect constructor descriptor
 	 * @return a {@link Method} corresponding to the given Java constructor
 	 *         declaration.
 	 */
@@ -110,7 +113,8 @@ class Method {
 	/**
 	 * Creates a new {@link Method}.
 	 *
-	 * @param method a java.lang.reflect method descriptor
+	 * @param method
+	 *            a java.lang.reflect method descriptor
 	 * @return a {@link Method} corresponding to the given Java method declaration.
 	 */
 	public static Method getMethod(final java.lang.reflect.Method method) {
@@ -120,14 +124,15 @@ class Method {
 	/**
 	 * Returns a {@link Method} corresponding to the given Java method declaration.
 	 *
-	 * @param method a Java method declaration, without argument names, of the form
-	 *               "returnType name (argumentType1, ... argumentTypeN)", where the
-	 *               types are in plain Java (e.g. "int", "float", "java.util.List",
-	 *               ...). Classes of the java.lang package can be specified by
-	 *               their unqualified name; all other classes names must be fully
-	 *               qualified.
+	 * @param method
+	 *            a Java method declaration, without argument names, of the form
+	 *            "returnType name (argumentType1, ... argumentTypeN)", where the
+	 *            types are in plain Java (e.g. "int", "float", "java.util.List",
+	 *            ...). Classes of the java.lang package can be specified by their
+	 *            unqualified name; all other classes names must be fully qualified.
 	 * @return a {@link Method} corresponding to the given Java method declaration.
-	 * @throws IllegalArgumentException if <code>method</code> could not get parsed.
+	 * @throws IllegalArgumentException
+	 *             if <code>method</code> could not get parsed.
 	 */
 	public static Method getMethod(final String method) {
 		return getMethod(method, false);
@@ -136,20 +141,21 @@ class Method {
 	/**
 	 * Returns a {@link Method} corresponding to the given Java method declaration.
 	 *
-	 * @param method         a Java method declaration, without argument names, of
-	 *                       the form "returnType name (argumentType1, ...
-	 *                       argumentTypeN)", where the types are in plain Java
-	 *                       (e.g. "int", "float", "java.util.List", ...). Classes
-	 *                       of the java.lang package may be specified by their
-	 *                       unqualified name, depending on the defaultPackage
-	 *                       argument; all other classes names must be fully
-	 *                       qualified.
-	 * @param defaultPackage true if unqualified class names belong to the default
-	 *                       package, or false if they correspond to java.lang
-	 *                       classes. For instance "Object" means "Object" if this
-	 *                       option is true, or "java.lang.Object" otherwise.
+	 * @param method
+	 *            a Java method declaration, without argument names, of the form
+	 *            "returnType name (argumentType1, ... argumentTypeN)", where the
+	 *            types are in plain Java (e.g. "int", "float", "java.util.List",
+	 *            ...). Classes of the java.lang package may be specified by their
+	 *            unqualified name, depending on the defaultPackage argument; all
+	 *            other classes names must be fully qualified.
+	 * @param defaultPackage
+	 *            true if unqualified class names belong to the default package, or
+	 *            false if they correspond to java.lang classes. For instance
+	 *            "Object" means "Object" if this option is true, or
+	 *            "java.lang.Object" otherwise.
 	 * @return a {@link Method} corresponding to the given Java method declaration.
-	 * @throws IllegalArgumentException if <code>method</code> could not get parsed.
+	 * @throws IllegalArgumentException
+	 *             if <code>method</code> could not get parsed.
 	 */
 	public static Method getMethod(final String method, final boolean defaultPackage) {
 		final int spaceIndex = method.indexOf(' ');
@@ -188,8 +194,10 @@ class Method {
 	/**
 	 * Constructs a new {@link Method}.
 	 *
-	 * @param name       the method's name.
-	 * @param descriptor the method's descriptor.
+	 * @param name
+	 *            the method's name.
+	 * @param descriptor
+	 *            the method's descriptor.
 	 */
 	public Method(final String name, final String descriptor) {
 		this.name = name;
@@ -199,9 +207,12 @@ class Method {
 	/**
 	 * Constructs a new {@link Method}.
 	 *
-	 * @param name          the method's name.
-	 * @param returnType    the method's return type.
-	 * @param argumentTypes the method's argument types.
+	 * @param name
+	 *            the method's name.
+	 * @param returnType
+	 *            the method's return type.
+	 * @param argumentTypes
+	 *            the method's argument types.
 	 */
 	public Method(final String name, final Type returnType, final Type[] argumentTypes) {
 		this(name, Type.getMethodDescriptor(returnType, argumentTypes));
