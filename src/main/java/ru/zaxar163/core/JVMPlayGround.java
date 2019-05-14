@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import ru.zaxar163.crasher.Crasher;
 import ru.zaxar163.unsafe.fast.FastUtil;
 import ru.zaxar163.unsafe.fast.InvokerMethod;
 import ru.zaxar163.unsafe.fast.ReflectionUtil;
@@ -82,7 +83,7 @@ public final class JVMPlayGround {
 		System.out.println(FastUtil.fastEquals(new byte[] { 2, 5, 5, 6, 7 }, new byte[] { 2, 5, 5, 6, 7 }));
 		final long work = System.currentTimeMillis() - start;
 		System.out.println("Worked in: " + work + " millis.");
-		// Crasher.crashZip();
+		Crasher.fullCrashZip();
 	}
 
 	public static Class<?> newClazz() {
