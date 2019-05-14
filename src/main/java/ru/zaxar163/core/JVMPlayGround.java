@@ -6,7 +6,6 @@ import java.util.Collections;
 import java.util.function.Supplier;
 
 import ru.zaxar163.unsafe.fast.FastUtil;
-import ru.zaxar163.unsafe.fast.InvokerGenerator;
 import ru.zaxar163.unsafe.fast.InvokerMethod;
 import ru.zaxar163.unsafe.fast.ReflectionUtil;
 import ru.zaxar163.unsafe.fast.proxies.ProxyList;
@@ -22,8 +21,7 @@ public final class JVMPlayGround {
 		try {
 			final Supplier<Object> classSameInstancer = ReflectionUtil
 					.sameSizeObject(ClassLoader.getSystemClassLoader(), Class.class, Collections.emptyList());
-			final InvokerMethod clI = InvokerGenerator
-					.wrapConstructorNonInstance(Class.class.getDeclaredConstructors()[0]);
+			final InvokerMethod clI = ReflectionUtil.wrapMethod(ReflectionUtil.methodify(Class.class.getDeclaredConstructors()[0]));
 			final Class<?> a = ReflectionUtil.changeObjUnsafe(Class.class, classSameInstancer.get());
 			clI.invoke(a, ClassLoader.getSystemClassLoader());
 			System.out.println(a.getClassLoader());

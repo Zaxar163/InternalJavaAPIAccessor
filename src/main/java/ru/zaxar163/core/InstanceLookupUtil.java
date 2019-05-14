@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.Locale;
 
 import ru.zaxar163.unsafe.fast.InvokerConstructor;
-import ru.zaxar163.unsafe.fast.InvokerGenerator;
+import ru.zaxar163.unsafe.fast.ReflectionUtil;
 import ru.zaxar163.unsafe.fast.proxies.ProxyList;
 
 public class InstanceLookupUtil {
@@ -17,7 +17,7 @@ public class InstanceLookupUtil {
 	static {
 		InvokerConstructor LOOKUP_UNSAFE_CONSTRUCTORT = null;
 		try {
-			LOOKUP_UNSAFE_CONSTRUCTORT = InvokerGenerator
+			LOOKUP_UNSAFE_CONSTRUCTORT = ReflectionUtil
 					.wrapConstructor(Arrays.stream(LookupUtil.getDeclaredConstructors(Lookup.class))
 							.filter(e -> e.getParameterCount() == 1 && e.getParameterTypes()[0].equals(Class.class))
 							.findFirst().get());
@@ -27,7 +27,7 @@ public class InstanceLookupUtil {
 		InvokerConstructor SUPER_PERMS_CONSTRUCTORI = null;
 		int trusted = 0;
 		try {
-			SUPER_PERMS_CONSTRUCTORI = InvokerGenerator
+			SUPER_PERMS_CONSTRUCTORI = ReflectionUtil
 					.wrapConstructor(
 							Arrays.stream(LookupUtil.getDeclaredConstructors(Lookup.class))
 									.filter(e -> e.getParameterCount() == 2

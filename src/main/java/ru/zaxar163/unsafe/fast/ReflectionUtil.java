@@ -156,6 +156,11 @@ public class ReflectionUtil {
 
 	private static final long slotOffsetMethod;
 
+	private static final Class<?> accGenerator;
+	private static final MethodHandle generatorMethod;
+	static final Class<?> ifaceAccessor;
+	private static final MethodHandle constuctorGenerator;
+	
 	static {
 		try {
 			slotOffsetConstructor = ProxyList.UNSAFE.objectFieldOffset(LookupUtil.getField(Constructor.class, "slot"));
@@ -171,6 +176,14 @@ public class ReflectionUtil {
 			methodModifiersO = ProxyList.UNSAFE.objectFieldOffset(LookupUtil.getField(Method.class, "modifiers"));
 			methodClazzO = ProxyList.UNSAFE.objectFieldOffset(LookupUtil.getField(Method.class, "clazz"));
 			nameInit = "<init>";
+			ifaceAccessor = ClassUtil.nonThrowingFirstClass("jdk.internal.reflect.MethodAccessor",
+					"sun.reflect.MethodAccessor");
+			accGenerator = ClassUtil.nonThrowingFirstClass("jdk.internal.reflect.MethodAccessorGenerator",
+					"sun.reflect.MethodAccessorGenerator");
+			constuctorGenerator = LookupUtil.ALL_LOOKUP.findConstructor(accGenerator,
+					MethodType.methodType(void.class));
+			generatorMethod = LookupUtil.ALL_LOOKUP.findVirtual(accGenerator, "generateMethod", MethodType.methodType(
+					ifaceAccessor, Class.class, String.class, Class[].class, Class.class, Class[].class, int.class));
 			objs = new ConcurrentHashMap<>();
 			objs.put(Class.class, Object.class);
 		} catch (final Throwable t) {
@@ -244,5 +257,25 @@ public class ReflectionUtil {
 	public static Method setAccessible(final Method m) {
 		ProxyList.UNSAFE.putBoolean(m, overrideAccessibleObjectOffset, true);
 		return m;
+	}
+
+	public static InvokerMethod wrapMethod(Method m) {
+		try {
+			return (InvokerMethod) InvokerGenerator.invoker( generatorMethod.invoke(accGenerator.cast(constuctorGenerator.invoke()),
+					m.getDeclaringClass(), m.getName(), m.getParameterTypes(), m.getReturnType(), m.getExceptionTypes(),
+					m.getModifiers()));
+		} catch (Throwable e) {
+			throw new Error(e);
+		}
+	}
+
+	public static InvokerConstructor wrapConstructor(Constructor<?> constructor) {
+		final InvokerMethod inst = wrapMethod(methodify(constructor));
+		final Class<?> decl = constructor.getDeclaringClass();
+		return (args) -> {
+			Object ret = ProxyList.UNSAFE.allocateInstance(decl);
+			inst.invoke(ret, args);
+			return ret;
+		};
 	}
 }

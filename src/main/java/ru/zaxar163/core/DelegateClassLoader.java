@@ -29,16 +29,16 @@ public final class DelegateClassLoader extends ClassLoader {
 	}
 	
 	public void append(Class<?> c) {
-		append(c.getClassLoader());
+		if (c != null) append(c.getClassLoader());
 	}
 	public void append(Method c) {
-		append(c.getDeclaringClass().getClassLoader());
+		if (c != null) append(c.getDeclaringClass().getClassLoader());
 	}
 	public void append(Field c) {
-		append(c.getDeclaringClass().getClassLoader());
+		if (c != null) append(c.getDeclaringClass().getClassLoader());
 	}
 	public void append(Constructor<?> c) {
-		append(c.getDeclaringClass().getClassLoader());
+		if (c != null) append(c.getDeclaringClass().getClassLoader());
 	}
 	public void append(ClassLoader c) {
 		if (c != null) cls.add(c);
@@ -85,6 +85,10 @@ public final class DelegateClassLoader extends ClassLoader {
         return null;
     }
 
+    public Class<?> findLoadedClassA(String name) {
+    	return cls.stream().map(e -> ClassUtil.findLoadedClass(name)).filter(e -> e != null).findFirst().orElse(null);
+    }
+    
     public Enumeration<URL> getResources(String name) throws IOException {
     	ClassLoader[] current = cls.toArray(new ClassLoader[0]);
         @SuppressWarnings("unchecked")

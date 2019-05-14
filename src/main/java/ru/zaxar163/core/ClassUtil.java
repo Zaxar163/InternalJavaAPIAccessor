@@ -17,9 +17,9 @@ public final class ClassUtil {
 
 	static {
 		try {
-			FINDLOADEDCLASS = LookupUtil.ALL_LOOKUP.findVirtual(ClassLoader.class, "findLoadedClass",
+			FINDLOADEDCLASS = LookupUtil.ALL_LOOKUP.findVirtual(ClassLoader.class, "findLoadedClass0",
 					MethodType.methodType(Class.class, String.class));
-			FINDLOADEDCLASS_SCL = FINDLOADEDCLASS.bindTo(ClassLoader.getSystemClassLoader());
+			FINDLOADEDCLASS_SCL = FINDLOADEDCLASS.bindTo(DelegateClassLoader.INSTANCE);
 			DEFINECLASS0 = LookupUtil.ALL_LOOKUP.findSpecial(ClassLoader.class, "defineClass", MethodType
 					.methodType(Class.class, String.class, byte[].class, int.class, int.class, ProtectionDomain.class),
 					ClassLoader.class);
@@ -131,7 +131,7 @@ public final class ClassUtil {
 	}
 
 	public static Class<?> firstClass(final String... names) throws ClassNotFoundException {
-		return firstClass(ClassLoader.getSystemClassLoader(), names);
+		return firstClass(DelegateClassLoader.INSTANCE, names);
 	}
 
 	public static Class<?> forName(final String name, final boolean init, final ClassLoader loader)
@@ -159,7 +159,7 @@ public final class ClassUtil {
 	}
 
 	public static Class<?> nonThrowingFirstClass(final String... search) {
-		return nonThrowingFirstClass(ClassLoader.getSystemClassLoader(), search);
+		return nonThrowingFirstClass(DelegateClassLoader.INSTANCE, search);
 	}
 
 	private ClassUtil() {
