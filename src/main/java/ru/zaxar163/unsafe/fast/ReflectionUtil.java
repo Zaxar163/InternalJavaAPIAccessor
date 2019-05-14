@@ -22,7 +22,6 @@ import org.objectweb.asm.Type;
 
 import ru.zaxar163.core.ClassUtil;
 import ru.zaxar163.core.LookupUtil;
-import ru.zaxar163.unsafe.UnsafeUtil;
 import ru.zaxar163.unsafe.fast.proxies.ProxyList;
 
 public class ReflectionUtil {
@@ -139,15 +138,7 @@ public class ReflectionUtil {
 		}
 	}
 
-	private static final Class<?> accGenerator;
-	private static final MethodHandle constuctorGenerator;
 	private static final MethodHandle copyMethod;
-	private static final MethodHandle generatorConstructor;
-	private static final MethodHandle generatorMethod;
-	private static final Class<?> ifaceAccessor;
-	private static final Class<?> ifaceConsAccessor;
-	private static final MethodHandle invokerConsMethod;
-	private static final MethodHandle invokerMethod;
 	private static final long methodClazzO;
 	private static final long methodExceptionsO;
 	private static final long methodModifiersO;
@@ -173,22 +164,6 @@ public class ReflectionUtil {
 			overrideAccessibleObjectOffset = ProxyList.UNSAFE
 					.objectFieldOffset(LookupUtil.getField(AccessibleObject.class, "override"));
 			copyMethod = LookupUtil.ALL_LOOKUP.findVirtual(Method.class, "copy", MethodType.methodType(Method.class));
-			ifaceAccessor = ClassUtil.nonThrowingFirstClass("jdk.internal.reflect.MethodAccessor",
-					"sun.reflect.MethodAccessor");
-			ifaceConsAccessor = ClassUtil.nonThrowingFirstClass("jdk.internal.reflect.ConstructorAccessor",
-					"sun.reflect.ConstructorAccessor");
-			invokerMethod = LookupUtil.ALL_LOOKUP.findVirtual(ifaceAccessor, "invoke",
-					MethodType.methodType(Object.class, Object.class, Object[].class));
-			accGenerator = ClassUtil.nonThrowingFirstClass("jdk.internal.reflect.MethodAccessorGenerator",
-					"sun.reflect.MethodAccessorGenerator");
-			constuctorGenerator = LookupUtil.ALL_LOOKUP.findConstructor(accGenerator,
-					MethodType.methodType(void.class));
-			generatorMethod = LookupUtil.ALL_LOOKUP.findVirtual(accGenerator, "generateMethod", MethodType.methodType(
-					ifaceAccessor, Class.class, String.class, Class[].class, Class.class, Class[].class, int.class));
-			generatorConstructor = LookupUtil.ALL_LOOKUP.findVirtual(accGenerator, "generateConstructor",
-					MethodType.methodType(ifaceConsAccessor, Class.class, Class[].class, Class[].class, int.class));
-			invokerConsMethod = LookupUtil.ALL_LOOKUP.findVirtual(ifaceConsAccessor, "newInstance",
-					MethodType.methodType(Object.class, Object[].class));
 
 			methodNameO = ProxyList.UNSAFE.objectFieldOffset(LookupUtil.getField(Method.class, "name"));
 			methodParamsO = ProxyList.UNSAFE.objectFieldOffset(LookupUtil.getField(Method.class, "parameterTypes"));
@@ -213,43 +188,8 @@ public class ReflectionUtil {
 		return (T) changeObjFullUnsafe(objs.computeIfAbsent(required, c -> ProxyList.UNSAFE.allocateInstance(c)), o);
 	}
 
-	public static MethodHandle handleD(final Constructor<?> m) {
-		try {
-			return invokerConsMethod.bindTo(generatorConstructor.invoke(accGenerator.cast(constuctorGenerator.invoke()),
-					m.getDeclaringClass(), m.getParameterTypes(), m.getExceptionTypes(), m.getModifiers()));
-		} catch (final Throwable t) {
-			throw new Error(t);
-		}
-	}
-
-	public static MethodHandle handleD(final Method m) {
-		try {
-			return invokerMethod.bindTo(generatorMethod.invoke(accGenerator.cast(constuctorGenerator.invoke()),
-					m.getDeclaringClass(), m.getName(), m.getParameterTypes(), m.getReturnType(), m.getExceptionTypes(),
-					m.getModifiers()));
-		} catch (final Throwable t) {
-			throw new Error(t);
-		}
-	}
-
 	public static AccessorField handleF(final Field f) {
 		return new FastFieldAccessor(f);
-	}
-
-	public static InvokerConstructor handleHC(final MethodHandle mn) {
-		try {
-			return LookupUtil.wrap(InvokerConstructor.class, mn);
-		} catch (final Throwable t) {
-			throw new Error(t);
-		}
-	}
-
-	public static InvokerMethod handleHM(final MethodHandle mn) {
-		try {
-			return LookupUtil.wrap(InvokerMethod.class, mn);
-		} catch (final Throwable t) {
-			throw new Error(t);
-		}
 	}
 
 	/**
@@ -266,7 +206,7 @@ public class ReflectionUtil {
 			ProxyList.UNSAFE.putObject(ret, methodNameO, nameInit);
 			ProxyList.UNSAFE.putObject(ret, methodParamsO, cn.getParameterTypes());
 			ProxyList.UNSAFE.putObject(ret, methodExceptionsO, cn.getExceptionTypes());
-			ProxyList.UNSAFE.putObject(ret, methodModifiersO, 0 & Modifier.STRICT); // why it works with it?
+			ProxyList.UNSAFE.putObject(ret, methodModifiersO, Modifier.FINAL); // why it works with it?
 			ProxyList.UNSAFE.putObject(ret, methodClazzO, cn.getDeclaringClass());
 			return ret;
 		} catch (final Throwable e) {
@@ -277,7 +217,7 @@ public class ReflectionUtil {
 	private static Class<?> sameSizeClass(final ClassLoader loader, final Class<?> klass,
 			final Collection<String> excluded) {
 		final String className = ProxyData.nextName(true);
-		final ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
+		final ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS);
 		cw.visit(Opcodes.V1_8, Opcodes.ACC_PUBLIC, className, null, ProxyData.MAGIC_SUPER, null);
 		int i = 0;
 		for (final Field field : klass.getFields()) {
@@ -289,7 +229,7 @@ public class ReflectionUtil {
 		}
 		final byte[] code = cw.toByteArray();
 		try {
-			return UnsafeUtil.defineClass(className, code, 0, code.length, loader, null);
+			return ClassUtil.defineClass1_native(loader, className, code, 0, code.length, null, null);
 		} catch (final Throwable e) {
 			throw new RuntimeException(e);
 		}
@@ -304,13 +244,5 @@ public class ReflectionUtil {
 	public static Method setAccessible(final Method m) {
 		ProxyList.UNSAFE.putBoolean(m, overrideAccessibleObjectOffset, true);
 		return m;
-	}
-
-	public static InvokerConstructor wrapConstructor(final Constructor<?> t) {
-		return handleHC(handleD(t));
-	}
-
-	public static InvokerMethod wrapConstructorNonInstance(final Constructor<?> t) {
-		return handleHM(handleD(methodify(t)));
 	}
 }

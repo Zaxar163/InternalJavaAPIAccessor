@@ -1,12 +1,24 @@
 package ru.zaxar163.unsafe.fast;
 
 public interface AccessorField {
-	default Object getAndSetObject(final Object inst, final Object to) throws IllegalArgumentException {
-		final Object ret = getObject(inst);
-		setObject(inst, to);
+	default byte getAndSetByte(final Object inst, final byte to) throws IllegalArgumentException {
+		final byte ret = getByte(inst);
+		setByte(inst, to);
 		return ret;
 	}
-	
+
+	default double getAndSetDouble(final Object inst, final double to) throws IllegalArgumentException {
+		final double ret = getDouble(inst);
+		setDouble(inst, to);
+		return ret;
+	}
+
+	default float getAndSetFloat(final Object inst, final float to) throws IllegalArgumentException {
+		final float ret = getFloat(inst);
+		setFloat(inst, to);
+		return ret;
+	}
+
 	default int getAndSetInt(final Object inst, final int to) throws IllegalArgumentException {
 		final int ret = getInt(inst);
 		setInt(inst, to);
@@ -19,31 +31,17 @@ public interface AccessorField {
 		return ret;
 	}
 
+	default Object getAndSetObject(final Object inst, final Object to) throws IllegalArgumentException {
+		final Object ret = getObject(inst);
+		setObject(inst, to);
+		return ret;
+	}
 
 	default short getAndSetShort(final Object inst, final short to) throws IllegalArgumentException {
 		final short ret = getShort(inst);
 		setShort(inst, to);
 		return ret;
 	}
-
-	default byte getAndSetByte(final Object inst, final byte to) throws IllegalArgumentException {
-		final byte ret = getByte(inst);
-		setByte(inst, to);
-		return ret;
-	}
-
-	default float getAndSetFloat(final Object inst, final float to) throws IllegalArgumentException {
-		final float ret = getFloat(inst);
-		setFloat(inst, to);
-		return ret;
-	}
-	
-	default double getAndSetDouble(final Object inst, final double to) throws IllegalArgumentException {
-		final double ret = getDouble(inst);
-		setDouble(inst, to);
-		return ret;
-	}
-
 
 	byte getByte(Object inst) throws IllegalArgumentException;
 

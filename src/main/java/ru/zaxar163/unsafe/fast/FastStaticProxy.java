@@ -12,8 +12,8 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
+import ru.zaxar163.core.ClassUtil;
 import ru.zaxar163.core.LookupUtil;
-import ru.zaxar163.unsafe.UnsafeUtil;
 
 /**
  * For instance.
@@ -27,8 +27,8 @@ public class FastStaticProxy<T> {
 	}
 
 	private final Class<?> clazz;
-	private final ClassLoader loader;
 
+	private final ClassLoader loader;
 	private final Class<T> proxy;
 	private final MethodHandle proxyC;
 
@@ -59,7 +59,8 @@ public class FastStaticProxy<T> {
 		for (final Map.Entry<java.lang.reflect.Method, Method> method : methods.entrySet()) {
 			final GeneratorAdapter m = new GeneratorAdapter(Opcodes.ACC_PUBLIC, method.getValue(), null,
 					typify(method.getKey().getExceptionTypes()), cw);
-			final boolean isStatic = Modifier.isStatic(LookupUtil.getMethod(clazz, method.getKey().getName(), method.getKey().getParameterTypes()).getModifiers());
+			final boolean isStatic = Modifier.isStatic(LookupUtil
+					.getMethod(clazz, method.getKey().getName(), method.getKey().getParameterTypes()).getModifiers());
 			m.visitCode();
 			m.loadThis();
 			if (!isStatic)
@@ -80,7 +81,7 @@ public class FastStaticProxy<T> {
 						m -> m.isAnnotationPresent(RealName.class)
 								? new Method(m.getAnnotation(RealName.class).value(), Type.getMethodDescriptor(m))
 								: new Method(m.getName(), Type.getMethodDescriptor(m))));
-		final ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
+		final ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS);
 		final String name = ProxyData.nextName(true);
 		cw.visit(Opcodes.V1_8, Opcodes.ACC_PUBLIC, name, null, ProxyData.MAGIC_SUPER,
 				new String[] { Type.getInternalName(proxy) });
@@ -88,8 +89,8 @@ public class FastStaticProxy<T> {
 		cw.visitEnd();
 		final byte[] code = cw.toByteArray();
 		try {
-			return LookupUtil.ALL_LOOKUP.unreflectConstructor(
-					UnsafeUtil.defineClass(name, code, 0, code.length, loader, null).getDeclaredConstructors()[0]);
+			return LookupUtil.ALL_LOOKUP.unreflectConstructor(ClassUtil
+					.defineClass1_native(loader, name, code, 0, code.length, null, null).getDeclaredConstructors()[0]);
 		} catch (final Throwable e) {
 			throw new RuntimeException(e);
 		}

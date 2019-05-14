@@ -1,4 +1,4 @@
-package ru.zaxar163.unsafe;
+package ru.zaxar163.util.generating;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Field;
@@ -15,7 +15,7 @@ import ru.zaxar163.core.ClassUtil;
 import ru.zaxar163.core.LookupUtil;
 import ru.zaxar163.core.MethodInfo;
 
-public final class UnsafeAccessor {
+final class UnsafeAccessor {
 	public static final Class<?> UNSAFE_CLASS;
 	public static final Map<String, Object> UNSAFE_FIELDS;
 	public static final Map<MethodInfo, MethodHandle> UNSAFE_METHODS;

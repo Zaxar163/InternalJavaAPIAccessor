@@ -14,7 +14,6 @@ import org.objectweb.asm.Type;
 
 import ru.zaxar163.core.ClassUtil;
 import ru.zaxar163.core.LookupUtil;
-import ru.zaxar163.unsafe.UnsafeUtil;
 
 /**
  * For lots of instances.
@@ -40,11 +39,22 @@ public class FastDynamicProxy<T> {
 		this.proxyC = emitProxy();
 	}
 
+	private Class<?>[] asClazz(final Type[] clazzs) {
+		final Class<?>[] types = new Class<?>[clazzs.length];
+		for (int i = 0; i < types.length; i++)
+			types[i] = ClassUtil.nonThrowingFirstClass(clazzs[i].getClassName());
+		return types;
+	}
+
+	private Method asGet(final String name, final int args) {
+		return Method.getMethod(Arrays.stream(clazz.getDeclaredMethods()).filter(e -> name.equals(e.getName()))
+				.filter(e -> e.getParameterCount() == args).findFirst().get());
+	}
+
 	private void emit(final Map<java.lang.reflect.Method, Method> methods, final ClassVisitor cw, final Type vt,
 			final Type sn) {
 		final Type handleT = Type.getType(clazz);
-		final MethodVisitor init = cw.visitMethod(Opcodes.ACC_PUBLIC, "<init>", "()V", null,
-				null);
+		final MethodVisitor init = cw.visitMethod(Opcodes.ACC_PUBLIC, "<init>", "()V", null, null);
 		init.visitCode();
 		init.visitVarInsn(Opcodes.ALOAD, 0);
 		init.visitMethodInsn(Opcodes.INVOKESPECIAL, sn.getInternalName(), "<init>", "()V", false);
@@ -54,7 +64,9 @@ public class FastDynamicProxy<T> {
 		for (final Map.Entry<java.lang.reflect.Method, Method> method : methods.entrySet()) {
 			final GeneratorAdapter m = new GeneratorAdapter(Opcodes.ACC_PUBLIC, method.getValue(), null,
 					typify(method.getKey().getExceptionTypes()), cw);
-			final boolean isStatic = Modifier.isStatic(LookupUtil.getMethod(clazz, method.getKey().getName(), asClazz(method.getValue().getArgumentTypes())).getModifiers());
+			final boolean isStatic = Modifier.isStatic(LookupUtil
+					.getMethod(clazz, method.getKey().getName(), asClazz(method.getValue().getArgumentTypes()))
+					.getModifiers());
 			m.visitCode();
 			m.loadThis();
 			m.loadArgs();
@@ -67,20 +79,13 @@ public class FastDynamicProxy<T> {
 		}
 	}
 
-	private Class<?>[] asClazz(Type[] clazzs) {
-		final Class<?>[] types = new Class<?>[clazzs.length];
-		for (int i = 0; i < types.length; i++)
-			types[i] = ClassUtil.nonThrowingFirstClass(clazzs[i].getClassName());
-		return types;
-	}
-
 	private MethodHandle emitProxy() {
 		final Map<java.lang.reflect.Method, Method> methods = Arrays.stream(proxy.getDeclaredMethods())
 				.collect(Collectors.toMap(m -> m,
 						m -> m.isAnnotationPresent(RealName.class)
 								? asGet(m.getAnnotation(RealName.class).value(), params(m))
 								: asGet(m.getName(), params(m))));
-		final ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
+		final ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS);
 		final String name = ProxyData.nextName(true);
 		cw.visit(Opcodes.V1_8, Opcodes.ACC_PUBLIC, name, null, ProxyData.MAGIC_SUPER,
 				new String[] { Type.getInternalName(proxy) });
@@ -88,15 +93,11 @@ public class FastDynamicProxy<T> {
 		cw.visitEnd();
 		final byte[] code = cw.toByteArray();
 		try {
-			return LookupUtil.ALL_LOOKUP.unreflectConstructor(
-					UnsafeUtil.defineClass(name, code, 0, code.length, loader, null).getDeclaredConstructors()[0]);
+			return LookupUtil.ALL_LOOKUP.unreflectConstructor(ClassUtil
+					.defineClass1_native(loader, name, code, 0, code.length, null, null).getDeclaredConstructors()[0]);
 		} catch (final Throwable e) {
 			throw new RuntimeException(e);
 		}
-	}
-
-	private int params(java.lang.reflect.Method m) {
-		return m.isAnnotationPresent(Static.class) ? m.getParameterCount() : m.getParameterCount()-1;
 	}
 
 	public T instance() {
@@ -106,8 +107,8 @@ public class FastDynamicProxy<T> {
 			throw new RuntimeException(e);
 		}
 	}
-	
-	private Method asGet(String name, int args) {
-		return Method.getMethod(Arrays.stream(clazz.getDeclaredMethods()).filter(e -> name.equals(e.getName())).filter(e -> e.getParameterCount() == args).findFirst().get());
+
+	private int params(final java.lang.reflect.Method m) {
+		return m.isAnnotationPresent(Static.class) ? m.getParameterCount() : m.getParameterCount() - 1;
 	}
 }

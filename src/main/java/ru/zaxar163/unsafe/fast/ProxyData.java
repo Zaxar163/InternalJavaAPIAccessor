@@ -5,6 +5,7 @@ import java.util.Random;
 import org.objectweb.asm.Type;
 
 import ru.zaxar163.core.ClassUtil;
+import ru.zaxar163.core.DelegateClassLoader;
 
 final class ProxyData {
 	static final ClassLoader MAGIC_CLASSLOADER;
@@ -17,10 +18,12 @@ final class ProxyData {
 		MAGIC_SUPER = Type.getInternalName(magic);
 		MAGIC_PACKAGE = magic.getName().substring(0, magic.getName().lastIndexOf('.')).replace('.', '/');
 		MAGIC_CLASSLOADER = magic.getClassLoader();
+		DelegateClassLoader.INSTANCE.append(MAGIC_CLASSLOADER);
 	}
 
 	public static ClassLoader defaultForVer(final Class<?> klass, final boolean sys) {
-		return klass.getClassLoader();
+		DelegateClassLoader.INSTANCE.append(klass);
+		return DelegateClassLoader.INSTANCE;
 	}
 
 	public static String nextName(final boolean magic) {

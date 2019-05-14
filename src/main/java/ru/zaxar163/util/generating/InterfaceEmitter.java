@@ -11,7 +11,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import ru.zaxar163.core.MethodInfo;
-import ru.zaxar163.unsafe.UnsafeAccessor;
 import ru.zaxar163.unsafe.fast.RealName;
 
 public class InterfaceEmitter {

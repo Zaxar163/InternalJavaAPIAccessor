@@ -12,7 +12,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import ru.zaxar163.core.MethodInfo;
-import ru.zaxar163.unsafe.UnsafeAccessor;
 
 public class ClassEmitter {
 	private static final List<String> objectMethods = Arrays.stream(Object.class.getDeclaredMethods())

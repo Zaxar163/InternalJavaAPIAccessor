@@ -5,21 +5,24 @@ import java.net.URLClassLoader;
 import java.util.Collections;
 import java.util.function.Supplier;
 
-import ru.zaxar163.crasher.Crasher;
 import ru.zaxar163.unsafe.fast.FastUtil;
+import ru.zaxar163.unsafe.fast.InvokerGenerator;
 import ru.zaxar163.unsafe.fast.InvokerMethod;
 import ru.zaxar163.unsafe.fast.ReflectionUtil;
+import ru.zaxar163.unsafe.fast.proxies.ProxyList;
 import ru.zaxar163.unsafe.xlevel.ThreadList;
 
 public final class JVMPlayGround {
 	public static void main(final String... args) throws Throwable {
+		Class.forName(ProxyList.class.getName());
+		Class.forName(ReflectionUtil.class.getName());
 		ThreadList.getThreads().forEach((n, t) -> {
-			System.out.println("Thread # " + n + " Data: " + t);
+			System.out.println("Thread # " + n + " Data: " + t + " Classloader: " + t.getContextClassLoader());
 		});
 		try {
 			final Supplier<Object> classSameInstancer = ReflectionUtil
 					.sameSizeObject(ClassLoader.getSystemClassLoader(), Class.class, Collections.emptyList());
-			final InvokerMethod clI = ReflectionUtil
+			final InvokerMethod clI = InvokerGenerator
 					.wrapConstructorNonInstance(Class.class.getDeclaredConstructors()[0]);
 			final Class<?> a = ReflectionUtil.changeObjUnsafe(Class.class, classSameInstancer.get());
 			clI.invoke(a, ClassLoader.getSystemClassLoader());
@@ -31,7 +34,7 @@ public final class JVMPlayGround {
 		}
 		System.out.println(FastUtil.fastEquals(new byte[] { 2, 5, 5, 6, 7 }, new byte[] { 2, 5, 5, 7, 7 }));
 		System.out.println(FastUtil.fastEquals(new byte[] { 2, 5, 5, 6, 7 }, new byte[] { 2, 5, 5, 6, 7 }));
-		Crasher.crashZip();
+		// Crasher.crashZip();
 	}
 
 	private JVMPlayGround() {

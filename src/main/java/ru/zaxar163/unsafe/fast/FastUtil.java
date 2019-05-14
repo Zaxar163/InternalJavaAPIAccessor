@@ -1,12 +1,11 @@
 package ru.zaxar163.unsafe.fast;
 
-import ru.zaxar163.unsafe.UnsafeAccessor;
 import ru.zaxar163.unsafe.fast.proxies.ProxyList;
 import ru.zaxar163.unsafe.fast.proxies.UnsafeProxy;
 
 public final class FastUtil {
 	private static final UnsafeProxy acc = ProxyList.UNSAFE;
-	private static final int bbaseOffset = (Integer) UnsafeAccessor.UNSAFE_FIELDS.get("ARRAY_BYTE_BASE_OFFSET");
+	private static final int bbaseOffset = (Integer) ProxyList.UNSAFE_FIELDS.get("ARRAY_BYTE_BASE_OFFSET");
 
 	public static boolean fastEquals(final byte[] b1, final byte[] b2) {
 		if (b1 == b2)

@@ -53,12 +53,14 @@ public final class ClassUtil {
 		try {
 			Class.forName("java.lang.StackWalker");
 			java9 = true;
-		} catch (Throwable e) { }
+		} catch (final Throwable e) {
+		}
 		JAVA9 = java9;
 	}
 
 	public static Class<?> defineClass(final ClassLoader cl, final String name, final byte[] b, final int off,
 			final int len, final ProtectionDomain protectionDomain) {
+		DelegateClassLoader.INSTANCE.append(cl);
 		try {
 			return (Class<?>) DEFINECLASS0.invokeExact(cl, name, b, off, len, protectionDomain);
 		} catch (final Throwable e) {
@@ -68,6 +70,7 @@ public final class ClassUtil {
 
 	public static Class<?> defineClass(final ClassLoader cl, final String name, final java.nio.ByteBuffer b,
 			final ProtectionDomain protectionDomain) {
+		DelegateClassLoader.INSTANCE.append(cl);
 		try {
 			return (Class<?>) DEFINECLASS1.invokeExact(cl, name, b, protectionDomain);
 		} catch (final Throwable e) {
@@ -77,6 +80,7 @@ public final class ClassUtil {
 
 	public static Class<?> defineClass0_native(final ClassLoader cl, final String name, final byte[] b, final int off,
 			final int len, final ProtectionDomain pd) {
+		DelegateClassLoader.INSTANCE.append(cl);
 		if (DEFINECLASS_NATIVE0 == null)
 			return null;
 		try {
@@ -88,6 +92,7 @@ public final class ClassUtil {
 
 	public static Class<?> defineClass1_native(final ClassLoader cl, final String name, final byte[] b, final int off,
 			final int len, final ProtectionDomain pd, final String code) {
+		DelegateClassLoader.INSTANCE.append(cl);
 		if (DEFINECLASS_NATIVE1 == null)
 			return null;
 		try {
@@ -99,6 +104,7 @@ public final class ClassUtil {
 
 	public static Class<?> findLoadedClass(final ClassLoader cl, final String name) {
 		try {
+			DelegateClassLoader.INSTANCE.append(cl);
 			return (Class<?>) FINDLOADEDCLASS.invokeExact(cl, name);
 		} catch (final Throwable e) {
 			throw new Error(e);
@@ -116,6 +122,7 @@ public final class ClassUtil {
 	public static Class<?> firstClass(final ClassLoader loader, final String... names) throws ClassNotFoundException {
 		for (final String name : names)
 			try {
+				DelegateClassLoader.INSTANCE.append(loader);
 				return forName(name, false, loader);
 			} catch (final ClassNotFoundException ignored) {
 				// Expected
@@ -130,6 +137,7 @@ public final class ClassUtil {
 	public static Class<?> forName(final String name, final boolean init, final ClassLoader loader)
 			throws ClassNotFoundException {
 		try {
+			DelegateClassLoader.INSTANCE.append(loader);
 			return (Class<?>) FORNAME.invokeExact(name, init, loader, Class.class);
 		} catch (final Throwable e) {
 			if (e instanceof ClassNotFoundException)
@@ -142,6 +150,7 @@ public final class ClassUtil {
 	public static Class<?> nonThrowingFirstClass(final ClassLoader cl, final String... search) {
 		for (final String name : search)
 			try {
+				DelegateClassLoader.INSTANCE.append(cl);
 				return forName(name, false, cl);
 			} catch (final ClassNotFoundException ignored) {
 				// Expected
