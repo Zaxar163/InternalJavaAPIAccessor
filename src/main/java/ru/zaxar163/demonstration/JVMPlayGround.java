@@ -1,4 +1,4 @@
-package ru.zaxar163.core;
+package ru.zaxar163.demonstration;
 
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -8,6 +8,8 @@ import java.util.Scanner;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import ru.zaxar163.core.ClassUtil;
+import ru.zaxar163.core.DelegateClassLoader;
 import ru.zaxar163.crasher.Crasher;
 import ru.zaxar163.unsafe.fast.FastUtil;
 import ru.zaxar163.unsafe.fast.InvokerMethod;
@@ -61,9 +63,6 @@ public final class JVMPlayGround {
 
 	public static void main(final String... args) throws Throwable {
 		final long start = System.currentTimeMillis();
-		ThreadList.getThreads().forEach((n, t) -> {
-			System.out.println("Thread # " + n + " Data: " + t + " Classloader: " + t.getContextClassLoader());
-		});
 		init(e -> e.printStackTrace());
 		final Class<?> a = newClazz();
 		constructClazzU(a, ClassLoader.getSystemClassLoader());

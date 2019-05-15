@@ -9,41 +9,12 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.Collections;
 import java.util.Enumeration;
-import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.objectweb.asm.Type;
 
-class CompoundEnumeration<E> implements Enumeration<E> {
-	private final Enumeration<E>[] enums;
-	private int index = 0;
-
-	public CompoundEnumeration(final Enumeration<E>[] enums) {
-		this.enums = enums;
-	}
-
-	@Override
-	public boolean hasMoreElements() {
-		return next();
-	}
-
-	private boolean next() {
-		while (index < enums.length) {
-			if (enums[index] != null && enums[index].hasMoreElements())
-				return true;
-			index++;
-		}
-		return false;
-	}
-
-	@Override
-	public E nextElement() {
-		if (!next())
-			throw new NoSuchElementException();
-		return enums[index].nextElement();
-	}
-}
+import ru.zaxar163.util.CompoundEnumeration;
 
 public final class DelegateClassLoader extends ClassLoader {
 	public static final DelegateClassLoader INSTANCE = new DelegateClassLoader();

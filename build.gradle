@@ -8,7 +8,7 @@ sourceCompatibility = targetCompatibility = '1.8'
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
 if (!hasProperty('mainClass')) {
-	ext.mainClass = 'ru.zaxar163.core.JVMPlayGround'
+	ext.mainClass = 'ru.zaxar163.demonstration.InternalPlayGround'
 }
 
 repositories {
