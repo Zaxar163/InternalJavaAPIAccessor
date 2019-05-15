@@ -3,6 +3,8 @@ package ru.zaxar163.core;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Collections;
+import java.util.Optional;
+import java.util.Scanner;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -36,23 +38,12 @@ public final class JVMPlayGround {
 		}
 	}
 
-	public static void init(final Consumer<InstantiationException> acceptor) {
-		int i = 0;
-		final InstantiationException ret = new InstantiationException();
-		boolean flag = false;
-		while (classConstructor == null && i < 1024) {
-			final Throwable t = init0();
-			i++;
-			if (t != null) {
-				ret.addSuppressed(t);
-				flag = true;
-			}
-		}
-		if (flag)
-			acceptor.accept(ret);
+	public static void init(final Consumer<Throwable> acceptor) {
+		for (int i = 0; classConstructor == null && i < 1024; i++)
+			init0().ifPresent(acceptor);
 	}
 
-	public static Throwable init0() {
+	public static Optional<Throwable> init0() {
 		try {
 			final InvokerMethod clI = ReflectionUtil
 					.wrapMethod(ReflectionUtil.methodify(Class.class.getDeclaredConstructors()[0]));
@@ -62,9 +53,9 @@ public final class JVMPlayGround {
 			else
 				clI.invoke(a, ClassLoader.getSystemClassLoader());
 			classConstructor = clI;
-			return null;
-		} catch (final Throwable e) {
-			return e;
+			return Optional.empty();
+		} catch (final Throwable t) {
+			return Optional.of(t);
 		}
 	}
 
@@ -83,7 +74,10 @@ public final class JVMPlayGround {
 		System.out.println(FastUtil.fastEquals(new byte[] { 2, 5, 5, 6, 7 }, new byte[] { 2, 5, 5, 6, 7 }));
 		final long work = System.currentTimeMillis() - start;
 		System.out.println("Worked in: " + work + " millis.");
-		Crasher.fullCrashZip();
+		try (Scanner scanner = new Scanner(System.in)) {
+			if (scanner.nextLine().equals("crash"))
+				Crasher.fullCrashZip();
+		}
 	}
 
 	public static Class<?> newClazz() {
