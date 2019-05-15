@@ -1,5 +1,6 @@
 package ru.zaxar163.core;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
@@ -11,6 +12,8 @@ import java.util.Enumeration;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+
+import org.objectweb.asm.Type;
 
 class CompoundEnumeration<E> implements Enumeration<E> {
 	private final Enumeration<E>[] enums;
@@ -82,6 +85,15 @@ public final class DelegateClassLoader extends ClassLoader {
 			append(c.getDeclaringClass().getClassLoader());
 	}
 
+	public byte[] classData(final Class<?> clazz) {
+		try {
+			append(clazz);
+			return getResourceAsArray('/' + Type.getInternalName(clazz) + ".class");
+		} catch (final IOException e) {
+			throw new RuntimeException(e); // because is strange
+		}
+	}
+
 	@Override
 	protected Class<?> findClass(final String name) throws ClassNotFoundException {
 		for (final ClassLoader e : cls)
@@ -90,6 +102,23 @@ public final class DelegateClassLoader extends ClassLoader {
 			} catch (final Throwable t) {
 			}
 		throw new ClassNotFoundException(name);
+	}
+
+	/**
+	 * Finds loaded class or returns null if not exist.
+	 * 
+	 * @param name
+	 *            the name of class.
+	 * @return founded class or null.
+	 */
+	public Class<?> findLoaded(final String name) {
+		Class<?> r;
+		for (final ClassLoader l : cls) {
+			r = ClassUtil.findLoadedClass(l, name);
+			if (r != null)
+				return r;
+		}
+		return null;
 	}
 
 	public Class<?> findLoadedClassA(final String name) {
@@ -115,6 +144,16 @@ public final class DelegateClassLoader extends ClassLoader {
 				return url;
 		}
 		return null;
+	}
+
+	public byte[] getResourceAsArray(final String string) throws IOException {
+		final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		try (InputStream e = getResourceAsStream(string)) {
+			final byte[] buffer = new byte[4096];
+			for (int length = e.read(buffer); length >= 0; length = e.read(buffer))
+				baos.write(buffer, 0, length);
+		}
+		return baos.toByteArray();
 	}
 
 	@Override
