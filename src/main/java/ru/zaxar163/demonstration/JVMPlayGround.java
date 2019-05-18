@@ -10,14 +10,12 @@ import java.util.function.Supplier;
 
 import ru.zaxar163.core.ClassUtil;
 import ru.zaxar163.core.DelegateClassLoader;
-import ru.zaxar163.crasher.Crasher;
 import ru.zaxar163.unsafe.fast.FastUtil;
-import ru.zaxar163.unsafe.fast.InvokerMethod;
 import ru.zaxar163.unsafe.fast.ReflectionUtil;
-import ru.zaxar163.unsafe.xlevel.ThreadList;
+import ru.zaxar163.unsafe.fast.reflect.MethodAcc;
 
 public final class JVMPlayGround {
-	private static volatile InvokerMethod classConstructor = null;
+	private static volatile MethodAcc classConstructor = null;
 	private static final Supplier<Object> clazzSameSize = ReflectionUtil.sameSizeObject(DelegateClassLoader.INSTANCE,
 			Class.class, Collections.emptyList());
 
@@ -47,7 +45,7 @@ public final class JVMPlayGround {
 
 	public static Optional<Throwable> init0() {
 		try {
-			final InvokerMethod clI = ReflectionUtil
+			final MethodAcc clI = ReflectionUtil
 					.wrapMethod(ReflectionUtil.methodify(Class.class.getDeclaredConstructors()[0]));
 			final Class<?> a = newClazz();
 			if (ClassUtil.JAVA9)

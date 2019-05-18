@@ -1,6 +1,6 @@
-package ru.zaxar163.unsafe.fast;
+package ru.zaxar163.unsafe.fast.reflect;
 
-public interface AccessorField {
+public interface FieldAcc {
 	default byte getAndSetByte(final Object inst, final byte to) throws IllegalArgumentException {
 		final byte ret = getByte(inst);
 		setByte(inst, to);

@@ -23,9 +23,12 @@ import org.objectweb.asm.Type;
 import ru.zaxar163.core.ClassUtil;
 import ru.zaxar163.core.LookupUtil;
 import ru.zaxar163.unsafe.fast.proxies.ProxyList;
+import ru.zaxar163.unsafe.fast.reflect.ConstructorAcc;
+import ru.zaxar163.unsafe.fast.reflect.FieldAcc;
+import ru.zaxar163.unsafe.fast.reflect.MethodAcc;
 
 public class ReflectionUtil {
-	private static final class FastFieldAccessor implements AccessorField {
+	private static final class FastFieldAccessor implements FieldAcc {
 		private final Object base;
 		private final long offset;
 
@@ -201,10 +204,6 @@ public class ReflectionUtil {
 		return (T) changeObjFullUnsafe(objs.computeIfAbsent(required, c -> ProxyList.UNSAFE.allocateInstance(c)), o);
 	}
 
-	public static AccessorField handleF(final Field f) {
-		return new FastFieldAccessor(f);
-	}
-
 	/**
 	 * Call init, but non instance it (requires to be instanced before)...
 	 */
@@ -233,7 +232,7 @@ public class ReflectionUtil {
 		final ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS);
 		cw.visit(Opcodes.V1_8, Opcodes.ACC_PUBLIC, className, null, ProxyData.MAGIC_SUPER, null);
 		int i = 0;
-		for (final Field field : klass.getFields()) {
+		for (final Field field : LookupUtil.getDeclaredFields(klass)) {
 			if (objectFields.contains(field) || excluded.contains(field.getName()))
 				continue;
 			cw.visitField(Opcodes.ACC_PRIVATE, "field_generated" + ProxyData.r.nextInt(Integer.MAX_VALUE) + "m" + i,
@@ -254,13 +253,13 @@ public class ReflectionUtil {
 		return () -> ProxyList.UNSAFE.allocateInstance(proxy);
 	}
 
-	public static Method setAccessible(final Method m) {
+	public static <T extends AccessibleObject> T setAccessible(final T m) {
 		ProxyList.UNSAFE.putBoolean(m, overrideAccessibleObjectOffset, true);
 		return m;
 	}
 
-	public static InvokerConstructor wrapConstructor(final Constructor<?> constructor) {
-		final InvokerMethod inst = wrapMethod(methodify(constructor));
+	public static ConstructorAcc wrapConstructor(final Constructor<?> constructor) {
+		final MethodAcc inst = wrapMethod(methodify(constructor));
 		final Class<?> decl = constructor.getDeclaringClass();
 		return (args) -> {
 			final Object ret = ProxyList.UNSAFE.allocateInstance(decl);
@@ -269,7 +268,11 @@ public class ReflectionUtil {
 		};
 	}
 
-	public static InvokerMethod wrapMethod(final Method m) {
+	public static FieldAcc wrapField(final Field f) {
+		return new FastFieldAccessor(f);
+	}
+
+	public static MethodAcc wrapMethod(final Method m) {
 		try {
 			return InvokerGenerator.invoker(generatorMethod.invoke(accGenerator.cast(constuctorGenerator.invoke()),
 					m.getDeclaringClass(), m.getName(), m.getParameterTypes(), m.getReturnType(), m.getExceptionTypes(),

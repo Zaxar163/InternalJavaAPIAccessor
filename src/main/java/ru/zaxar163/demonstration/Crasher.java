@@ -1,4 +1,4 @@
-package ru.zaxar163.crasher;
+package ru.zaxar163.demonstration;
 
 import java.lang.invoke.MethodType;
 import java.util.zip.ZipFile;

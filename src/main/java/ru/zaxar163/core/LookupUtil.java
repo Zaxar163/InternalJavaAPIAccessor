@@ -94,6 +94,12 @@ public final class LookupUtil {
 		return Arrays.stream(getDeclaredFields(clazz)).filter(e -> name.equals(e.getName())).findFirst().get();
 	}
 
+	public static Field getField(final Class<?> clazz, final String name, final Class<?> type) {
+		Objects.requireNonNull(name, "name");
+		return Arrays.stream(getDeclaredFields(clazz)).filter(e -> name.equals(e.getName()) && e.getType().equals(type))
+				.findFirst().get();
+	}
+
 	public static Method getMethod(final Class<?> cls, final String name, final Class<?>... types) {
 		return Arrays.stream(getDeclaredMethods(cls)).filter(e -> name.equals(e.getName()))
 				.filter(e -> Arrays.equals(e.getParameterTypes(), types)).findFirst().get();

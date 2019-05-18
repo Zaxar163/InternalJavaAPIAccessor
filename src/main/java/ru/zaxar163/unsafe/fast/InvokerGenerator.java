@@ -13,12 +13,13 @@ import org.objectweb.asm.Type;
 import ru.zaxar163.core.DelegateClassLoader;
 import ru.zaxar163.core.LookupUtil;
 import ru.zaxar163.unsafe.fast.proxies.ProxyList;
+import ru.zaxar163.unsafe.fast.reflect.MethodAcc;
 
 public final class InvokerGenerator {
 	private static final Method invoke;
 	private static final MethodHandle invokerD;
 	static {
-		invoke = Method.getMethod(InvokerMethod.class.getDeclaredMethods()[0]);
+		invoke = Method.getMethod(MethodAcc.class.getDeclaredMethods()[0]);
 		invokerD = method(ReflectionUtil.ifaceAccessor);
 	}
 
@@ -38,9 +39,9 @@ public final class InvokerGenerator {
 		m.visitEnd();
 	}
 
-	static InvokerMethod invoker(final Object inv) {
+	static MethodAcc invoker(final Object inv) {
 		try {
-			return (InvokerMethod) invokerD.invoke(inv);
+			return (MethodAcc) invokerD.invoke(inv);
 		} catch (final Throwable e) {
 			throw new Error(e);
 		}
@@ -51,7 +52,7 @@ public final class InvokerGenerator {
 		final ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS);
 		final String name = ProxyData.nextName(true);
 		cw.visit(Opcodes.V1_8, Opcodes.ACC_PUBLIC, name, null, ProxyData.MAGIC_SUPER,
-				new String[] { Type.getInternalName(InvokerMethod.class) });
+				new String[] { Type.getInternalName(MethodAcc.class) });
 		final String handleDescriptor = Type.getDescriptor(iface);
 		cw.visitField(Opcodes.ACC_PRIVATE | Opcodes.ACC_FINAL, "handle", handleDescriptor, null, null);
 		final MethodVisitor init = cw.visitMethod(Opcodes.ACC_PUBLIC, "<init>", '(' + handleDescriptor + ")V", null,

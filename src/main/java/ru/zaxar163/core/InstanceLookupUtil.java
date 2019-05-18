@@ -5,17 +5,17 @@ import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Locale;
 
-import ru.zaxar163.unsafe.fast.InvokerConstructor;
 import ru.zaxar163.unsafe.fast.ReflectionUtil;
 import ru.zaxar163.unsafe.fast.proxies.ProxyList;
+import ru.zaxar163.unsafe.fast.reflect.ConstructorAcc;
 
 public class InstanceLookupUtil {
-	private static final InvokerConstructor LOOKUP_SUPERPERM_CONSTRUCTOR;
+	private static final ConstructorAcc LOOKUP_SUPERPERM_CONSTRUCTOR;
 
-	private static final InvokerConstructor LOOKUP_UNSAFE_CONSTRUCTOR;
+	private static final ConstructorAcc LOOKUP_UNSAFE_CONSTRUCTOR;
 	public static final int TRUSTED;
 	static {
-		InvokerConstructor LOOKUP_UNSAFE_CONSTRUCTORT = null;
+		ConstructorAcc LOOKUP_UNSAFE_CONSTRUCTORT = null;
 		try {
 			LOOKUP_UNSAFE_CONSTRUCTORT = ReflectionUtil
 					.wrapConstructor(Arrays.stream(LookupUtil.getDeclaredConstructors(Lookup.class))
@@ -24,7 +24,7 @@ public class InstanceLookupUtil {
 		} catch (final Throwable e) {
 		}
 		LOOKUP_UNSAFE_CONSTRUCTOR = LOOKUP_UNSAFE_CONSTRUCTORT;
-		InvokerConstructor SUPER_PERMS_CONSTRUCTORI = null;
+		ConstructorAcc SUPER_PERMS_CONSTRUCTORI = null;
 		int trusted = 0;
 		try {
 			SUPER_PERMS_CONSTRUCTORI = ReflectionUtil
