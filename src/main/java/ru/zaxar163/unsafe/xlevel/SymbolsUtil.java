@@ -9,7 +9,7 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.TreeSet;
 
-import ru.zaxar163.unsafe.fast.proxies.ProxyList;
+import ru.zaxar163.util.proxies.ProxyList;
 
 public class SymbolsUtil {
 	public static class Ptr2Obj {

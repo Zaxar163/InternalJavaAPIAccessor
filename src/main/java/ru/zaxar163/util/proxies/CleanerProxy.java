@@ -1,7 +1,7 @@
-package ru.zaxar163.unsafe.fast.proxies;
+package ru.zaxar163.util.proxies;
 
-import ru.zaxar163.unsafe.fast.RealName;
-import ru.zaxar163.unsafe.fast.Static;
+import ru.zaxar163.util.dynamicgen.RealName;
+import ru.zaxar163.util.dynamicgen.Static;
 
 public interface CleanerProxy {
 	@RealName("clean")

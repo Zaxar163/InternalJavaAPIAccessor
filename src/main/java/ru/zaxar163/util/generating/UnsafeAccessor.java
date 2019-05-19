@@ -11,9 +11,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import ru.zaxar163.core.ClassUtil;
-import ru.zaxar163.core.LookupUtil;
-import ru.zaxar163.core.MethodInfo;
+import ru.zaxar163.util.ClassUtil;
+import ru.zaxar163.util.LookupUtil;
+import ru.zaxar163.util.MethodInfo;
 
 final class UnsafeAccessor {
 	public static final Class<?> UNSAFE_CLASS;

@@ -1,11 +1,11 @@
-package ru.zaxar163.unsafe.fast;
+package ru.zaxar163.util.dynamicgen;
 
 import java.util.Random;
 
 import org.objectweb.asm.Type;
 
-import ru.zaxar163.core.ClassUtil;
-import ru.zaxar163.core.DelegateClassLoader;
+import ru.zaxar163.util.ClassUtil;
+import ru.zaxar163.util.DelegateClassLoader;
 
 final class ProxyData {
 	static final ClassLoader MAGIC_CLASSLOADER;

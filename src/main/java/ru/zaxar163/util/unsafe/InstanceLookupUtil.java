@@ -1,13 +1,14 @@
-package ru.zaxar163.core;
+package ru.zaxar163.util.unsafe;
 
 import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Locale;
 
-import ru.zaxar163.unsafe.fast.ReflectionUtil;
-import ru.zaxar163.unsafe.fast.proxies.ProxyList;
-import ru.zaxar163.unsafe.fast.reflect.ConstructorAcc;
+import ru.zaxar163.util.LookupUtil;
+import ru.zaxar163.util.dynamicgen.ReflectionUtil;
+import ru.zaxar163.util.proxies.ProxyList;
+import ru.zaxar163.util.reflect.ConstructorAcc;
 
 public class InstanceLookupUtil {
 	private static final ConstructorAcc LOOKUP_SUPERPERM_CONSTRUCTOR;

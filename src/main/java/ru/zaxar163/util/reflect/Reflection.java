@@ -1,12 +1,12 @@
-package ru.zaxar163.unsafe.fast.reflect;
+package ru.zaxar163.util.reflect;
 
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-import ru.zaxar163.core.LookupUtil;
-import ru.zaxar163.unsafe.fast.ReflectionUtil;
+import ru.zaxar163.util.LookupUtil;
+import ru.zaxar163.util.dynamicgen.ReflectionUtil;
 
 public final class Reflection {
 	public static final byte DEFAULT = 0x20;

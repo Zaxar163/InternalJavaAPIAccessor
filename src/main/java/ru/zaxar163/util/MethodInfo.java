@@ -1,4 +1,4 @@
-package ru.zaxar163.core;
+package ru.zaxar163.util;
 
 import java.lang.invoke.MethodType;
 import java.util.Objects;

@@ -1,4 +1,4 @@
-package ru.zaxar163.core;
+package ru.zaxar163.util;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -13,8 +13,6 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.objectweb.asm.Type;
-
-import ru.zaxar163.util.CompoundEnumeration;
 
 public final class DelegateClassLoader extends ClassLoader {
 	public static final DelegateClassLoader INSTANCE = new DelegateClassLoader();
@@ -78,8 +76,7 @@ public final class DelegateClassLoader extends ClassLoader {
 	/**
 	 * Finds loaded class or returns null if not exist.
 	 *
-	 * @param name
-	 *            the name of class.
+	 * @param name the name of class.
 	 * @return founded class or null.
 	 */
 	public Class<?> findLoaded(final String name) {

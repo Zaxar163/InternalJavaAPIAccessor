@@ -1,4 +1,4 @@
-package ru.zaxar163.unsafe.fast;
+package ru.zaxar163.util.dynamicgen;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodType;
@@ -10,10 +10,10 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
-import ru.zaxar163.core.DelegateClassLoader;
-import ru.zaxar163.core.LookupUtil;
-import ru.zaxar163.unsafe.fast.proxies.ProxyList;
-import ru.zaxar163.unsafe.fast.reflect.MethodAcc;
+import ru.zaxar163.util.DelegateClassLoader;
+import ru.zaxar163.util.LookupUtil;
+import ru.zaxar163.util.proxies.ProxyList;
+import ru.zaxar163.util.reflect.MethodAcc;
 
 public final class InvokerGenerator {
 	private static final Method invoke;

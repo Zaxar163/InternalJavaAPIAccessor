@@ -1,6 +1,6 @@
 package ru.zaxar163.unsafe.xlevel;
 
-import ru.zaxar163.unsafe.fast.proxies.ProxyList;
+import ru.zaxar163.util.proxies.ProxyList;
 
 public class StructUtil {
 	private static final long arrayBase = ProxyList.UNSAFE.arrayBaseOffset(Object[].class);

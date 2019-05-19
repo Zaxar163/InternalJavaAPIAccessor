@@ -1,7 +1,7 @@
 package ru.zaxar163.unsafe.xlevel;
 
-import ru.zaxar163.core.LookupUtil;
-import ru.zaxar163.unsafe.fast.proxies.ProxyList;
+import ru.zaxar163.util.LookupUtil;
+import ru.zaxar163.util.proxies.ProxyList;
 
 public class VMThread {
 	private static final long eetop;

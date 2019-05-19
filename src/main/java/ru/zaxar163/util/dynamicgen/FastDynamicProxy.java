@@ -1,4 +1,4 @@
-package ru.zaxar163.unsafe.fast;
+package ru.zaxar163.util.dynamicgen;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Modifier;
@@ -12,8 +12,8 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
-import ru.zaxar163.core.ClassUtil;
-import ru.zaxar163.core.LookupUtil;
+import ru.zaxar163.util.ClassUtil;
+import ru.zaxar163.util.LookupUtil;
 
 /**
  * For lots of instances.

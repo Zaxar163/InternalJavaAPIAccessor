@@ -1,4 +1,4 @@
-package ru.zaxar163.unsafe.fast.reflect;
+package ru.zaxar163.util.reflect;
 
 public interface FieldAcc {
 	default byte getAndSetByte(final Object inst, final byte to) throws IllegalArgumentException {

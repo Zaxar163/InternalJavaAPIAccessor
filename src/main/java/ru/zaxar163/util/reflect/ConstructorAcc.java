@@ -1,4 +1,4 @@
-package ru.zaxar163.unsafe.fast.reflect;
+package ru.zaxar163.util.reflect;
 
 @FunctionalInterface
 public interface ConstructorAcc {

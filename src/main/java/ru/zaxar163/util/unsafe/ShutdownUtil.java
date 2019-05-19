@@ -1,9 +1,9 @@
-package ru.zaxar163.unsafe;
+package ru.zaxar163.util.unsafe;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodType;
 
-import ru.zaxar163.core.LookupUtil;
+import ru.zaxar163.util.LookupUtil;
 
 public class ShutdownUtil {
 	private static final MethodHandle ShutdownExit;

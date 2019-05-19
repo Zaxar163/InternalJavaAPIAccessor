@@ -3,8 +3,8 @@ package ru.zaxar163.demonstration;
 import java.lang.invoke.MethodType;
 import java.util.zip.ZipFile;
 
-import ru.zaxar163.core.LookupUtil;
-import ru.zaxar163.unsafe.fast.proxies.ProxyList;
+import ru.zaxar163.util.LookupUtil;
+import ru.zaxar163.util.proxies.ProxyList;
 
 public final class Crasher {
 	public static void crashUnsafe() {

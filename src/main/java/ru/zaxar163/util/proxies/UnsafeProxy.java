@@ -1,9 +1,9 @@
-package ru.zaxar163.unsafe.fast.proxies;
+package ru.zaxar163.util.proxies;
 
 import java.lang.reflect.Field;
 import java.security.ProtectionDomain;
 
-import ru.zaxar163.unsafe.fast.RealName;
+import ru.zaxar163.util.dynamicgen.RealName;
 
 @SuppressWarnings("rawtypes")
 public interface UnsafeProxy {

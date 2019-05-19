@@ -1,4 +1,4 @@
-package ru.zaxar163.unsafe.fast.proxies;
+package ru.zaxar163.util.proxies;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
@@ -7,11 +7,11 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import ru.zaxar163.core.ClassUtil;
-import ru.zaxar163.core.DelegateClassLoader;
-import ru.zaxar163.core.LookupUtil;
-import ru.zaxar163.unsafe.fast.FastDynamicProxy;
-import ru.zaxar163.unsafe.fast.FastStaticProxy;
+import ru.zaxar163.util.ClassUtil;
+import ru.zaxar163.util.DelegateClassLoader;
+import ru.zaxar163.util.LookupUtil;
+import ru.zaxar163.util.dynamicgen.FastDynamicProxy;
+import ru.zaxar163.util.dynamicgen.FastStaticProxy;
 
 public class ProxyList {
 	public static final CleanerProxy CLEANER;

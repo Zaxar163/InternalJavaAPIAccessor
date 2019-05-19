@@ -1,7 +1,7 @@
-package ru.zaxar163.unsafe.fast.proxies;
+package ru.zaxar163.util.proxies;
 
-import ru.zaxar163.core.ClassUtil;
-import ru.zaxar163.unsafe.fast.FastDynamicProxy;
+import ru.zaxar163.util.ClassUtil;
+import ru.zaxar163.util.dynamicgen.FastDynamicProxy;
 
 class CleanerEmitter {
 	static final CleanerProxy CL_PROXY;

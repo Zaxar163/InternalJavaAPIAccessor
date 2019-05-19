@@ -1,10 +1,10 @@
-package ru.zaxar163.unsafe;
+package ru.zaxar163.util.unsafe;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodType;
 
-import ru.zaxar163.core.ClassUtil;
-import ru.zaxar163.core.LookupUtil;
+import ru.zaxar163.util.ClassUtil;
+import ru.zaxar163.util.LookupUtil;
 
 public class InnocuousThreadUtil {
 	private static final Class<?> CLASS_THREAD;

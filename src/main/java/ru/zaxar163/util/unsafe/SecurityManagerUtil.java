@@ -1,9 +1,9 @@
-package ru.zaxar163.unsafe.xlevel;
+package ru.zaxar163.util.unsafe;
 
-import ru.zaxar163.core.LookupUtil;
-import ru.zaxar163.unsafe.fast.proxies.ProxyList;
+import ru.zaxar163.util.LookupUtil;
+import ru.zaxar163.util.proxies.ProxyList;
 
-public class AntiSecurityManager {
+public class SecurityManagerUtil {
 	private static final Object secManagerBase;
 	private static final long secManagerOffset;
 	static {
@@ -23,6 +23,6 @@ public class AntiSecurityManager {
 		ProxyList.UNSAFE.putObject(secManagerBase, secManagerOffset, sm);
 	}
 
-	private AntiSecurityManager() {
+	private SecurityManagerUtil() {
 	}
 }

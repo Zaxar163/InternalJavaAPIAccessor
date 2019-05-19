@@ -1,7 +1,7 @@
-package ru.zaxar163.unsafe.fast;
+package ru.zaxar163.util.dynamicgen;
 
-import ru.zaxar163.unsafe.fast.proxies.ProxyList;
-import ru.zaxar163.unsafe.fast.proxies.UnsafeProxy;
+import ru.zaxar163.util.proxies.ProxyList;
+import ru.zaxar163.util.proxies.UnsafeProxy;
 
 public final class FastUtil {
 	private static final UnsafeProxy acc = ProxyList.UNSAFE;

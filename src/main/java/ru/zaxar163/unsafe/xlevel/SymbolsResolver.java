@@ -3,7 +3,7 @@ package ru.zaxar163.unsafe.xlevel;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodType;
 
-import ru.zaxar163.core.LookupUtil;
+import ru.zaxar163.util.LookupUtil;
 
 public class SymbolsResolver {
 	private static final ClassLoader classLoader;
