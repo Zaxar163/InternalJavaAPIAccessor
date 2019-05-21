@@ -8,11 +8,10 @@ import java.util.Scanner;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import ru.zaxar163.demonstration.reflect.MethodAcc;
 import ru.zaxar163.util.ClassUtil;
 import ru.zaxar163.util.DelegateClassLoader;
 import ru.zaxar163.util.dynamicgen.FastUtil;
-import ru.zaxar163.util.dynamicgen.ReflectionUtil;
-import ru.zaxar163.util.reflect.MethodAcc;
 
 public final class JVMPlayGround {
 	private static volatile MethodAcc classConstructor = null;

@@ -1,12 +1,12 @@
-package ru.zaxar163.util.reflect;
+package ru.zaxar163.demonstration.reflect;
 
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
+import ru.zaxar163.demonstration.ReflectionUtil;
 import ru.zaxar163.util.LookupUtil;
-import ru.zaxar163.util.dynamicgen.ReflectionUtil;
 
 public final class Reflection {
 	public static final byte DEFAULT = 0x20;

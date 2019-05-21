@@ -1,4 +1,4 @@
-package ru.zaxar163.util.dynamicgen;
+package ru.zaxar163.demonstration;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodType;
@@ -20,12 +20,12 @@ import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
+import ru.zaxar163.demonstration.reflect.ConstructorAcc;
+import ru.zaxar163.demonstration.reflect.FieldAcc;
+import ru.zaxar163.demonstration.reflect.MethodAcc;
 import ru.zaxar163.util.ClassUtil;
 import ru.zaxar163.util.LookupUtil;
 import ru.zaxar163.util.proxies.ProxyList;
-import ru.zaxar163.util.reflect.ConstructorAcc;
-import ru.zaxar163.util.reflect.FieldAcc;
-import ru.zaxar163.util.reflect.MethodAcc;
 
 public class ReflectionUtil {
 	private static final class FastFieldAccessor implements FieldAcc {

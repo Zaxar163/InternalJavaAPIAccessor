@@ -1,35 +1,34 @@
 package ru.zaxar163.util.unsafe;
 
+import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Locale;
 
 import ru.zaxar163.util.LookupUtil;
-import ru.zaxar163.util.dynamicgen.ReflectionUtil;
 import ru.zaxar163.util.proxies.ProxyList;
-import ru.zaxar163.util.reflect.ConstructorAcc;
 
 public class InstanceLookupUtil {
-	private static final ConstructorAcc LOOKUP_SUPERPERM_CONSTRUCTOR;
+	private static final MethodHandle LOOKUP_SUPERPERM_CONSTRUCTOR;
 
-	private static final ConstructorAcc LOOKUP_UNSAFE_CONSTRUCTOR;
+	private static final MethodHandle LOOKUP_UNSAFE_CONSTRUCTOR;
 	public static final int TRUSTED;
 	static {
-		ConstructorAcc LOOKUP_UNSAFE_CONSTRUCTORT = null;
+		MethodHandle LOOKUP_UNSAFE_CONSTRUCTORT = null;
 		try {
-			LOOKUP_UNSAFE_CONSTRUCTORT = ReflectionUtil
-					.wrapConstructor(Arrays.stream(LookupUtil.getDeclaredConstructors(Lookup.class))
+			LOOKUP_UNSAFE_CONSTRUCTORT = LookupUtil.ALL_LOOKUP
+					.unreflectConstructor(Arrays.stream(LookupUtil.getDeclaredConstructors(Lookup.class))
 							.filter(e -> e.getParameterCount() == 1 && e.getParameterTypes()[0].equals(Class.class))
 							.findFirst().get());
 		} catch (final Throwable e) {
 		}
 		LOOKUP_UNSAFE_CONSTRUCTOR = LOOKUP_UNSAFE_CONSTRUCTORT;
-		ConstructorAcc SUPER_PERMS_CONSTRUCTORI = null;
+		MethodHandle SUPER_PERMS_CONSTRUCTORI = null;
 		int trusted = 0;
 		try {
-			SUPER_PERMS_CONSTRUCTORI = ReflectionUtil
-					.wrapConstructor(
+			SUPER_PERMS_CONSTRUCTORI = LookupUtil.ALL_LOOKUP
+					.unreflectConstructor(
 							Arrays.stream(LookupUtil.getDeclaredConstructors(Lookup.class))
 									.filter(e -> e.getParameterCount() == 2
 											&& e.getParameterTypes()[0].equals(Class.class)
@@ -60,7 +59,7 @@ public class InstanceLookupUtil {
 		if (LOOKUP_SUPERPERM_CONSTRUCTOR == null)
 			return null;
 		try {
-			return (Lookup) LOOKUP_SUPERPERM_CONSTRUCTOR.newInstance(clazz, mode);
+			return (Lookup) LOOKUP_SUPERPERM_CONSTRUCTOR.invoke(clazz, mode);
 		} catch (final Throwable e) {
 			throw new Error(e);
 		}
@@ -70,7 +69,7 @@ public class InstanceLookupUtil {
 		if (LOOKUP_UNSAFE_CONSTRUCTOR == null)
 			return null;
 		try {
-			return (Lookup) LOOKUP_UNSAFE_CONSTRUCTOR.newInstance(clazz);
+			return (Lookup) LOOKUP_UNSAFE_CONSTRUCTOR.invoke(clazz);
 		} catch (final Throwable e) {
 			throw new Error(e);
 		}

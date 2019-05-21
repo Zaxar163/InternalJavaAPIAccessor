@@ -1,4 +1,4 @@
-package ru.zaxar163.util.reflect;
+package ru.zaxar163.demonstration.reflect;
 
 @FunctionalInterface
 public interface ConstructorAcc {
