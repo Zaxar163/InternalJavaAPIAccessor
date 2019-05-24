@@ -18,7 +18,7 @@ import ru.zaxar163.util.ClassUtil;
 import ru.zaxar163.util.LookupUtil;
 import ru.zaxar163.util.proxies.ProxyList;
 
-public class MiscUtil {
+public final class MiscUtil {
 	private static final Set<Field> objectFields;
 	private static final Map<Class<?>, Object> objs;
 	static {

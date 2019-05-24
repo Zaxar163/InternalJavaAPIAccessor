@@ -144,7 +144,6 @@ public final class ClassUtil {
 				throw (ClassNotFoundException) e;
 			throw new Error(e);
 		}
-		// return Class.forName(name, init, loader);
 	}
 
 	public static Class<?> nonThrowingFirstClass(final ClassLoader cl, final String... search) {

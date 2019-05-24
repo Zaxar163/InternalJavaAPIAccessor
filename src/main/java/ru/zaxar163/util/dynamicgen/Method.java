@@ -41,7 +41,7 @@ import org.objectweb.asm.Type;
  * @author Chris Nokleberg
  * @author Eric Bruneton
  */
-public class Method {
+final class Method {
 
 	/** The descriptors of the primitive Java types (plus void). */
 	private static final Map<String, String> PRIMITIVE_TYPE_DESCRIPTORS;

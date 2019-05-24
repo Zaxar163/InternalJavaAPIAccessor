@@ -1,11 +1,11 @@
-package ru.zaxar163.util.dynamicgen;
+package ru.zaxar163.util.unsafe;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 import ru.zaxar163.util.proxies.ProxyList;
 
-public class UnsafeFieldAcc implements FieldAcc {
+public final class UnsafeFieldAcc {
 	private final Object base;
 	private final long offset;
 
@@ -19,88 +19,110 @@ public class UnsafeFieldAcc implements FieldAcc {
 		}
 	}
 
-	@Override
+	public byte getAndSetByte(final Object inst, final byte to) {
+		final byte ret = getByte(inst);
+		setByte(inst, to);
+		return ret;
+	}
+
+	public double getAndSetDouble(final Object inst, final double to) {
+		final double ret = getDouble(inst);
+		setDouble(inst, to);
+		return ret;
+	}
+
+	public float getAndSetFloat(final Object inst, final float to) {
+		final float ret = getFloat(inst);
+		setFloat(inst, to);
+		return ret;
+	}
+
+	public int getAndSetInt(final Object inst, final int to) {
+		final int ret = getInt(inst);
+		setInt(inst, to);
+		return ret;
+	}
+
+	public long getAndSetLong(final Object inst, final long to) {
+		final long ret = getLong(inst);
+		setLong(inst, to);
+		return ret;
+	}
+
 	public Object getAndSetObject(final Object inst, final Object to) {
 		return base == null ? ProxyList.UNSAFE.getAndSetObject(inst, offset, to)
 				: ProxyList.UNSAFE.getAndSetObject(base, offset, to);
 	}
 
-	@Override
-	public byte getByte(final Object inst) throws IllegalArgumentException {
+	public short getAndSetShort(final Object inst, final short to) {
+		final short ret = getShort(inst);
+		setShort(inst, to);
+		return ret;
+	}
+
+	public byte getByte(final Object inst) {
 		return base == null ? ProxyList.UNSAFE.getByte(inst, offset) : ProxyList.UNSAFE.getByte(base, offset);
 	}
 
-	@Override
-	public double getDouble(final Object inst) throws IllegalArgumentException {
+	public double getDouble(final Object inst) {
 		return base == null ? ProxyList.UNSAFE.getDouble(inst, offset) : ProxyList.UNSAFE.getDouble(base, offset);
 	}
 
-	@Override
-	public float getFloat(final Object inst) throws IllegalArgumentException {
+	public float getFloat(final Object inst) {
 		return base == null ? ProxyList.UNSAFE.getFloat(inst, offset) : ProxyList.UNSAFE.getFloat(base, offset);
 	}
 
-	@Override
-	public int getInt(final Object inst) throws IllegalArgumentException {
+	public int getInt(final Object inst) {
 		return base == null ? ProxyList.UNSAFE.getInt(inst, offset) : ProxyList.UNSAFE.getInt(base, offset);
 	}
 
-	@Override
-	public long getLong(final Object inst) throws IllegalArgumentException {
+	public long getLong(final Object inst) {
 		return base == null ? ProxyList.UNSAFE.getLong(inst, offset) : ProxyList.UNSAFE.getLong(base, offset);
 	}
 
-	@Override
 	public Object getObject(final Object inst) {
 		return base == null ? ProxyList.UNSAFE.getObject(inst, offset) : ProxyList.UNSAFE.getObject(base, offset);
 	}
 
-	@Override
-	public short getShort(final Object inst) throws IllegalArgumentException {
+	public short getShort(final Object inst) {
 		return base == null ? ProxyList.UNSAFE.getShort(inst, offset) : ProxyList.UNSAFE.getShort(base, offset);
 	}
 
-	@Override
-	public void setByte(final Object inst, final byte to) throws IllegalArgumentException {
+	public void setByte(final Object inst, final byte to) {
 		if (base == null)
 			ProxyList.UNSAFE.putByte(inst, offset, to);
 		else
 			ProxyList.UNSAFE.putByte(base, offset, to);
 	}
 
-	@Override
-	public void setDouble(final Object inst, final double to) throws IllegalArgumentException {
+	public void setDouble(final Object inst, final double to) {
 		if (base == null)
 			ProxyList.UNSAFE.putDouble(inst, offset, to);
 		else
 			ProxyList.UNSAFE.putDouble(base, offset, to);
 	}
 
-	@Override
-	public void setFloat(final Object inst, final float to) throws IllegalArgumentException {
+	public void setFloat(final Object inst, final float to) {
 		if (base == null)
 			ProxyList.UNSAFE.putFloat(inst, offset, to);
 		else
 			ProxyList.UNSAFE.putFloat(base, offset, to);
 	}
 
-	@Override
-	public void setInt(final Object inst, final int to) throws IllegalArgumentException {
+	public void setInt(final Object inst, final int to) {
 		if (base == null)
 			ProxyList.UNSAFE.putInt(inst, offset, to);
 		else
 			ProxyList.UNSAFE.putInt(base, offset, to);
 	}
 
-	@Override
-	public void setLong(final Object inst, final long to) throws IllegalArgumentException {
+	public void setLong(final Object inst, final long to) {
 		if (base == null)
 			ProxyList.UNSAFE.putLong(inst, offset, to);
 		else
 			ProxyList.UNSAFE.putLong(base, offset, to);
 	}
 
-	@Override
 	public void setObject(final Object inst, final Object to) {
 		if (base == null)
 			ProxyList.UNSAFE.putObject(inst, offset, to);
@@ -109,8 +131,7 @@ public class UnsafeFieldAcc implements FieldAcc {
 
 	}
 
-	@Override
-	public void setShort(final Object inst, final short to) throws IllegalArgumentException {
+	public void setShort(final Object inst, final short to) {
 		if (base == null)
 			ProxyList.UNSAFE.putShort(inst, offset, to);
 		else

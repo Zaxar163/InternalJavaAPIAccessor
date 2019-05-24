@@ -1,9 +1,9 @@
-package ru.zaxar163.util;
+package ru.zaxar163.demonstration;
 
 import java.lang.invoke.MethodType;
 import java.util.Objects;
 
-public class MethodInfo {
+final class MethodInfo {
 	public final String name;
 	public final MethodType type;
 

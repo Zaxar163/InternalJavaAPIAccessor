@@ -5,7 +5,7 @@ import java.lang.invoke.MethodType;
 
 import ru.zaxar163.util.LookupUtil;
 
-public class ShutdownUtil {
+public final class ShutdownUtil {
 	private static final MethodHandle ShutdownExit;
 	private static final MethodHandle ShutdownHalt;
 	private static final MethodHandle ShutdownHalt0;

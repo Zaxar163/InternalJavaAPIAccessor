@@ -18,7 +18,7 @@ import ru.zaxar163.util.LookupUtil;
 /**
  * For lots of instances.
  */
-public class FastDynamicProxy<T> {
+public final class FastDynamicProxy<T> {
 	private static Type[] typify(final Class<?>[] clazzs) {
 		final Type[] types = new Type[clazzs.length];
 		for (int i = 0; i < types.length; i++)

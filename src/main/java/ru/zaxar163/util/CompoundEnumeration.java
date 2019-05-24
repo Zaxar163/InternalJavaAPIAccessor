@@ -3,7 +3,7 @@ package ru.zaxar163.util;
 import java.util.Enumeration;
 import java.util.NoSuchElementException;
 
-public class CompoundEnumeration<E> implements Enumeration<E> {
+public final class CompoundEnumeration<E> implements Enumeration<E> {
 	private final Enumeration<E>[] enums;
 	private int index = 0;
 

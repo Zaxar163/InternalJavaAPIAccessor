@@ -6,7 +6,7 @@ import java.lang.invoke.MethodType;
 import ru.zaxar163.util.ClassUtil;
 import ru.zaxar163.util.LookupUtil;
 
-public class InnocuousThreadUtil {
+public final class InnocuousThreadUtil {
 	private static final Class<?> CLASS_THREAD;
 	private static final MethodHandle CONSTRUCTOR_FULL;
 	private static final MethodHandle CONSTRUCTOR_RUNNABLE;

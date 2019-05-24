@@ -9,7 +9,7 @@ import java.util.Locale;
 import ru.zaxar163.util.LookupUtil;
 import ru.zaxar163.util.proxies.ProxyList;
 
-public class InstanceLookupUtil {
+public final class InstanceLookupUtil {
 	private static final MethodHandle LOOKUP_SUPERPERM_CONSTRUCTOR;
 
 	private static final MethodHandle LOOKUP_UNSAFE_CONSTRUCTOR;
@@ -76,6 +76,5 @@ public class InstanceLookupUtil {
 	}
 
 	private InstanceLookupUtil() {
-
 	}
 }

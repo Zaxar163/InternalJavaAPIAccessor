@@ -10,7 +10,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import ru.zaxar163.util.MethodInfo;
 import ru.zaxar163.util.dynamicgen.RealName;
 
 public class InterfaceEmitter {

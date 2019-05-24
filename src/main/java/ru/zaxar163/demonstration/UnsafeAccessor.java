@@ -13,7 +13,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import ru.zaxar163.util.ClassUtil;
 import ru.zaxar163.util.LookupUtil;
-import ru.zaxar163.util.MethodInfo;
 
 final class UnsafeAccessor {
 	public static final Class<?> UNSAFE_CLASS;

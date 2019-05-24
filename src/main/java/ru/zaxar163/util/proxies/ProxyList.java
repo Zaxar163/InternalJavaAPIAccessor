@@ -13,7 +13,7 @@ import ru.zaxar163.util.LookupUtil;
 import ru.zaxar163.util.dynamicgen.FastDynamicProxy;
 import ru.zaxar163.util.dynamicgen.FastStaticProxy;
 
-public class ProxyList {
+public final class ProxyList {
 	public static final CleanerProxy CLEANER;
 	public static final UnsafeProxy UNSAFE;
 	public static final Map<String, Object> UNSAFE_FIELDS;

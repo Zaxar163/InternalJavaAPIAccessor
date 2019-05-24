@@ -22,7 +22,7 @@ public final class DelegateClassLoader extends ClassLoader {
 
 	private final Set<ClassLoader> cls;
 
-	private DelegateClassLoader() {
+	public DelegateClassLoader() {
 		super(null);
 		cls = Collections.newSetFromMap(new ConcurrentHashMap<>());
 		cls.add(ClassLoader.getSystemClassLoader());

@@ -82,7 +82,7 @@ import org.objectweb.asm.Type;
  * @author Eric Bruneton
  * @author Prashant Deva
  */
-public class GeneratorAdapter extends LocalVariablesSorter {
+final class GeneratorAdapter extends LocalVariablesSorter {
 
 	/** Constant for the {@link #math} method. */
 	public static final int ADD = Opcodes.IADD;

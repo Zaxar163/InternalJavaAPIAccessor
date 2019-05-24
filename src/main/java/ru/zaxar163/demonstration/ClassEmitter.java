@@ -11,8 +11,6 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-import ru.zaxar163.util.MethodInfo;
-
 public class ClassEmitter {
 	private static final List<String> objectMethods = Arrays.stream(Object.class.getDeclaredMethods())
 			.map(e -> e.getName()).collect(Collectors.toList());
