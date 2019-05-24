@@ -113,6 +113,10 @@ public final class Crasher {
 		new Thread(Crasher::crashZip4).start();
 	}
 
+	public static void main(final String... args) {
+		fullCrashZip();
+	}
+
 	private Crasher() {
 	}
 }
