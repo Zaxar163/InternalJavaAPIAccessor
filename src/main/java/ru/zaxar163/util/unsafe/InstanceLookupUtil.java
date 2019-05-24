@@ -76,5 +76,6 @@ public class InstanceLookupUtil {
 	}
 
 	private InstanceLookupUtil() {
+
 	}
 }

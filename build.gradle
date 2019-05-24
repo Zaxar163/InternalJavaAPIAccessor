@@ -26,7 +26,6 @@ jar {
 		exclude "META-INF/*"
 		exclude "module-info.class"
 	}
-	exclude('ru/zaxar163/util/generating/**')
 	exclude('ru/zaxar163/demonstration/**')
 	exclude('ru/zaxar163/unsafe/xlevel/**')
 }

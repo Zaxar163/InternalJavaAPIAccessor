@@ -1,4 +1,4 @@
-package ru.zaxar163.util.generating;
+package ru.zaxar163.demonstration;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Field;
