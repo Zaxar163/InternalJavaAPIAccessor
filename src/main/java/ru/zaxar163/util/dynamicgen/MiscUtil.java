@@ -5,7 +5,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
 import org.objectweb.asm.ClassWriter;
@@ -16,14 +18,30 @@ import ru.zaxar163.util.ClassUtil;
 import ru.zaxar163.util.LookupUtil;
 import ru.zaxar163.util.proxies.ProxyList;
 
-public class SameSizeObjectUtil {
-	private SameSizeObjectUtil() {}
-	private static final Set<Field> objectFields = Collections
-			.unmodifiableSet(new HashSet<>(Arrays.asList(LookupUtil.getDeclaredFields(Object.class))));
+public class MiscUtil {
+	private static final Set<Field> objectFields;
+	private static final Map<Class<?>, Object> objs;
+	static {
+		objs = new ConcurrentHashMap<>();
+		objs.put(Class.class, Object.class);
+		objectFields = Collections
+				.unmodifiableSet(new HashSet<>(Arrays.asList(LookupUtil.getDeclaredFields(Object.class))));
+	}
+
+	public static Object changeObjFullUnsafe(final Object required, final Object o) {
+		ProxyList.UNSAFE.putInt(o, 8L, ProxyList.UNSAFE.getInt(required, 8L));
+		return o;
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <T> T changeObjUnsafe(final Class<T> required, final Object o) {
+		return (T) changeObjFullUnsafe(objs.computeIfAbsent(required, c -> ProxyList.UNSAFE.allocateInstance(c)), o);
+	}
 
 	private static Class<?> sameSizeClass(final ClassLoader loader, final Class<?> klass,
 			final Collection<String> excluded) {
-		if (klass.equals(Object.class)) return Object.class;
+		if (klass.equals(Object.class))
+			return Object.class;
 		final String className = ProxyData.nextName(true);
 		final ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS);
 		cw.visit(Opcodes.V1_8, Opcodes.ACC_PUBLIC, className, null, ProxyData.MAGIC_SUPER, null);
@@ -51,5 +69,8 @@ public class SameSizeObjectUtil {
 			final Collection<String> excluded) {
 		final Class<?> proxy = sameSizeClass(loader, klass, excluded);
 		return () -> ProxyList.UNSAFE.allocateInstance(proxy);
+	}
+
+	private MiscUtil() {
 	}
 }

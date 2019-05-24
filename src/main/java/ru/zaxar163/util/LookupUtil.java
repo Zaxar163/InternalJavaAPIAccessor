@@ -14,11 +14,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
-import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.Type;
-
-import ru.zaxar163.util.dynamicgen.ProxyData;
-
 public final class LookupUtil {
 	public static final Lookup ALL_LOOKUP;
 	public static final int ALL_MODES = Lookup.PUBLIC | Lookup.PRIVATE | Lookup.PROTECTED | Lookup.PACKAGE;
@@ -53,6 +48,28 @@ public final class LookupUtil {
 		} catch (final Throwable e) {
 			throw new Error(e);
 		}
+	}
+
+	public static List<Field> digFields(final Class<?> top) {
+		final List<Field> ret = new ArrayList<>();
+		Class<?> superc = top;
+		while (superc != null && !superc.equals(Object.class)) {
+			for (final Field field : getDeclaredFields(superc))
+				ret.add(field);
+			superc = superc.getSuperclass();
+		}
+		return ret;
+	}
+
+	public static List<Method> digMethods(final Class<?> top) {
+		final List<Method> ret = new ArrayList<>();
+		Class<?> superc = top;
+		while (superc != null && !superc.equals(Object.class)) {
+			for (final Method field : getDeclaredMethods(superc))
+				ret.add(field);
+			superc = superc.getSuperclass();
+		}
+		return ret;
 	}
 
 	public static MethodHandle fromWrapped(final Object handle) {
@@ -130,30 +147,6 @@ public final class LookupUtil {
 
 	public static <T> T wrap(final Class<T> iFace, final MethodHandle handle) {
 		return MethodHandleProxies.asInterfaceInstance(iFace, handle);
-	}
-
-	public static List<Field> digFields(Class<?> top) {
-		List<Field> ret = new ArrayList<>();
-		Class<?> superc = top;
-		while (superc != null && !superc.equals(Object.class)) {
-			for (final Field field : getDeclaredFields(superc)) {
-				ret.add(field);
-			}
-			superc = superc.getSuperclass();
-		}
-		return ret;
-	}
-
-	public static List<Method> digMethods(Class<?> top) {
-		List<Method> ret = new ArrayList<>();
-		Class<?> superc = top;
-		while (superc != null && !superc.equals(Object.class)) {
-			for (final Method field : getDeclaredMethods(superc)) {
-				ret.add(field);
-			}
-			superc = superc.getSuperclass();
-		}
-		return ret;
 	}
 
 	private LookupUtil() {

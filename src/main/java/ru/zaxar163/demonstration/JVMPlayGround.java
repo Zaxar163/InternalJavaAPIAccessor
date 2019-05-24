@@ -8,14 +8,15 @@ import java.util.Scanner;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import ru.zaxar163.demonstration.reflect.MethodAcc;
 import ru.zaxar163.util.ClassUtil;
 import ru.zaxar163.util.DelegateClassLoader;
 import ru.zaxar163.util.dynamicgen.FastUtil;
+import ru.zaxar163.util.dynamicgen.MethodAccGenR;
+import ru.zaxar163.util.dynamicgen.MiscUtil;
 
 public final class JVMPlayGround {
-	private static volatile MethodAcc classConstructor = null;
-	private static final Supplier<Object> clazzSameSize = ReflectionUtil.sameSizeObject(DelegateClassLoader.INSTANCE,
+	private static volatile MethodAccGenR.InvokerMethod classConstructor = null;
+	private static final Supplier<Object> clazzSameSize = MiscUtil.sameSizeObject(DelegateClassLoader.INSTANCE,
 			Class.class, Collections.emptyList());
 
 	public static void constructClazz(final Class<?> clazz, final Object... args) {
@@ -44,8 +45,7 @@ public final class JVMPlayGround {
 
 	public static Optional<Throwable> init0() {
 		try {
-			final MethodAcc clI = ReflectionUtil
-					.wrapMethod(ReflectionUtil.methodify(Class.class.getDeclaredConstructors()[0]));
+			final MethodAccGenR.InvokerMethod clI = MethodAccGenR.method(Class.class.getDeclaredConstructors()[0]);
 			final Class<?> a = newClazz();
 			if (ClassUtil.JAVA9)
 				clI.invoke(a, ClassLoader.getSystemClassLoader(), null);
@@ -77,7 +77,7 @@ public final class JVMPlayGround {
 	}
 
 	public static Class<?> newClazz() {
-		return ReflectionUtil.changeObjUnsafe(Class.class, clazzSameSize.get());
+		return MiscUtil.changeObjUnsafe(Class.class, clazzSameSize.get());
 	}
 
 	private JVMPlayGround() {
