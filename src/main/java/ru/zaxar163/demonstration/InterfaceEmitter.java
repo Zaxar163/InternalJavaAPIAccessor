@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 import ru.zaxar163.util.dynamicgen.RealName;
 
-public class InterfaceEmitter {
+public final class InterfaceEmitter {
 	private static final List<String> objectMethods = Arrays.stream(Object.class.getDeclaredMethods())
 			.map(e -> e.getName()).collect(Collectors.toList());
 
