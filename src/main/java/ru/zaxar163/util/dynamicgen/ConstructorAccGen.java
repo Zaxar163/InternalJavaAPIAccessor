@@ -1,7 +1,5 @@
 package ru.zaxar163.util.dynamicgen;
 
-import java.lang.reflect.Modifier;
-
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
@@ -10,12 +8,12 @@ import org.objectweb.asm.Type;
 import ru.zaxar163.util.DelegateClassLoader;
 import ru.zaxar163.util.proxies.ProxyList;
 
-public final class MethodAccGenF {
-	public static interface InvokerMethod {
-		Object invoke(Object... args);
+public class ConstructorAccGen {
+	public static interface InvokerConstructor {
+		Object newInstance(Object... args);
 	}
 
-	private static final Method invoke = Method.getMethod(InvokerMethod.class.getDeclaredMethods()[0]);
+	private static final Method invoke = Method.getMethod(InvokerConstructor.class.getDeclaredMethods()[0]);
 	private static final Type OT = Type.getType(Object.class);
 	private static final Type OTA = Type.getType(Object[].class);
 
@@ -90,6 +88,7 @@ public final class MethodAccGenF {
 				new Type[] { Type.getType(Throwable.class) }, cw);
 		m.visitCode();
 		final int identifier = m.newLocal(OTA);
+		m.newInstance(clazz);
 		m.loadArgs();
 		m.storeLocal(identifier);
 		for (int i = 0; i < method.getArgumentTypes().length; i++) {
@@ -105,51 +104,22 @@ public final class MethodAccGenF {
 		m.visitEnd();
 	}
 
-	public static InvokerMethod method(final java.lang.reflect.Constructor<?> m) {
+	public static InvokerConstructor method(final java.lang.reflect.Constructor<?> m) {
 		DelegateClassLoader.INSTANCE.append(m);
 		final ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS);
 		final String name = ProxyData.nextName(true);
 		cw.visit(Opcodes.V1_8, Opcodes.ACC_PUBLIC, name, null, ProxyData.MAGIC_SUPER,
-				new String[] { Type.getInternalName(InvokerMethod.class) });
+				new String[] { Type.getInternalName(InvokerConstructor.class) });
 		emit(Type.getType(m.getDeclaringClass()), Method.getMethod(m), Opcodes.INVOKESPECIAL, cw, Type.VOID_TYPE);
 		cw.visitEnd();
 		final byte[] code = cw.toByteArray();
 		try {
 			final Class<?> clazz = ProxyList.UNSAFE.defineClass(name, code, 0, code.length,
 					DelegateClassLoader.INSTANCE, null);
-			return (InvokerMethod) ProxyList.UNSAFE.allocateInstance(clazz);
+			return (InvokerConstructor) ProxyList.UNSAFE.allocateInstance(clazz);
 		} catch (final Throwable e) {
 			throw new RuntimeException(e);
 		}
-	}
-
-	public static InvokerMethod method(final java.lang.reflect.Method m) {
-		DelegateClassLoader.INSTANCE.append(m);
-		final ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS);
-		final String name = ProxyData.nextName(true);
-		cw.visit(Opcodes.V1_8, Opcodes.ACC_PUBLIC, name, null, ProxyData.MAGIC_SUPER,
-				new String[] { Type.getInternalName(InvokerMethod.class) });
-		emit(Type.getType(m.getDeclaringClass()), Method.getMethod(m), switchType(m), cw,
-				Type.getType(m.getReturnType()));
-		cw.visitEnd();
-		final byte[] code = cw.toByteArray();
-		try {
-			final Class<?> clazz = ProxyList.UNSAFE.defineClass(name, code, 0, code.length,
-					DelegateClassLoader.INSTANCE, null);
-			return (InvokerMethod) ProxyList.UNSAFE.allocateInstance(clazz);
-		} catch (final Throwable e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	private static int switchType(final java.lang.reflect.Method m) {
-		if (Modifier.isStatic(m.getModifiers()))
-			return Opcodes.INVOKESTATIC;
-		if (m.getDeclaringClass().isInterface())
-			return Opcodes.INVOKEINTERFACE;
-		if (Modifier.isFinal(m.getModifiers()) || Modifier.isFinal(m.getDeclaringClass().getModifiers()))
-			return Opcodes.INVOKESPECIAL;
-		return Opcodes.INVOKEVIRTUAL;
 	}
 
 	private static void visitOf(final GeneratorAdapter m, final Class<?> clazz, final Class<?> param) {
@@ -160,6 +130,6 @@ public final class MethodAccGenF {
 		}
 	}
 
-	private MethodAccGenF() {
+	private ConstructorAccGen() {
 	}
 }

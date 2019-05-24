@@ -90,7 +90,6 @@ public final class MethodAccGenR {
 				new Type[] { Type.getType(Throwable.class) }, cw);
 		m.visitCode();
 		final int identifier = m.newLocal(OTA);
-		m.loadThis();
 		m.loadArgs();
 		m.storeLocal(identifier);
 		for (int i = 0; i < method.getArgumentTypes().length; i++) {
