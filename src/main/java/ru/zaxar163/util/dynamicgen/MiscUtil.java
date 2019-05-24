@@ -15,17 +15,20 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
 import ru.zaxar163.util.ClassUtil;
+import ru.zaxar163.util.DelegateClassLoader;
 import ru.zaxar163.util.LookupUtil;
 import ru.zaxar163.util.proxies.ProxyList;
 
 public final class MiscUtil {
 	private static final Set<Field> objectFields;
 	private static final Map<Class<?>, Object> objs;
+	private static final ConcurrentHashMap<Class<?>, Supplier<Object>> sameSizes;
 	static {
 		objs = new ConcurrentHashMap<>();
 		objs.put(Class.class, Object.class);
 		objectFields = Collections
 				.unmodifiableSet(new HashSet<>(Arrays.asList(LookupUtil.getDeclaredFields(Object.class))));
+		sameSizes = new ConcurrentHashMap<>();
 	}
 
 	public static Object changeObjFullUnsafe(final Object required, final Object o) {
@@ -38,10 +41,24 @@ public final class MiscUtil {
 		return (T) changeObjFullUnsafe(objs.computeIfAbsent(required, c -> ProxyList.UNSAFE.allocateInstance(c)), o);
 	}
 
+	public static void computeSameSize(final Class<?> clazz) {
+		sameSizes.computeIfAbsent(clazz, c -> sameSizeObject(DelegateClassLoader.INSTANCE, c, Collections.emptyList()));
+	}
+
+	public static <T> T newInstance(final Class<T> t) {
+		return changeObjUnsafe(t, sameSizes.computeIfAbsent(t,
+				c -> sameSizeObject(DelegateClassLoader.INSTANCE, c, Collections.emptyList())));
+	}
+
+	public static Supplier<Object> putSameSize(final Class<?> clazz, final Supplier<Object> instancer) {
+		return sameSizes.put(clazz, instancer);
+	}
+
 	private static Class<?> sameSizeClass(final ClassLoader loader, final Class<?> klass,
 			final Collection<String> excluded) {
 		if (klass.equals(Object.class))
 			return Object.class;
+		DelegateClassLoader.INSTANCE.append(klass);
 		final String className = ProxyData.nextName(true);
 		final ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS);
 		cw.visit(Opcodes.V1_8, Opcodes.ACC_PUBLIC, className, null, ProxyData.MAGIC_SUPER, null);
