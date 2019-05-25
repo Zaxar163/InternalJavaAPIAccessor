@@ -47,8 +47,8 @@ public final class FastDynamicProxy<T> {
 	}
 
 	private Method asGet(final String name, final int args) {
-		return Method.getMethod(Arrays.stream(clazz.getDeclaredMethods()).filter(e -> name.equals(e.getName()))
-				.filter(e -> e.getParameterCount() == args).findFirst().get());
+		return Method.getMethod(Arrays.stream(LookupUtil.getDeclaredMethods(clazz))
+				.filter(e -> name.equals(e.getName())).filter(e -> e.getParameterCount() == args).findFirst().get());
 	}
 
 	private void emit(final Map<java.lang.reflect.Method, Method> methods, final ClassVisitor cw, final Type vt,
