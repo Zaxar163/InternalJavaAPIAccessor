@@ -2,6 +2,7 @@ package ru.zaxar163.unsafe.xlevel;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodType;
+import java.util.Locale;
 
 import ru.zaxar163.util.LookupUtil;
 
@@ -10,8 +11,7 @@ public class SymbolsResolver {
 	private static final MethodHandle findNative;
 
 	static {
-		final String os = System.getProperty("os.name").toLowerCase();
-		if (os.contains("windows")) {
+		if (System.getProperty("os.name").toLowerCase(Locale.US).contains("windows")) {
 			final String vmName = System.getProperty("java.vm.name");
 			final String dll = vmName.contains("Client VM") ? "/bin/client/jvm.dll" : "/bin/server/jvm.dll";
 			try {

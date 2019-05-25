@@ -1,6 +1,7 @@
 package ru.zaxar163.unsafe.xlevel;
 
 import java.io.PrintStream;
+import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -13,16 +14,18 @@ import ru.zaxar163.util.proxies.ProxyList;
 
 public class SymbolsUtil {
 	public static class Ptr2Obj {
-		private static final long _narrow_oop_base = INSTANCE
+		private static final long _narrow_oop_base = ProxyList.UNSAFE
 				.getAddress(INSTANCE.type("Universe").global("_narrow_oop._base"));
-		private static final int _narrow_oop_shift = INSTANCE
+		private static final int _narrow_oop_shift = ProxyList.UNSAFE
 				.getInt(INSTANCE.type("Universe").global("_narrow_oop._shift"));
 		private final static long objFieldOffset;
 		static {
 			try {
-				final java.lang.reflect.Field objField = Ptr2Obj.class.getDeclaredField("obj");
+				final java.lang.reflect.Field objField = Arrays.stream(Ptr2Obj.class.getDeclaredFields())
+						.filter(e -> !Modifier.isStatic(e.getModifiers()) && Modifier.isVolatile(e.getModifiers()))
+						.findFirst().get();
 				objFieldOffset = INSTANCE.fieldOffset(objField);
-			} catch (final NoSuchFieldException e) {
+			} catch (final Throwable e) {
 				throw new Error("Couldn't obtain obj field of own class");
 			}
 		}
@@ -48,7 +51,7 @@ public class SymbolsUtil {
 			if (address == 0)
 				return null;
 			final Ptr2Obj ptr2Obj = new Ptr2Obj();
-			ProxyList.UNSAFE.compareAndSwapInt(ptr2Obj, objFieldOffset, 0, (int) INSTANCE.getAddress(address));
+			ProxyList.UNSAFE.compareAndSwapInt(ptr2Obj, objFieldOffset, 0, (int) ProxyList.UNSAFE.getAddress(address));
 			return ptr2Obj.obj;
 		}
 
@@ -57,7 +60,7 @@ public class SymbolsUtil {
 				return null;
 			final Ptr2Obj ptr2Obj = new Ptr2Obj();
 			ProxyList.UNSAFE.compareAndSwapInt(ptr2Obj, objFieldOffset, 0,
-					(int) (INSTANCE.getAddress(address) - _narrow_oop_base >> _narrow_oop_shift));
+					(int) (ProxyList.UNSAFE.getAddress(address) - _narrow_oop_base >> _narrow_oop_shift));
 			return ptr2Obj.obj;
 		}
 
@@ -104,33 +107,13 @@ public class SymbolsUtil {
 		return ProxyList.UNSAFE.objectFieldOffset(field);
 	}
 
-	public long getAddress(final long addr) {
-		return ProxyList.UNSAFE.getAddress(addr);
-	}
-
-	public byte getByte(final long addr) {
-		return ProxyList.UNSAFE.getByte(addr);
-	}
-
-	public int getInt(final long addr) {
-		return ProxyList.UNSAFE.getInt(addr);
-	}
-
-	public long getLong(final long addr) {
-		return ProxyList.UNSAFE.getLong(addr);
-	}
-
-	public short getShort(final long addr) {
-		return ProxyList.UNSAFE.getShort(addr);
-	}
-
 	public String getString(final long addr) {
 		if (addr == 0)
 			return null;
 
 		char[] chars = new char[40];
 		int offset = 0;
-		for (byte b; (b = getByte(addr + offset)) != 0;) {
+		for (byte b; (b = ProxyList.UNSAFE.getByte(addr + offset)) != 0;) {
 			if (offset >= chars.length)
 				chars = Arrays.copyOf(chars, offset * 2);
 			chars[offset++] = (char) b;
@@ -139,14 +122,14 @@ public class SymbolsUtil {
 	}
 
 	public String getStringRef(final long addr) {
-		return getString(getAddress(addr));
+		return getString(ProxyList.UNSAFE.getAddress(addr));
 	}
 
 	public long getSymbol(final String name) {
 		final long address = SymbolsResolver.lookup(name);
 		if (address == 0)
 			throw new NoSuchElementException("No such symbol: " + name);
-		return getLong(address);
+		return ProxyList.UNSAFE.getLong(address);
 	}
 
 	public int intConstant(final String name) {
@@ -155,26 +138,6 @@ public class SymbolsUtil {
 
 	public long longConstant(final String name) {
 		return constant(name).longValue();
-	}
-
-	public void putAddress(final long addr, final long val) {
-		ProxyList.UNSAFE.putAddress(addr, val);
-	}
-
-	public void putByte(final long addr, final byte val) {
-		ProxyList.UNSAFE.putByte(addr, val);
-	}
-
-	public void putInt(final long addr, final int val) {
-		ProxyList.UNSAFE.putInt(addr, val);
-	}
-
-	public void putLong(final long addr, final long val) {
-		ProxyList.UNSAFE.putLong(addr, val);
-	}
-
-	public void putShort(final long addr, final short val) {
-		ProxyList.UNSAFE.putShort(addr, val);
 	}
 
 	private void readVmIntConstants() {
@@ -188,7 +151,7 @@ public class SymbolsUtil {
 			if (name == null)
 				break;
 
-			final int value = getInt(entry + valueOffset);
+			final int value = ProxyList.UNSAFE.getInt(entry + valueOffset);
 			constants.put(name, value);
 		}
 	}
@@ -204,7 +167,7 @@ public class SymbolsUtil {
 			if (name == null)
 				break;
 
-			final long value = getLong(entry + valueOffset);
+			final long value = ProxyList.UNSAFE.getLong(entry + valueOffset);
 			constants.put(name, value);
 		}
 	}
@@ -228,8 +191,8 @@ public class SymbolsUtil {
 				break;
 
 			final String typeString = getStringRef(entry + typeStringOffset);
-			final boolean isStatic = getInt(entry + isStaticOffset) != 0;
-			final long offset = getLong(entry + (isStatic ? addressOffset : offsetOffset));
+			final boolean isStatic = ProxyList.UNSAFE.getInt(entry + isStaticOffset) != 0;
+			final long offset = ProxyList.UNSAFE.getLong(entry + (isStatic ? addressOffset : offsetOffset));
 
 			Set<Field> fields = structs.get(typeName);
 			if (fields == null)
@@ -256,10 +219,10 @@ public class SymbolsUtil {
 				break;
 
 			final String superclassName = getStringRef(entry + superclassNameOffset);
-			final boolean isOop = getInt(entry + isOopTypeOffset) != 0;
-			final boolean isInt = getInt(entry + isIntegerTypeOffset) != 0;
-			final boolean isUnsigned = getInt(entry + isUnsignedOffset) != 0;
-			final int size = getInt(entry + sizeOffset);
+			final boolean isOop = ProxyList.UNSAFE.getInt(entry + isOopTypeOffset) != 0;
+			final boolean isInt = ProxyList.UNSAFE.getInt(entry + isIntegerTypeOffset) != 0;
+			final boolean isUnsigned = ProxyList.UNSAFE.getInt(entry + isUnsignedOffset) != 0;
+			final int size = ProxyList.UNSAFE.getInt(entry + sizeOffset);
 
 			final Set<Field> fields = structs.get(typeName);
 			types.put(typeName, new Type(typeName, superclassName, size, isOop, isInt, isUnsigned, fields));

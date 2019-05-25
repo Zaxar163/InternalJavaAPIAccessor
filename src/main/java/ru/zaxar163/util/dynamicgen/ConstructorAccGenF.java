@@ -1,11 +1,18 @@
 package ru.zaxar163.util.dynamicgen;
 
+import static ru.zaxar163.util.dynamicgen.ProxyData.OT;
+import static ru.zaxar163.util.dynamicgen.ProxyData.OTA;
+import static ru.zaxar163.util.dynamicgen.ProxyData.caseArg;
+import static ru.zaxar163.util.dynamicgen.ProxyData.caseRet;
+import static ru.zaxar163.util.dynamicgen.ProxyData.invokeC;
+
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
 import ru.zaxar163.util.DelegateClassLoader;
+import ru.zaxar163.util.dynamicgen.reflect.InvokerConstructor;
 import ru.zaxar163.util.proxies.ProxyList;
 
 public final class ConstructorAccGenF {
@@ -16,87 +23,12 @@ public final class ConstructorAccGenF {
 		}
 	}
 
-	public static interface InvokerConstructor {
-		Object newInstance(Object... args);
-	}
-
-	private static final Method invoke = Method.getMethod(InvokerConstructor.class.getDeclaredMethods()[0]);
 	private static final Method newInst = Method.getMethod(DataAccessor.class.getDeclaredMethods()[0]);
-
 	private static final Type newInstC = Type.getType(DataAccessor.class);
-
-	private static final Type OT = Type.getType(Object.class);
-
-	private static final Type OTA = Type.getType(Object[].class);
-
-	private static void caseArg(final GeneratorAdapter m, final Type type) {
-		switch (type.getSort()) {
-		case Type.BOOLEAN:
-			m.visitMethodInsn(Opcodes.INVOKESPECIAL, "java/lang/Boolean", "booleanValue", "()Z", false);
-			break;
-		case Type.BYTE:
-			m.visitMethodInsn(Opcodes.INVOKESPECIAL, "java/lang/Byte", "byteValue", "()C", false);
-			break;
-		case Type.CHAR:
-			m.visitMethodInsn(Opcodes.INVOKESPECIAL, "java/lang/Character", "charValue", "()B", false);
-			break;
-		case Type.SHORT:
-			m.visitMethodInsn(Opcodes.INVOKESPECIAL, "java/lang/Short", "shortValue", "()S", false);
-			break;
-		case Type.INT:
-			m.visitMethodInsn(Opcodes.INVOKESPECIAL, "java/lang/Integer", "intValue", "()I", false);
-			break;
-		case Type.FLOAT:
-			m.visitMethodInsn(Opcodes.INVOKESPECIAL, "java/lang/Float", "floatValue", "()F", false);
-			break;
-		case Type.LONG:
-			m.visitMethodInsn(Opcodes.INVOKESPECIAL, "java/lang/Long", "longValue", "()J", false);
-			break;
-		case Type.DOUBLE:
-			m.visitMethodInsn(Opcodes.INVOKESPECIAL, "java/lang/Double", "doubleValue", "()D", false);
-			break;
-		default:
-			break;
-		}
-	}
-
-	private static void caseRet(final GeneratorAdapter m, final Type type) {
-		switch (type.getSort()) {
-		case Type.BOOLEAN:
-			visitOf(m, Boolean.class, boolean.class);
-			break;
-		case Type.BYTE:
-			visitOf(m, Byte.class, byte.class);
-			break;
-		case Type.CHAR:
-			visitOf(m, Character.class, char.class);
-			break;
-		case Type.SHORT:
-			visitOf(m, Short.class, short.class);
-			break;
-		case Type.INT:
-			visitOf(m, Integer.class, int.class);
-			break;
-		case Type.FLOAT:
-			visitOf(m, Float.class, float.class);
-			break;
-		case Type.LONG:
-			visitOf(m, Long.class, long.class);
-			break;
-		case Type.DOUBLE:
-			visitOf(m, Double.class, double.class);
-			break;
-		case Type.VOID:
-			m.visitInsn(Opcodes.ACONST_NULL);
-			break;
-		default:
-			break;
-		}
-	}
 
 	public static void emit(final Type clazz, final Method method, final int type, final ClassVisitor cw,
 			final Type ret) {
-		final GeneratorAdapter m = new GeneratorAdapter(Opcodes.ACC_PUBLIC, invoke, null,
+		final GeneratorAdapter m = new GeneratorAdapter(Opcodes.ACC_PUBLIC, invokeC, null,
 				new Type[] { Type.getType(Throwable.class) }, cw);
 		m.visitCode();
 		final int identifier = m.newLocal(OTA);
@@ -117,7 +49,7 @@ public final class ConstructorAccGenF {
 		m.visitEnd();
 	}
 
-	public static InvokerConstructor method(final java.lang.reflect.Constructor<?> m) {
+	public static InvokerConstructor instancer(final java.lang.reflect.Constructor<?> m) {
 		DelegateClassLoader.INSTANCE.append(m);
 		final ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS);
 		final String name = ProxyData.nextName(true);
@@ -132,14 +64,6 @@ public final class ConstructorAccGenF {
 			return (InvokerConstructor) ProxyList.UNSAFE.allocateInstance(clazz);
 		} catch (final Throwable e) {
 			throw new RuntimeException(e);
-		}
-	}
-
-	private static void visitOf(final GeneratorAdapter m, final Class<?> clazz, final Class<?> param) {
-		try {
-			m.invokeStatic(Type.getType(clazz), Method.getMethod(clazz.getDeclaredMethod("valueOf", param)));
-		} catch (final Throwable e) {
-			throw new Error(e); // should never happen
 		}
 	}
 

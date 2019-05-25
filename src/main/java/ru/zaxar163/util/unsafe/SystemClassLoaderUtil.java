@@ -9,10 +9,10 @@ import java.util.function.Predicate;
 import ru.zaxar163.util.ClassUtil;
 import ru.zaxar163.util.LookupUtil;
 import ru.zaxar163.util.dynamicgen.MethodAccGenR;
-import ru.zaxar163.util.dynamicgen.MethodAccGenR.InvokerMethod;
+import ru.zaxar163.util.dynamicgen.reflect.InvokerMethodR;
 
 public final class SystemClassLoaderUtil {
-	private static final InvokerMethod MH_ADD;
+	private static final InvokerMethodR MH_ADD;
 	public static final Object SYSTEM_CP;
 	public static final ClassLoader SYSYEM_LOADER;
 	public static final Class<?> UCP_CLASS;

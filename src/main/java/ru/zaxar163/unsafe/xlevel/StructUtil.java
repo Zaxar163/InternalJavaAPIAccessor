@@ -10,13 +10,13 @@ public class StructUtil {
 	private static final int narrowOopShift;
 	static {
 		final Type universe = SymbolsUtil.getInstance().type("Universe");
-		narrowOopBase = SymbolsUtil.getInstance().getAddress(universe.global("_narrow_oop._base"));
-		narrowOopShift = SymbolsUtil.getInstance().getInt(universe.global("_narrow_oop._shift"));
+		narrowOopBase = ProxyList.UNSAFE.getAddress(universe.global("_narrow_oop._base"));
+		narrowOopShift = ProxyList.UNSAFE.getInt(universe.global("_narrow_oop._shift"));
 	}
 
 	public static void disable() {
 		final long structs = SymbolsUtil.getInstance().getSymbol("gHotSpotVMStructs");
-		SymbolsUtil.getInstance().putAddress(structs, 0);
+		ProxyList.UNSAFE.putAddress(structs, 0);
 	}
 
 	public static long oopAddress(final Object o) {

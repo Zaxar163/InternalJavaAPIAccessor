@@ -7,9 +7,10 @@ import ru.zaxar163.util.ClassUtil;
 import ru.zaxar163.util.dynamicgen.FastUtil;
 import ru.zaxar163.util.dynamicgen.MethodAccGenR;
 import ru.zaxar163.util.dynamicgen.MiscUtil;
+import ru.zaxar163.util.dynamicgen.reflect.InvokerMethodR;
 
 public final class JVMPlayGround {
-	private static final MethodAccGenR.InvokerMethod classConstructor = MethodAccGenR
+	private static final InvokerMethodR classConstructor = MethodAccGenR
 			.method(Class.class.getDeclaredConstructors()[0]);
 
 	public static void constructClazzU(final Class<?> clazz, final ClassLoader loader) {
