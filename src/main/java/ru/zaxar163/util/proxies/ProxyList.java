@@ -25,8 +25,7 @@ public final class ProxyList {
 			final Field unsafeInst = Arrays.stream(fieldsUnsafe)
 					.filter(e -> e.getType().equals(unsafe) && e.getName().toLowerCase(Locale.US).contains("unsafe"))
 					.findFirst().get();
-			unsafeInst.setAccessible(true);
-			final Object theUnsafe = unsafeInst.get(null);
+			final Object theUnsafe = LookupUtil.ALL_LOOKUP.unreflectGetter(unsafeInst).invoke();
 			UNSAFE = new FastStaticProxy<>(DelegateClassLoader.INSTANCE, unsafe, UnsafeProxy.class).instance(theUnsafe);
 			final Map<String, Object> toFillF = new HashMap<>();
 			for (final Field f : fieldsUnsafe) {

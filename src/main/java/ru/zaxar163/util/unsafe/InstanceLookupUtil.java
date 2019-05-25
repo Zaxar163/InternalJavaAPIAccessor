@@ -6,8 +6,8 @@ import java.util.Arrays;
 import java.util.Locale;
 
 import ru.zaxar163.util.LookupUtil;
-import ru.zaxar163.util.dynamicgen.ConstructorAccGen;
-import ru.zaxar163.util.dynamicgen.ConstructorAccGen.InvokerConstructor;
+import ru.zaxar163.util.dynamicgen.ConstructorAccGenF;
+import ru.zaxar163.util.dynamicgen.ConstructorAccGenF.InvokerConstructor;
 import ru.zaxar163.util.proxies.ProxyList;
 
 public final class InstanceLookupUtil {
@@ -17,7 +17,7 @@ public final class InstanceLookupUtil {
 	static {
 		InvokerConstructor LOOKUP_UNSAFE_CONSTRUCTORT = null;
 		try {
-			LOOKUP_UNSAFE_CONSTRUCTORT = ConstructorAccGen
+			LOOKUP_UNSAFE_CONSTRUCTORT = ConstructorAccGenF
 					.method(Arrays.stream(LookupUtil.getDeclaredConstructors(Lookup.class))
 							.filter(e -> e.getParameterCount() == 1 && e.getParameterTypes()[0].equals(Class.class))
 							.findFirst().get());
@@ -27,7 +27,7 @@ public final class InstanceLookupUtil {
 		InvokerConstructor SUPER_PERMS_CONSTRUCTORI = null;
 		int trusted = 0;
 		try {
-			SUPER_PERMS_CONSTRUCTORI = ConstructorAccGen
+			SUPER_PERMS_CONSTRUCTORI = ConstructorAccGenF
 					.method(Arrays.stream(LookupUtil.getDeclaredConstructors(Lookup.class))
 							.filter(e -> e.getParameterCount() == 2 && e.getParameterTypes()[0].equals(Class.class)
 									&& e.getParameterTypes()[1].equals(int.class))

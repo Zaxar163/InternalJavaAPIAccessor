@@ -8,7 +8,7 @@ import org.objectweb.asm.Type;
 import ru.zaxar163.util.DelegateClassLoader;
 import ru.zaxar163.util.proxies.ProxyList;
 
-public final class ConstructorAccGen {
+public final class ConstructorAccGenR {
 	public static interface InvokerConstructor {
 		Object newInstance(Object... args);
 	}
@@ -130,6 +130,6 @@ public final class ConstructorAccGen {
 		}
 	}
 
-	private ConstructorAccGen() {
+	private ConstructorAccGenR() {
 	}
 }
