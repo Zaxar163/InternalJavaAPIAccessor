@@ -29,6 +29,12 @@ public class StructUtil {
 		}
 	}
 
+	public static String toString(final Object obj) {
+		if (obj == null)
+			return "null";
+		return obj.getClass().getName() + "@" + Long.toHexString(StructUtil.oopAddress(obj));
+	}
+
 	private StructUtil() {
 	}
 }
