@@ -59,7 +59,7 @@ public final class FastDynamicProxy<T> {
 		init.visitVarInsn(Opcodes.ALOAD, 0);
 		init.visitMethodInsn(Opcodes.INVOKESPECIAL, sn.getInternalName(), "<init>", "()V", false);
 		init.visitInsn(Opcodes.RETURN);
-		init.visitMaxs(2, 2);
+		init.visitMaxs(-1, -1);
 		init.visitEnd();
 		for (final Map.Entry<java.lang.reflect.Method, Method> method : methods.entrySet()) {
 			final GeneratorAdapter m = new GeneratorAdapter(Opcodes.ACC_PUBLIC, method.getValue(), null,
