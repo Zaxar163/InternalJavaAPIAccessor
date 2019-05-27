@@ -1,22 +1,25 @@
 package ru.zaxar163.demonstration;
 
-import java.lang.invoke.MethodHandle;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 //import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import ru.zaxar163.util.ClassUtil;
+import ru.zaxar163.util.LookupUtil;
 import ru.zaxar163.util.dynamicgen.RealName;
+import ru.zaxar163.util.dynamicgen.Static;
 
-public final class InterfaceEmitter {
+public final class StaticInterfaceEmitter {
 	private static final List<String> objectMethods = Arrays.stream(Object.class.getDeclaredMethods())
 			.map(e -> e.getName()).collect(Collectors.toList());
 
-	public static String generate(final Map<MethodInfo, MethodHandle> caller, final String nameClazz,
+	public static String generate(Class<?> caller, final String nameClazz,
 			final String packagee, final boolean excludeInternalImport, final Set<String> exclusions) {
 		final StringBuilder startDecl = new StringBuilder(packagee != null ? "package " + packagee + ";\n\n" : "");
 		final StringBuilder code = new StringBuilder(
@@ -24,16 +27,25 @@ public final class InterfaceEmitter {
 		final List<Class<?>> classes = new ArrayList<>();
 		if (!excludeInternalImport)
 			classes.add(RealName.class);
-		caller.forEach((name, handle) -> {
-			if (objectMethods.contains(name.name) || exclusions.contains(name.name))
-				return;
+		for (Method m : LookupUtil.getDeclaredMethods(caller)) {
+			if (objectMethods.contains(m.getName()) || exclusions.contains(m.getName()))
+				continue;
 			final StringBuilder codeBuilder = new StringBuilder();
 			codeBuilder.append("	");
-			codeBuilder.append("@RealName(\"" + name.name + "\") ").append(handle.type().returnType().getSimpleName());
-			if (!classes.contains(name.type.returnType()))
-				classes.add(name.type.returnType());
-			codeBuilder.append(" ").append(name.name).append("(");
-			final Class<?>[] params = handle.type().parameterArray();
+			if (Modifier.isStatic(m.getModifiers())) {
+				if (!classes.contains(Static.class) && !excludeInternalImport)
+					classes.add(Static.class);
+				codeBuilder.append("@Static ");
+			}
+			codeBuilder.append("@RealName(\"" + m.getName() + "\") ").append(m.getReturnType().getSimpleName());
+			if (!classes.contains(m.getReturnType()))
+				classes.add(m.getReturnType());
+			codeBuilder.append(" ").append(m.getName()).append("(");
+			final Class<?>[] params = m.getParameterTypes();
+			if (!Modifier.isStatic(m.getModifiers())) {
+				codeBuilder.append("Object inst");
+				if (params.length > 0) codeBuilder.append(", ");
+			}
 			for (int i = 0; i < params.length; i++) {
 				if (!classes.contains(params[i]))
 					classes.add(params[i]);
@@ -43,7 +55,7 @@ public final class InterfaceEmitter {
 			}
 			codeBuilder.append(");");
 			code.append(codeBuilder).append('\n');
-		});
+		}
 		code.append('}');
 		classes.forEach(e -> {
 			if (!e.isArray() && !e.isPrimitive() && !isJavaLang(e))
@@ -59,10 +71,11 @@ public final class InterfaceEmitter {
 	}
 
 	public static void main(final String[] args) {
-		System.out.println(generate(UnsafeAccessor.UNSAFE_METHODS, "UnsafeProxy", "ru.zaxar163.util.proxies",
-				false, Collections.singleton("getUnsafe")/* new HashSet<>(Arrays.asList("throwException")) */));
+		System.out.println(generate(ClassUtil.nonThrowingFirstClass("sun.misc.MessageUtils"), "MessageUtilsProxy", "ru.zaxar163.util.proxies",
+				false, Collections.emptySet()/* new HashSet<>(Arrays.asList("throwException")) */));
 	}
 
-	private InterfaceEmitter() {
+	private StaticInterfaceEmitter() {
 	}
 }
+
