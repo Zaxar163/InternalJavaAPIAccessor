@@ -31,15 +31,27 @@ public final class SystemClassLoaderUtil {
 	}
 
 	public static void addURL(final Object cp, final URL e) {
-		MH_ADD.invoke(cp, e);
+		try {
+			MH_ADD.invoke(cp, e);
+		} catch (final Throwable t) {
+			throw new Error(t);
+		}
 	}
 
 	public static void addURL(final URL e) {
-		MH_ADD.invoke(SYSTEM_CP, e);
+		try {
+			MH_ADD.invoke(SYSTEM_CP, e);
+		} catch (final Throwable t) {
+			throw new Error(t);
+		}
 	}
 
 	public static void addURLToClassLoader(final URLClassLoader cp, final URL e) {
-		MH_ADD.invoke(getURLCP(cp), e);
+		try {
+			MH_ADD.invoke(getURLCP(cp), e);
+		} catch (final Throwable t) {
+			throw new Error(t);
+		}
 	}
 
 	private static boolean containsUCP(final Field e) {
