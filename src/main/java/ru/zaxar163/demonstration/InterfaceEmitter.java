@@ -59,8 +59,8 @@ public final class InterfaceEmitter {
 	}
 
 	public static void main(final String[] args) {
-		System.out.println(generate(UnsafeAccessor.UNSAFE_METHODS, "UnsafeProxy", "ru.zaxar163.util.proxies",
-				false, Collections.singleton("getUnsafe")/* new HashSet<>(Arrays.asList("throwException")) */));
+		System.out.println(generate(UnsafeAccessor.UNSAFE_METHODS, "UnsafeProxy", "ru.zaxar163.util.proxies", false,
+				Collections.singleton("getUnsafe")/* new HashSet<>(Arrays.asList("throwException")) */));
 	}
 
 	private InterfaceEmitter() {

@@ -19,15 +19,15 @@ public final class StaticInterfaceEmitter {
 	private static final List<String> objectMethods = Arrays.stream(Object.class.getDeclaredMethods())
 			.map(e -> e.getName()).collect(Collectors.toList());
 
-	public static String generate(Class<?> caller, final String nameClazz,
-			final String packagee, final boolean excludeInternalImport, final Set<String> exclusions) {
+	public static String generate(final Class<?> caller, final String nameClazz, final String packagee,
+			final boolean excludeInternalImport, final Set<String> exclusions) {
 		final StringBuilder startDecl = new StringBuilder(packagee != null ? "package " + packagee + ";\n\n" : "");
 		final StringBuilder code = new StringBuilder(
 				"\n@SuppressWarnings(\"rawtypes\") public interface " + nameClazz + " {\n");
 		final List<Class<?>> classes = new ArrayList<>();
 		if (!excludeInternalImport)
 			classes.add(RealName.class);
-		for (Method m : LookupUtil.getDeclaredMethods(caller)) {
+		for (final Method m : LookupUtil.getDeclaredMethods(caller)) {
 			if (objectMethods.contains(m.getName()) || exclusions.contains(m.getName()))
 				continue;
 			final StringBuilder codeBuilder = new StringBuilder();
@@ -44,7 +44,8 @@ public final class StaticInterfaceEmitter {
 			final Class<?>[] params = m.getParameterTypes();
 			if (!Modifier.isStatic(m.getModifiers())) {
 				codeBuilder.append("Object inst");
-				if (params.length > 0) codeBuilder.append(", ");
+				if (params.length > 0)
+					codeBuilder.append(", ");
 			}
 			for (int i = 0; i < params.length; i++) {
 				if (!classes.contains(params[i]))
@@ -71,11 +72,11 @@ public final class StaticInterfaceEmitter {
 	}
 
 	public static void main(final String[] args) {
-		System.out.println(generate(ClassUtil.nonThrowingFirstClass("sun.misc.MessageUtils"), "MessageUtilsProxy", "ru.zaxar163.util.proxies",
-				false, Collections.emptySet()/* new HashSet<>(Arrays.asList("throwException")) */));
+		System.out.println(generate(ClassUtil.nonThrowingFirstClass("sun.misc.MessageUtils"), "MessageUtilsProxy",
+				"ru.zaxar163.util.proxies", false,
+				Collections.emptySet()/* new HashSet<>(Arrays.asList("throwException")) */));
 	}
 
 	private StaticInterfaceEmitter() {
 	}
 }
-

@@ -42,7 +42,7 @@ public final class SystemClassLoaderUtil {
 		MH_ADD.invoke(getURLCP(cp), e);
 	}
 
-	private static final boolean containsUCP(final Field e) {
+	private static boolean containsUCP(final Field e) {
 		final String name = e.getName().toLowerCase(Locale.US);
 		return name.contains("u") && name.contains("c") && name.contains("p");
 	}
