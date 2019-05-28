@@ -56,7 +56,7 @@ public final class SystemClassLoaderUtil {
 
 	private static boolean containsUCP(final Field e) {
 		final String name = e.getName().toLowerCase(Locale.US);
-		return name.contains("u") && name.contains("c") && name.contains("p");
+		return name.contains("u") || name.contains("c") || name.contains("p");
 	}
 
 	public static Object getURLCP(final URLClassLoader loader) {
