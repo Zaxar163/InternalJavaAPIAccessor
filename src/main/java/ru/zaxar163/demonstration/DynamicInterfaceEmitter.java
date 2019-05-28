@@ -15,7 +15,7 @@ import ru.zaxar163.util.LookupUtil;
 import ru.zaxar163.util.dynamicgen.RealName;
 import ru.zaxar163.util.dynamicgen.Static;
 
-public final class StaticInterfaceEmitter {
+public final class DynamicInterfaceEmitter {
 	private static final List<String> objectMethods = Arrays.stream(Object.class.getDeclaredMethods())
 			.map(e -> e.getName()).collect(Collectors.toList());
 
@@ -77,6 +77,6 @@ public final class StaticInterfaceEmitter {
 				Collections.emptySet()/* new HashSet<>(Arrays.asList("throwException")) */));
 	}
 
-	private StaticInterfaceEmitter() {
+	private DynamicInterfaceEmitter() {
 	}
 }

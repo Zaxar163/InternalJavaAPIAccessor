@@ -25,8 +25,6 @@ final class ProxyData {
 
 	static final Type OT = Type.getType(Object.class);
 
-	static final Type OTA = Type.getType(Object[].class);
-
 	static final Random r = new Random(System.currentTimeMillis());
 
 	static {

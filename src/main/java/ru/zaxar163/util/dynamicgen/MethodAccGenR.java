@@ -1,7 +1,6 @@
 package ru.zaxar163.util.dynamicgen;
 
 import static ru.zaxar163.util.dynamicgen.ProxyData.OT;
-import static ru.zaxar163.util.dynamicgen.ProxyData.OTA;
 import static ru.zaxar163.util.dynamicgen.ProxyData.caseArg;
 import static ru.zaxar163.util.dynamicgen.ProxyData.caseRet;
 import static ru.zaxar163.util.dynamicgen.ProxyData.invokeR;
@@ -21,11 +20,9 @@ public final class MethodAccGenR {
 		final GeneratorAdapter m = new GeneratorAdapter(Opcodes.ACC_PUBLIC, invokeR, null,
 				new Type[] { Type.getType(Throwable.class) }, cw);
 		m.visitCode();
-		final int identifier = m.newLocal(OTA);
-		m.loadArgs();
-		m.storeLocal(identifier);
+		m.loadArg(0);
 		for (int i = 0; i < method.getArgumentTypes().length; i++) {
-			m.loadLocal(identifier);
+			m.loadArg(1);
 			m.push(i);
 			m.arrayLoad(OT);
 			caseArg(m, method.getArgumentTypes()[i]);
