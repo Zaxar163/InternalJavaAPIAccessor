@@ -12,6 +12,27 @@ import ru.zaxar163.util.DelegateClassLoader;
 import ru.zaxar163.util.dynamicgen.reflect.InvokerConstructor;
 import ru.zaxar163.util.dynamicgen.reflect.InvokerMethodF;
 import ru.zaxar163.util.dynamicgen.reflect.InvokerMethodR;
+import ru.zaxar163.util.proxies.ProxyList;
+
+class DataAccessor1 {
+	@Keep
+	static Object newInstance(final Class<?> clazz) {
+		return ProxyList.UNSAFE.allocateInstance(clazz);
+	}
+
+	private DataAccessor1() {
+	}
+}
+
+class DataAccessor2 {
+	@Keep
+	static Object newInstance(final Class<?> clazz) {
+		return MiscUtil.newInstance(clazz);
+	}
+
+	private DataAccessor2() {
+	}
+}
 
 final class ProxyData {
 	static final AtomicInteger cnter = new AtomicInteger(0);

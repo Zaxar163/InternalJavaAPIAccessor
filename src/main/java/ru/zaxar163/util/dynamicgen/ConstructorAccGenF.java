@@ -15,15 +15,8 @@ import ru.zaxar163.util.dynamicgen.reflect.InvokerConstructor;
 import ru.zaxar163.util.proxies.ProxyList;
 
 public final class ConstructorAccGenF {
-	private static class DataAccessor {
-		@Keep
-		public static Object newInstance(final Class<?> clazz) {
-			return ProxyList.UNSAFE.allocateInstance(clazz);
-		}
-	}
-
-	private static final Method newInst = Method.getMethod(DataAccessor.class.getDeclaredMethods()[0]);
-	private static final Type newInstC = Type.getType(DataAccessor.class);
+	private static final Method newInst = Method.getMethod(DataAccessor1.class.getDeclaredMethods()[0]);
+	private static final Type newInstC = Type.getType(DataAccessor1.class);
 
 	public static void emit(final Type clazz, final Method method, final int type, final ClassVisitor cw,
 			final Type ret) {
