@@ -14,6 +14,7 @@ import ru.zaxar163.util.dynamicgen.reflect.InvokerMethodF;
 import ru.zaxar163.util.dynamicgen.reflect.InvokerMethodR;
 import ru.zaxar163.util.proxies.ProxyList;
 
+@Keep
 class DataAccessor1 {
 	@Keep
 	static Object newInstance(final Class<?> clazz) {
@@ -24,6 +25,7 @@ class DataAccessor1 {
 	}
 }
 
+@Keep
 class DataAccessor2 {
 	@Keep
 	static Object newInstance(final Class<?> clazz) {
