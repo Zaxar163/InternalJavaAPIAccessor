@@ -26,27 +26,21 @@ public final class UnsafeFieldAcc {
 	}
 
 	public double getAndSetDouble(final Object inst, final double to) {
-		final double ret = getDouble(inst);
-		setDouble(inst, to);
-		return ret;
+		return Double.longBitsToDouble(getAndSetLong(inst, Double.doubleToLongBits(to)));
 	}
 
 	public float getAndSetFloat(final Object inst, final float to) {
-		final float ret = getFloat(inst);
-		setFloat(inst, to);
-		return ret;
+		return Float.intBitsToFloat(getAndSetInt(inst, Float.floatToIntBits(to)));
 	}
 
 	public int getAndSetInt(final Object inst, final int to) {
-		final int ret = getInt(inst);
-		setInt(inst, to);
-		return ret;
+		return base == null ? ProxyList.UNSAFE.getAndSetInt(inst, offset, to)
+				: ProxyList.UNSAFE.getAndSetInt(base, offset, to);
 	}
 
 	public long getAndSetLong(final Object inst, final long to) {
-		final long ret = getLong(inst);
-		setLong(inst, to);
-		return ret;
+		return base == null ? ProxyList.UNSAFE.getAndSetLong(inst, offset, to)
+				: ProxyList.UNSAFE.getAndSetLong(base, offset, to);
 	}
 
 	public Object getAndSetObject(final Object inst, final Object to) {
