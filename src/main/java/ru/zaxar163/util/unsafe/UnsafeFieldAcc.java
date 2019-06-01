@@ -20,9 +20,15 @@ public final class UnsafeFieldAcc {
 	}
 
 	public byte getAndSetByte(final Object inst, final byte to) {
-		final byte ret = getByte(inst);
-		setByte(inst, to);
-		return ret;
+		if (base == null) {
+			final byte ret = ProxyList.UNSAFE.getByte(inst, offset);
+			ProxyList.UNSAFE.putByte(inst, offset, to);
+			return ret;
+		} else {
+			final byte ret = ProxyList.UNSAFE.getByte(base, offset);
+			ProxyList.UNSAFE.putByte(base, offset, to);
+			return ret;
+		}
 	}
 
 	public double getAndSetDouble(final Object inst, final double to) {
@@ -49,9 +55,15 @@ public final class UnsafeFieldAcc {
 	}
 
 	public short getAndSetShort(final Object inst, final short to) {
-		final short ret = getShort(inst);
-		setShort(inst, to);
-		return ret;
+		if (base == null) {
+			final short ret = ProxyList.UNSAFE.getShort(inst, offset);
+			ProxyList.UNSAFE.putShort(inst, offset, to);
+			return ret;
+		} else {
+			final short ret = ProxyList.UNSAFE.getShort(base, offset);
+			ProxyList.UNSAFE.putShort(base, offset, to);
+			return ret;
+		}
 	}
 
 	public byte getByte(final Object inst) {

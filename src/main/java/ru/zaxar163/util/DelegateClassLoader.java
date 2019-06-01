@@ -76,8 +76,7 @@ public final class DelegateClassLoader extends ClassLoader {
 	/**
 	 * Finds loaded class or returns null if not exist.
 	 *
-	 * @param name
-	 *            the name of class.
+	 * @param name the name of class.
 	 * @return founded class or null.
 	 */
 	public Class<?> findLoaded(final String name) {
