@@ -15,18 +15,18 @@ public final class UnsafeFieldAcc {
 			base = null;
 		} else {
 			offset = ProxyList.UNSAFE.staticFieldOffset(f);
-			base = ProxyList.UNSAFE.staticFieldBase(f.getDeclaringClass());
+			base = ProxyList.UNSAFE.staticFieldBase(f);
 		}
 	}
 
 	public byte getAndSetByte(final Object inst, final byte to) {
 		if (base == null) {
-			final byte ret = ProxyList.UNSAFE.getByte(inst, offset);
-			ProxyList.UNSAFE.putByte(inst, offset, to);
+			final byte ret = ProxyList.UNSAFE.getByteVolatile(inst, offset);
+			ProxyList.UNSAFE.putByteVolatile(inst, offset, to);
 			return ret;
 		} else {
 			final byte ret = ProxyList.UNSAFE.getByte(base, offset);
-			ProxyList.UNSAFE.putByte(base, offset, to);
+			ProxyList.UNSAFE.putByteVolatile(base, offset, to);
 			return ret;
 		}
 	}
@@ -56,91 +56,98 @@ public final class UnsafeFieldAcc {
 
 	public short getAndSetShort(final Object inst, final short to) {
 		if (base == null) {
-			final short ret = ProxyList.UNSAFE.getShort(inst, offset);
-			ProxyList.UNSAFE.putShort(inst, offset, to);
+			final short ret = ProxyList.UNSAFE.getShortVolatile(inst, offset);
+			ProxyList.UNSAFE.putShortVolatile(inst, offset, to);
 			return ret;
 		} else {
-			final short ret = ProxyList.UNSAFE.getShort(base, offset);
-			ProxyList.UNSAFE.putShort(base, offset, to);
+			final short ret = ProxyList.UNSAFE.getShortVolatile(base, offset);
+			ProxyList.UNSAFE.putShortVolatile(base, offset, to);
 			return ret;
 		}
 	}
 
 	public byte getByte(final Object inst) {
-		return base == null ? ProxyList.UNSAFE.getByte(inst, offset) : ProxyList.UNSAFE.getByte(base, offset);
+		return base == null ? ProxyList.UNSAFE.getByteVolatile(inst, offset)
+				: ProxyList.UNSAFE.getByteVolatile(base, offset);
 	}
 
 	public double getDouble(final Object inst) {
-		return base == null ? ProxyList.UNSAFE.getDouble(inst, offset) : ProxyList.UNSAFE.getDouble(base, offset);
+		return base == null ? ProxyList.UNSAFE.getDoubleVolatile(inst, offset)
+				: ProxyList.UNSAFE.getDoubleVolatile(base, offset);
 	}
 
 	public float getFloat(final Object inst) {
-		return base == null ? ProxyList.UNSAFE.getFloat(inst, offset) : ProxyList.UNSAFE.getFloat(base, offset);
+		return base == null ? ProxyList.UNSAFE.getFloatVolatile(inst, offset)
+				: ProxyList.UNSAFE.getFloatVolatile(base, offset);
 	}
 
 	public int getInt(final Object inst) {
-		return base == null ? ProxyList.UNSAFE.getInt(inst, offset) : ProxyList.UNSAFE.getInt(base, offset);
+		return base == null ? ProxyList.UNSAFE.getIntVolatile(inst, offset)
+				: ProxyList.UNSAFE.getIntVolatile(base, offset);
 	}
 
 	public long getLong(final Object inst) {
-		return base == null ? ProxyList.UNSAFE.getLong(inst, offset) : ProxyList.UNSAFE.getLong(base, offset);
+		return base == null ? ProxyList.UNSAFE.getLongVolatile(inst, offset)
+				: ProxyList.UNSAFE.getLongVolatile(base, offset);
 	}
 
 	public Object getObject(final Object inst) {
-		return base == null ? ProxyList.UNSAFE.getObject(inst, offset) : ProxyList.UNSAFE.getObject(base, offset);
+		return base == null ? ProxyList.UNSAFE.getObjectVolatile(inst, offset)
+				: ProxyList.UNSAFE.getObjectVolatile(base, offset);
 	}
 
 	public short getShort(final Object inst) {
-		return base == null ? ProxyList.UNSAFE.getShort(inst, offset) : ProxyList.UNSAFE.getShort(base, offset);
+		return base == null ? ProxyList.UNSAFE.getShortVolatile(inst, offset)
+				: ProxyList.UNSAFE.getShortVolatile(base, offset);
 	}
 
 	public void setByte(final Object inst, final byte to) {
 		if (base == null)
-			ProxyList.UNSAFE.putByte(inst, offset, to);
+			ProxyList.UNSAFE.putByteVolatile(inst, offset, to);
 		else
-			ProxyList.UNSAFE.putByte(base, offset, to);
+			ProxyList.UNSAFE.putByteVolatile(base, offset, to);
 	}
 
 	public void setDouble(final Object inst, final double to) {
 		if (base == null)
-			ProxyList.UNSAFE.putDouble(inst, offset, to);
+			ProxyList.UNSAFE.putDoubleVolatile(inst, offset, to);
 		else
-			ProxyList.UNSAFE.putDouble(base, offset, to);
+			ProxyList.UNSAFE.putDoubleVolatile(base, offset, to);
 	}
 
 	public void setFloat(final Object inst, final float to) {
 		if (base == null)
-			ProxyList.UNSAFE.putFloat(inst, offset, to);
+			ProxyList.UNSAFE.putFloatVolatile(inst, offset, to);
 		else
-			ProxyList.UNSAFE.putFloat(base, offset, to);
+			ProxyList.UNSAFE.putFloatVolatile(base, offset, to);
 	}
 
 	public void setInt(final Object inst, final int to) {
 		if (base == null)
-			ProxyList.UNSAFE.putInt(inst, offset, to);
+			ProxyList.UNSAFE.putIntVolatile(inst, offset, to);
 		else
-			ProxyList.UNSAFE.putInt(base, offset, to);
+			ProxyList.UNSAFE.putIntVolatile(base, offset, to);
 	}
 
 	public void setLong(final Object inst, final long to) {
 		if (base == null)
-			ProxyList.UNSAFE.putLong(inst, offset, to);
+			ProxyList.UNSAFE.putLongVolatile(inst, offset, to);
 		else
-			ProxyList.UNSAFE.putLong(base, offset, to);
+			ProxyList.UNSAFE.putLongVolatile(base, offset, to);
 	}
 
 	public void setObject(final Object inst, final Object to) {
 		if (base == null)
-			ProxyList.UNSAFE.putObject(inst, offset, to);
+			ProxyList.UNSAFE.putObjectVolatile(inst, offset, to);
 		else
-			ProxyList.UNSAFE.putObject(base, offset, to);
+			ProxyList.UNSAFE.putObjectVolatile(base, offset, to);
 
 	}
 
 	public void setShort(final Object inst, final short to) {
 		if (base == null)
-			ProxyList.UNSAFE.putShort(inst, offset, to);
+			ProxyList.UNSAFE.putShortVolatile(inst, offset, to);
 		else
-			ProxyList.UNSAFE.putShort(base, offset, to);
+			ProxyList.UNSAFE.putShortVolatile(base, offset, to);
 	}
 }

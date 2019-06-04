@@ -29,7 +29,7 @@ public final class ProxyList {
 			UNSAFE = new FastStaticProxy<>(DelegateClassLoader.INSTANCE, unsafe, UnsafeProxy.class).instance(theUnsafe);
 			final Map<String, Object> toFillF = new HashMap<>();
 			for (final Field f : fieldsUnsafe) {
-				if (f.equals(theUnsafe))
+				if (f.equals(unsafeInst))
 					continue;
 				f.setAccessible(true);
 				toFillF.put(f.getName(), f.get(theUnsafe));

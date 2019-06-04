@@ -37,7 +37,7 @@ public final class InstanceLookupUtil {
 			final Field trustedF = Arrays.stream(LookupUtil.getDeclaredFields(Lookup.class))
 					.filter(e -> !e.isAccessible() && e.getName().toLowerCase(Locale.US).contains("trust")).findFirst()
 					.get();
-			trusted = ProxyList.UNSAFE.getInt(ProxyList.UNSAFE.staticFieldBase(Lookup.class),
+			trusted = ProxyList.UNSAFE.getInt(ProxyList.UNSAFE.staticFieldBase(trustedF),
 					ProxyList.UNSAFE.staticFieldOffset(trustedF));
 		} catch (final Throwable t) {
 		}

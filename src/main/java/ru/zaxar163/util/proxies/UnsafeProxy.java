@@ -46,9 +46,6 @@ public interface UnsafeProxy {
 	@RealName("ensureClassInitialized")
 	void ensureClassInitialized(Class obj0);
 
-	@RealName("fieldOffset")
-	int fieldOffset(Field obj0);
-
 	@RealName("freeMemory")
 	void freeMemory(long obj0);
 
@@ -74,9 +71,6 @@ public interface UnsafeProxy {
 	Object getAndSetObject(Object obj0, long obj1, Object obj2);
 
 	@RealName("getBoolean")
-	boolean getBoolean(Object obj0, int obj1);
-
-	@RealName("getBoolean")
 	boolean getBoolean(Object obj0, long obj1);
 
 	@RealName("getBooleanVolatile")
@@ -84,9 +78,6 @@ public interface UnsafeProxy {
 
 	@RealName("getByte")
 	byte getByte(long obj0);
-
-	@RealName("getByte")
-	byte getByte(Object obj0, int obj1);
 
 	@RealName("getByte")
 	byte getByte(Object obj0, long obj1);
@@ -98,9 +89,6 @@ public interface UnsafeProxy {
 	char getChar(long obj0);
 
 	@RealName("getChar")
-	char getChar(Object obj0, int obj1);
-
-	@RealName("getChar")
 	char getChar(Object obj0, long obj1);
 
 	@RealName("getCharVolatile")
@@ -108,9 +96,6 @@ public interface UnsafeProxy {
 
 	@RealName("getDouble")
 	double getDouble(long obj0);
-
-	@RealName("getDouble")
-	double getDouble(Object obj0, int obj1);
 
 	@RealName("getDouble")
 	double getDouble(Object obj0, long obj1);
@@ -122,9 +107,6 @@ public interface UnsafeProxy {
 	float getFloat(long obj0);
 
 	@RealName("getFloat")
-	float getFloat(Object obj0, int obj1);
-
-	@RealName("getFloat")
 	float getFloat(Object obj0, long obj1);
 
 	@RealName("getFloatVolatile")
@@ -132,9 +114,6 @@ public interface UnsafeProxy {
 
 	@RealName("getInt")
 	int getInt(long obj0);
-
-	@RealName("getInt")
-	int getInt(Object obj0, int obj1);
 
 	@RealName("getInt")
 	int getInt(Object obj0, long obj1);
@@ -149,16 +128,10 @@ public interface UnsafeProxy {
 	long getLong(long obj0);
 
 	@RealName("getLong")
-	long getLong(Object obj0, int obj1);
-
-	@RealName("getLong")
 	long getLong(Object obj0, long obj1);
 
 	@RealName("getLongVolatile")
 	long getLongVolatile(Object obj0, long obj1);
-
-	@RealName("getObject")
-	Object getObject(Object obj0, int obj1);
 
 	@RealName("getObject")
 	Object getObject(Object obj0, long obj1);
@@ -168,9 +141,6 @@ public interface UnsafeProxy {
 
 	@RealName("getShort")
 	short getShort(long obj0);
-
-	@RealName("getShort")
-	short getShort(Object obj0, int obj1);
 
 	@RealName("getShort")
 	short getShort(Object obj0, long obj1);
@@ -212,9 +182,6 @@ public interface UnsafeProxy {
 	void putByte(long obj0, byte obj1);
 
 	@RealName("putByte")
-	void putByte(Object obj0, int obj1, byte obj2);
-
-	@RealName("putByte")
 	void putByte(Object obj0, long obj1, byte obj2);
 
 	@RealName("putByteVolatile")
@@ -222,9 +189,6 @@ public interface UnsafeProxy {
 
 	@RealName("putChar")
 	void putChar(long obj0, char obj1);
-
-	@RealName("putChar")
-	void putChar(Object obj0, int obj1, char obj2);
 
 	@RealName("putChar")
 	void putChar(Object obj0, long obj1, char obj2);
@@ -236,9 +200,6 @@ public interface UnsafeProxy {
 	void putDouble(long obj0, double obj1);
 
 	@RealName("putDouble")
-	void putDouble(Object obj0, int obj1, double obj2);
-
-	@RealName("putDouble")
 	void putDouble(Object obj0, long obj1, double obj2);
 
 	@RealName("putDoubleVolatile")
@@ -246,9 +207,6 @@ public interface UnsafeProxy {
 
 	@RealName("putFloat")
 	void putFloat(long obj0, float obj1);
-
-	@RealName("putFloat")
-	void putFloat(Object obj0, int obj1, float obj2);
 
 	@RealName("putFloat")
 	void putFloat(Object obj0, long obj1, float obj2);
@@ -260,9 +218,6 @@ public interface UnsafeProxy {
 	void putInt(long obj0, int obj1);
 
 	@RealName("putInt")
-	void putInt(Object obj0, int obj1, int obj2);
-
-	@RealName("putInt")
 	void putInt(Object obj0, long obj1, int obj2);
 
 	@RealName("putIntVolatile")
@@ -272,16 +227,10 @@ public interface UnsafeProxy {
 	void putLong(long obj0, long obj1);
 
 	@RealName("putLong")
-	void putLong(Object obj0, int obj1, long obj2);
-
-	@RealName("putLong")
 	void putLong(Object obj0, long obj1, long obj2);
 
 	@RealName("putLongVolatile")
 	void putLongVolatile(Object obj0, long obj1, long obj2);
-
-	@RealName("putObject")
-	void putObject(Object obj0, int obj1, Object obj2);
 
 	@RealName("putObject")
 	void putObject(Object obj0, long obj1, Object obj2);
@@ -302,9 +251,6 @@ public interface UnsafeProxy {
 	void putShort(long obj0, short obj1);
 
 	@RealName("putShort")
-	void putShort(Object obj0, int obj1, short obj2);
-
-	@RealName("putShort")
 	void putShort(Object obj0, long obj1, short obj2);
 
 	@RealName("putShortVolatile")
@@ -321,9 +267,6 @@ public interface UnsafeProxy {
 
 	@RealName("shouldBeInitialized")
 	boolean shouldBeInitialized(Class obj0);
-
-	@RealName("staticFieldBase")
-	Object staticFieldBase(Class obj0);
 
 	@RealName("staticFieldBase")
 	Object staticFieldBase(Field obj0);

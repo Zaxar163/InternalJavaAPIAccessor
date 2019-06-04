@@ -62,7 +62,7 @@ public final class FastDynamicProxy<T> {
 		init.visitMaxs(-1, -1);
 		init.visitEnd();
 		for (final Map.Entry<java.lang.reflect.Method, Method> method : methods.entrySet()) {
-			final GeneratorAdapter m = new GeneratorAdapter(Opcodes.ACC_PUBLIC, method.getValue(), null,
+			final GeneratorAdapter m = new GeneratorAdapter(Opcodes.ACC_PUBLIC, Method.getMethod(method.getKey()), null,
 					typify(method.getKey().getExceptionTypes()), cw);
 			final boolean isStatic = Modifier.isStatic(LookupUtil
 					.getMethod(clazz, method.getKey().getName(), asClazz(method.getValue().getArgumentTypes()))
