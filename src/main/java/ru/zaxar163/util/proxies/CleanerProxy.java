@@ -13,4 +13,8 @@ public interface CleanerProxy {
 	@Static
 	@RealName("create")
 	PhantomReference create(Object thunk, Runnable r);
+
+	@Static
+	@RealName("add")
+	Object add(Object cleaner);
 }
