@@ -11,7 +11,6 @@ import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
-import ru.zaxar163.util.DelegateClassLoader;
 import ru.zaxar163.util.dynamicgen.reflect.InvokerMethodR;
 import ru.zaxar163.util.proxies.ProxyList;
 
@@ -35,7 +34,6 @@ public final class MethodAccGenR {
 	}
 
 	public static InvokerMethodR method(final java.lang.reflect.Constructor<?> m) {
-		DelegateClassLoader.INSTANCE.append(m);
 		final ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS);
 		final String name = ProxyData.nextName(true);
 		cw.visit(Opcodes.V1_8, Opcodes.ACC_PUBLIC, name, null, ProxyData.MAGIC_SUPER,
@@ -44,8 +42,8 @@ public final class MethodAccGenR {
 		cw.visitEnd();
 		final byte[] code = cw.toByteArray();
 		try {
-			final Class<?> clazz = ProxyList.UNSAFE.defineClass(name, code, 0, code.length,
-					DelegateClassLoader.INSTANCE, null);
+			final Class<?> clazz = ProxyList.UNSAFE.defineClass(name, code, 0, code.length, ProxyData.forMethodR(m),
+					null);
 			return (InvokerMethodR) ProxyList.UNSAFE.allocateInstance(clazz);
 		} catch (final Throwable e) {
 			throw new RuntimeException(e);
@@ -53,7 +51,6 @@ public final class MethodAccGenR {
 	}
 
 	public static InvokerMethodR method(final java.lang.reflect.Method m) {
-		DelegateClassLoader.INSTANCE.append(m);
 		final ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS);
 		final String name = ProxyData.nextName(true);
 		cw.visit(Opcodes.V1_8, Opcodes.ACC_PUBLIC, name, null, ProxyData.MAGIC_SUPER,
@@ -63,8 +60,8 @@ public final class MethodAccGenR {
 		cw.visitEnd();
 		final byte[] code = cw.toByteArray();
 		try {
-			final Class<?> clazz = ProxyList.UNSAFE.defineClass(name, code, 0, code.length,
-					DelegateClassLoader.INSTANCE, null);
+			final Class<?> clazz = ProxyList.UNSAFE.defineClass(name, code, 0, code.length, ProxyData.forMethodR(m),
+					null);
 			return (InvokerMethodR) ProxyList.UNSAFE.allocateInstance(clazz);
 		} catch (final Throwable e) {
 			throw new RuntimeException(e);

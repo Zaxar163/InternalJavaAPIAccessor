@@ -9,13 +9,15 @@ public final class StackTraceUtil {
 	};
 
 	public static Class<?>[] trace(final Class<?> caller) {
-		DelegateClassLoader.INSTANCE.append(caller);
 		final Throwable work = LOCAL_EXC.get();
 		work.fillInStackTrace();
 		final StackTraceElement[] trace = work.getStackTrace();
+		ClassLoader ldr = caller.getClassLoader();
+		if (ldr == null)
+			ldr = ClassUtil.SCL;
 		final Class<?>[] ret = new Class<?>[trace.length - 2];
 		for (int i = 0; i < ret.length; i++)
-			ret[i] = DelegateClassLoader.INSTANCE.findLoaded(trace[i - 2].getClassName());
+			ret[i] = ClassUtil.findLoadedClass(ldr, trace[i - 2].getClassName());
 		return ret;
 	}
 

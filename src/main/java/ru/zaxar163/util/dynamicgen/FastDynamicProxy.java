@@ -33,7 +33,7 @@ public final class FastDynamicProxy<T> {
 	private final MethodHandle proxyC;
 
 	public FastDynamicProxy(final ClassLoader loader, final Class<?> clazz, final Class<T> proxy) {
-		this.loader = loader;
+		this.loader = ProxyData.forProxy(loader).add(clazz).add(proxy);
 		this.clazz = clazz;
 		this.proxy = proxy;
 		this.proxyC = emitProxy();

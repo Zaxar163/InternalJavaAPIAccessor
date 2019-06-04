@@ -8,7 +8,6 @@ import java.util.Locale;
 import java.util.Map;
 
 import ru.zaxar163.util.ClassUtil;
-import ru.zaxar163.util.DelegateClassLoader;
 import ru.zaxar163.util.LookupUtil;
 import ru.zaxar163.util.dynamicgen.FastDynamicProxy;
 import ru.zaxar163.util.dynamicgen.FastStaticProxy;
@@ -26,7 +25,7 @@ public final class ProxyList {
 					.filter(e -> e.getType().equals(unsafe) && e.getName().toLowerCase(Locale.US).contains("unsafe"))
 					.findFirst().get();
 			final Object theUnsafe = LookupUtil.ALL_LOOKUP.unreflectGetter(unsafeInst).invoke();
-			UNSAFE = new FastStaticProxy<>(DelegateClassLoader.INSTANCE, unsafe, UnsafeProxy.class).instance(theUnsafe);
+			UNSAFE = new FastStaticProxy<>(null, unsafe, UnsafeProxy.class).instance(theUnsafe);
 			final Map<String, Object> toFillF = new HashMap<>();
 			for (final Field f : fieldsUnsafe) {
 				if (f.equals(unsafeInst))
@@ -35,7 +34,7 @@ public final class ProxyList {
 				toFillF.put(f.getName(), f.get(theUnsafe));
 			}
 			UNSAFE_FIELDS = Collections.unmodifiableMap(toFillF);
-			CLEANER = new FastDynamicProxy<>(DelegateClassLoader.INSTANCE,
+			CLEANER = new FastDynamicProxy<>(null,
 					ClassUtil.nonThrowingFirstClass("jdk.internal.ref.Cleaner", "sun.misc.Cleaner"), CleanerProxy.class)
 							.instance();
 		} catch (final Throwable e) {

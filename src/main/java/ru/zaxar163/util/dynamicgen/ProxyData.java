@@ -1,5 +1,6 @@
 package ru.zaxar163.util.dynamicgen;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -8,7 +9,7 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
 import ru.zaxar163.util.ClassUtil;
-import ru.zaxar163.util.DelegateClassLoader;
+import ru.zaxar163.util.DelegatingClassLoader;
 import ru.zaxar163.util.dynamicgen.reflect.InvokerConstructor;
 import ru.zaxar163.util.dynamicgen.reflect.InvokerMethodF;
 import ru.zaxar163.util.dynamicgen.reflect.InvokerMethodR;
@@ -41,22 +42,20 @@ final class ProxyData {
 	static final Method invokeC = Method.getMethod(InvokerConstructor.class.getDeclaredMethods()[0]);
 	static final Method invokeF = Method.getMethod(InvokerMethodF.class.getDeclaredMethods()[0]);
 	static final Method invokeR = Method.getMethod(InvokerMethodR.class.getDeclaredMethods()[0]);
-	static final ClassLoader MAGIC_CLASSLOADER;
+	static final Class<?> MAGIC_CLASS;
+
 	static final String MAGIC_PACKAGE;
 
 	static final String MAGIC_SUPER;
 
 	static final Type OT = Type.getType(Object.class);
-
 	static final Random r = new Random(System.currentTimeMillis());
 
 	static {
-		final Class<?> magic = ClassUtil.nonThrowingFirstClass("jdk.internal.reflect.MagicAccessorImpl",
+		MAGIC_CLASS = ClassUtil.nonThrowingFirstClass("jdk.internal.reflect.MagicAccessorImpl",
 				"sun.reflect.MagicAccessorImpl");
-		MAGIC_SUPER = Type.getInternalName(magic);
-		MAGIC_PACKAGE = magic.getName().substring(0, magic.getName().lastIndexOf('.')).replace('.', '/');
-		MAGIC_CLASSLOADER = magic.getClassLoader();
-		DelegateClassLoader.INSTANCE.append(MAGIC_CLASSLOADER);
+		MAGIC_SUPER = Type.getInternalName(MAGIC_CLASS);
+		MAGIC_PACKAGE = MAGIC_CLASS.getName().substring(0, MAGIC_CLASS.getName().lastIndexOf('.')).replace('.', '/');
 	}
 
 	static void caseArg(final GeneratorAdapter m, final Type type) {
@@ -124,9 +123,42 @@ final class ProxyData {
 		}
 	}
 
-	static ClassLoader defaultForVer(final Class<?> klass, final boolean sys) {
-		DelegateClassLoader.INSTANCE.append(klass);
-		return DelegateClassLoader.INSTANCE;
+	/*
+	 * static ClassLoader defaultForVer(final Class<?> klass, final boolean sys) {
+	 * MultiClassLoader.INSTANCE.append(klass); return MultiClassLoader.INSTANCE; }
+	 */
+
+	static DelegatingClassLoader forConstructor(final Constructor<?> cons) {
+		return DelegatingClassLoader.forClassLoader(cons.getDeclaringClass().getClassLoader()).add(MAGIC_CLASS)
+				.add(InvokerConstructor.class);
+	}
+
+	static DelegatingClassLoader forMethodF(final Constructor<?> m) {
+		return DelegatingClassLoader.forClassLoader(m.getDeclaringClass().getClassLoader()).add(MAGIC_CLASS)
+				.add(InvokerMethodF.class);
+	}
+
+	static DelegatingClassLoader forMethodF(final java.lang.reflect.Method m) {
+		return DelegatingClassLoader.forClassLoader(m.getDeclaringClass().getClassLoader()).add(MAGIC_CLASS)
+				.add(InvokerMethodF.class);
+	}
+
+	static DelegatingClassLoader forMethodR(final Constructor<?> m) {
+		return DelegatingClassLoader.forClassLoader(m.getDeclaringClass().getClassLoader()).add(MAGIC_CLASS)
+				.add(InvokerMethodR.class);
+	}
+
+	static DelegatingClassLoader forMethodR(final java.lang.reflect.Method m) {
+		return DelegatingClassLoader.forClassLoader(m.getDeclaringClass().getClassLoader()).add(MAGIC_CLASS)
+				.add(InvokerMethodR.class);
+	}
+
+	static DelegatingClassLoader forMisc(final Class<?> m) {
+		return DelegatingClassLoader.forClassLoader(m.getClassLoader()).add(MAGIC_CLASS);
+	}
+
+	static DelegatingClassLoader forProxy(final ClassLoader loader) {
+		return DelegatingClassLoader.forClassLoader(loader).add(MAGIC_CLASS);
 	}
 
 	static String nextName(final boolean magic) {
@@ -136,7 +168,7 @@ final class ProxyData {
 				+ "ImplGenerated";
 	}
 
-	public static int switchType(final java.lang.reflect.Method m) {
+	static int switchType(final java.lang.reflect.Method m) {
 		if (Modifier.isStatic(m.getModifiers()))
 			return Opcodes.INVOKESTATIC;
 		if (m.getDeclaringClass().isInterface())

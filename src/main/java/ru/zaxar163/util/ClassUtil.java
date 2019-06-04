@@ -14,12 +14,14 @@ public final class ClassUtil {
 	private final static MethodHandle FINDLOADEDCLASS_SCL;
 	private final static MethodHandle FORNAME;
 	public static final boolean JAVA9;
+	public static final ClassLoader SCL;
 
 	static {
 		try {
+			SCL = ClassLoader.getSystemClassLoader();
 			FINDLOADEDCLASS = LookupUtil.ALL_LOOKUP.findVirtual(ClassLoader.class, "findLoadedClass0",
 					MethodType.methodType(Class.class, String.class));
-			FINDLOADEDCLASS_SCL = FINDLOADEDCLASS.bindTo(DelegateClassLoader.INSTANCE);
+			FINDLOADEDCLASS_SCL = FINDLOADEDCLASS.bindTo(SCL);
 			DEFINECLASS0 = LookupUtil.ALL_LOOKUP.findSpecial(ClassLoader.class, "defineClass", MethodType
 					.methodType(Class.class, String.class, byte[].class, int.class, int.class, ProtectionDomain.class),
 					ClassLoader.class);
@@ -60,7 +62,6 @@ public final class ClassUtil {
 
 	public static Class<?> defineClass(final ClassLoader cl, final String name, final byte[] b, final int off,
 			final int len, final ProtectionDomain protectionDomain) {
-		DelegateClassLoader.INSTANCE.append(cl);
 		try {
 			return (Class<?>) DEFINECLASS0.invokeExact(cl, name, b, off, len, protectionDomain);
 		} catch (final Throwable e) {
@@ -70,7 +71,6 @@ public final class ClassUtil {
 
 	public static Class<?> defineClass(final ClassLoader cl, final String name, final java.nio.ByteBuffer b,
 			final ProtectionDomain protectionDomain) {
-		DelegateClassLoader.INSTANCE.append(cl);
 		try {
 			return (Class<?>) DEFINECLASS1.invokeExact(cl, name, b, protectionDomain);
 		} catch (final Throwable e) {
@@ -80,7 +80,6 @@ public final class ClassUtil {
 
 	public static Class<?> defineClass0_native(final ClassLoader cl, final String name, final byte[] b, final int off,
 			final int len, final ProtectionDomain pd) {
-		DelegateClassLoader.INSTANCE.append(cl);
 		if (DEFINECLASS_NATIVE0 == null)
 			return null;
 		try {
@@ -92,7 +91,6 @@ public final class ClassUtil {
 
 	public static Class<?> defineClass1_native(final ClassLoader cl, final String name, final byte[] b, final int off,
 			final int len, final ProtectionDomain pd, final String code) {
-		DelegateClassLoader.INSTANCE.append(cl);
 		if (DEFINECLASS_NATIVE1 == null)
 			return null;
 		try {
@@ -104,7 +102,6 @@ public final class ClassUtil {
 
 	public static Class<?> findLoadedClass(final ClassLoader cl, final String name) {
 		try {
-			DelegateClassLoader.INSTANCE.append(cl);
 			return (Class<?>) FINDLOADEDCLASS.invokeExact(cl, name);
 		} catch (final Throwable e) {
 			throw new Error(e);
@@ -122,7 +119,6 @@ public final class ClassUtil {
 	public static Class<?> firstClass(final ClassLoader loader, final String... names) throws ClassNotFoundException {
 		for (final String name : names)
 			try {
-				DelegateClassLoader.INSTANCE.append(loader);
 				return forName(name, false, loader);
 			} catch (final ClassNotFoundException ignored) {
 				// Expected
@@ -131,13 +127,12 @@ public final class ClassUtil {
 	}
 
 	public static Class<?> firstClass(final String... names) throws ClassNotFoundException {
-		return firstClass(DelegateClassLoader.INSTANCE, names);
+		return firstClass(SCL, names);
 	}
 
 	public static Class<?> forName(final String name, final boolean init, final ClassLoader loader)
 			throws ClassNotFoundException {
 		try {
-			DelegateClassLoader.INSTANCE.append(loader);
 			return (Class<?>) FORNAME.invokeExact(name, init, loader, Class.class);
 		} catch (final Throwable e) {
 			if (e instanceof ClassNotFoundException)
@@ -149,7 +144,6 @@ public final class ClassUtil {
 	public static Class<?> nonThrowingFirstClass(final ClassLoader cl, final String... search) {
 		for (final String name : search)
 			try {
-				DelegateClassLoader.INSTANCE.append(cl);
 				return forName(name, false, cl);
 			} catch (final ClassNotFoundException ignored) {
 				// Expected
@@ -158,7 +152,7 @@ public final class ClassUtil {
 	}
 
 	public static Class<?> nonThrowingFirstClass(final String... search) {
-		return nonThrowingFirstClass(DelegateClassLoader.INSTANCE, search);
+		return nonThrowingFirstClass(SCL, search);
 	}
 
 	private ClassUtil() {
