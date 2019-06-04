@@ -22,6 +22,7 @@ public final class Cache<T> {
 			synchronized (c.lock) {
 				if (c.current < c.factLen && obj.get() != null)
 					c.cache[++c.current] = obj.get();
+				c.lock.notify();
 			}
 		}
 	}
@@ -53,6 +54,7 @@ public final class Cache<T> {
 			if (current < 0)
 				return cleanerReg(ProxyList.UNSAFE.allocateInstance(type));
 			final Object ret = cache[current--];
+			lock.notify();
 			return ret;
 		}
 	}
