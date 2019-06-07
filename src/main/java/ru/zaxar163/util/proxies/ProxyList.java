@@ -16,6 +16,7 @@ public final class ProxyList {
 	public static final CleanerProxy CLEANER;
 	public static final UnsafeProxy UNSAFE;
 	public static final Map<String, Object> UNSAFE_FIELDS;
+	public static final ThreadProxy THREAD;
 
 	static {
 		try {
@@ -37,6 +38,9 @@ public final class ProxyList {
 			CLEANER = new FastDynamicProxy<>(null,
 					ClassUtil.nonThrowingFirstClass("jdk.internal.ref.Cleaner", "sun.misc.Cleaner"), CleanerProxy.class)
 							.instance();
+			THREAD = new FastDynamicProxy<>(null,
+					Thread.class, ThreadProxy.class)
+					.instance();
 		} catch (final Throwable e) {
 			throw new Error(e);
 		}

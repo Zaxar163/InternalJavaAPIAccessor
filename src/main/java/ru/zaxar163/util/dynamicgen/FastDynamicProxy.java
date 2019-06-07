@@ -39,10 +39,38 @@ public final class FastDynamicProxy<T> {
 		this.proxyC = emitProxy();
 	}
 
-	private Class<?>[] asClazz(final Type[] clazzs) {
+	private static Class<?>[] asClazz(final Type[] clazzs, ClassLoader ldr) {
 		final Class<?>[] types = new Class<?>[clazzs.length];
 		for (int i = 0; i < types.length; i++)
-			types[i] = ClassUtil.nonThrowingFirstClass(clazzs[i].getClassName());
+			switch (clazzs[i].getSort()) {
+			case Type.BOOLEAN:
+				types[i] = boolean.class;
+				break;
+			case Type.CHAR:
+				types[i] = char.class;
+				break;
+			case Type.BYTE:
+				types[i] = byte.class;
+				break;
+			case Type.SHORT:
+				types[i] = short.class;
+				break;
+			case Type.INT:
+				types[i] = int.class;
+				break;
+			case Type.FLOAT:
+				types[i] = float.class;
+				break;
+			case Type.LONG:
+				types[i] = long.class;
+				break;
+			case Type.DOUBLE:
+				types[i] = double.class;
+				break;
+			default:
+				types[i] = ClassUtil.nonThrowingFirstClass(ldr, clazzs[i].getInternalName().replace('/', '.'));
+				break;
+			}
 		return types;
 	}
 
@@ -65,7 +93,7 @@ public final class FastDynamicProxy<T> {
 			final GeneratorAdapter m = new GeneratorAdapter(Opcodes.ACC_PUBLIC, Method.getMethod(method.getKey()), null,
 					typify(method.getKey().getExceptionTypes()), cw);
 			final boolean isStatic = Modifier.isStatic(LookupUtil
-					.getMethod(clazz, method.getKey().getName(), asClazz(method.getValue().getArgumentTypes()))
+					.getMethod(clazz, method.getKey().getName(), asClazz(method.getValue().getArgumentTypes(), loader))
 					.getModifiers());
 			m.visitCode();
 			m.loadThis();
