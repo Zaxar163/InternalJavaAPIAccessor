@@ -1,13 +1,15 @@
-package ru.zaxar163.util;
+package ru.zaxar163.util.unsafe;
 
+import ru.zaxar163.util.ClassUtil;
+import ru.zaxar163.util.LookupUtil;
 import ru.zaxar163.util.proxies.ProxyList;
 
 public final class StackTraceUtil {
 	private static final StackTraceElement[] EMPTY_STACK_TRACE = new StackTraceElement[0];
-
+	private static final long CONTECT_LOADER_OFFSET = ProxyList.UNSAFE.objectFieldOffset(LookupUtil.getField(Thread.class, "contextClassLoader", ClassLoader.class));
 	public static Class<?>[] trace(final Class<?> caller) {
 		final StackTraceElement[] trace = uncheckedTrace(Thread.currentThread());
-		ClassLoader ldr = caller.getClassLoader();
+		ClassLoader ldr = LookupUtil.getClassLoader(caller);
 		if (ldr == null)
 			ldr = ClassUtil.SCL;
 		final Class<?>[] ret = new Class<?>[trace.length - 2];
@@ -18,7 +20,7 @@ public final class StackTraceUtil {
 	
 	public static Class<?>[] trace(final Thread caller) {
 		final StackTraceElement[] trace = uncheckedTrace(Thread.currentThread());
-		ClassLoader ldr = caller.getContextClassLoader();
+		ClassLoader ldr = (ClassLoader) ProxyList.UNSAFE.getObject(caller, CONTECT_LOADER_OFFSET);
 		if (ldr == null)
 			ldr = ClassUtil.SCL;
 		final Class<?>[] ret = new Class<?>[trace.length - 2];

@@ -22,6 +22,7 @@ public final class LookupUtil {
 	private static final MethodHandle FIELDS_GETTER;
 	private static final MethodHandle LOOKUP_CONSTRUCTOR;
 	private static final MethodHandle METHODS_GETTER;
+	private static final MethodHandle CLASSLOADER_GETTER;
 
 	static {
 		try {
@@ -45,6 +46,8 @@ public final class LookupUtil {
 					MethodType.methodType(Constructor[].class, boolean.class), Class.class);
 			DECLAREDCLASSES_GETTER = ALL_LOOKUP.findSpecial(Class.class, "getDeclaredClasses0",
 					MethodType.methodType(Class[].class), Class.class);
+			CLASSLOADER_GETTER = ALL_LOOKUP.findSpecial(Class.class, "getClassLoader0",
+					MethodType.methodType(ClassLoader.class), Class.class);
 		} catch (final Throwable e) {
 			throw new Error(e);
 		}
@@ -83,7 +86,7 @@ public final class LookupUtil {
 
 	public static Class<?>[] getDeclaredClasses(final Class<?> clazz) {
 		try {
-			return (Class<?>[]) DECLAREDCLASSES_GETTER.invoke(clazz);
+			return (Class<?>[]) DECLAREDCLASSES_GETTER.invokeExact(clazz);
 		} catch (final Throwable e) {
 			throw new RuntimeException(e);
 		}
@@ -91,7 +94,7 @@ public final class LookupUtil {
 
 	public static <T> Constructor<T>[] getDeclaredConstructors(final Class<T> clazz) {
 		try {
-			return (Constructor<T>[]) CONSTRUCTORS_GETTER.invoke(clazz, false);
+			return (Constructor<T>[]) CONSTRUCTORS_GETTER.invokeExact(clazz, false);
 		} catch (final Throwable e) {
 			throw new RuntimeException(e);
 		}
@@ -99,7 +102,7 @@ public final class LookupUtil {
 
 	public static Field[] getDeclaredFields(final Class<?> clazz) {
 		try {
-			return (Field[]) FIELDS_GETTER.invoke(clazz, false);
+			return (Field[]) FIELDS_GETTER.invokeExact(clazz, false);
 		} catch (final Throwable e) {
 			throw new RuntimeException(e);
 		}
@@ -107,7 +110,7 @@ public final class LookupUtil {
 
 	public static Method[] getDeclaredMethods(final Class<?> clazz) {
 		try {
-			return (Method[]) METHODS_GETTER.invoke(clazz, false);
+			return (Method[]) METHODS_GETTER.invokeExact(clazz, false);
 		} catch (final Throwable e) {
 			throw new RuntimeException(e);
 		}
@@ -147,6 +150,14 @@ public final class LookupUtil {
 
 	public static <T> T wrap(final Class<T> iFace, final MethodHandle handle) {
 		return MethodHandleProxies.asInterfaceInstance(iFace, handle);
+	}
+	
+	public static ClassLoader getClassLoader(Class<?> clazz) {
+		try {
+			return (ClassLoader) CLASSLOADER_GETTER.invokeExact(clazz);
+		} catch (Throwable e) {
+			throw new Error(e);
+		}
 	}
 
 	private LookupUtil() {

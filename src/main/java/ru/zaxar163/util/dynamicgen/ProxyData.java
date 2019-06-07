@@ -10,6 +10,7 @@ import org.objectweb.asm.Type;
 
 import ru.zaxar163.util.ClassUtil;
 import ru.zaxar163.util.DelegatingClassLoader;
+import ru.zaxar163.util.LookupUtil;
 import ru.zaxar163.util.dynamicgen.reflect.InvokerConstructor;
 import ru.zaxar163.util.dynamicgen.reflect.InvokerMethodF;
 import ru.zaxar163.util.dynamicgen.reflect.InvokerMethodR;
@@ -123,38 +124,33 @@ final class ProxyData {
 		}
 	}
 
-	/*
-	 * static ClassLoader defaultForVer(final Class<?> klass, final boolean sys) {
-	 * MultiClassLoader.INSTANCE.append(klass); return MultiClassLoader.INSTANCE; }
-	 */
-
 	static DelegatingClassLoader forConstructor(final Constructor<?> cons) {
-		return DelegatingClassLoader.forClassLoader(cons.getDeclaringClass().getClassLoader()).add(MAGIC_CLASS)
+		return DelegatingClassLoader.forClassLoader(LookupUtil.getClassLoader(cons.getDeclaringClass())).add(MAGIC_CLASS)
 				.add(InvokerConstructor.class);
 	}
 
 	static DelegatingClassLoader forMethodF(final Constructor<?> m) {
-		return DelegatingClassLoader.forClassLoader(m.getDeclaringClass().getClassLoader()).add(MAGIC_CLASS)
+		return DelegatingClassLoader.forClassLoader(LookupUtil.getClassLoader(m.getDeclaringClass())).add(MAGIC_CLASS)
 				.add(InvokerMethodF.class);
 	}
 
 	static DelegatingClassLoader forMethodF(final java.lang.reflect.Method m) {
-		return DelegatingClassLoader.forClassLoader(m.getDeclaringClass().getClassLoader()).add(MAGIC_CLASS)
+		return DelegatingClassLoader.forClassLoader(LookupUtil.getClassLoader(m.getDeclaringClass())).add(MAGIC_CLASS)
 				.add(InvokerMethodF.class);
 	}
 
 	static DelegatingClassLoader forMethodR(final Constructor<?> m) {
-		return DelegatingClassLoader.forClassLoader(m.getDeclaringClass().getClassLoader()).add(MAGIC_CLASS)
+		return DelegatingClassLoader.forClassLoader(LookupUtil.getClassLoader(m.getDeclaringClass())).add(MAGIC_CLASS)
 				.add(InvokerMethodR.class);
 	}
 
 	static DelegatingClassLoader forMethodR(final java.lang.reflect.Method m) {
-		return DelegatingClassLoader.forClassLoader(m.getDeclaringClass().getClassLoader()).add(MAGIC_CLASS)
+		return DelegatingClassLoader.forClassLoader(LookupUtil.getClassLoader(m.getDeclaringClass())).add(MAGIC_CLASS)
 				.add(InvokerMethodR.class);
 	}
 
 	static DelegatingClassLoader forMisc(final Class<?> m) {
-		return DelegatingClassLoader.forClassLoader(m.getClassLoader()).add(MAGIC_CLASS);
+		return DelegatingClassLoader.forClassLoader(LookupUtil.getClassLoader(m)).add(MAGIC_CLASS);
 	}
 
 	static DelegatingClassLoader forProxy(final ClassLoader loader) {
