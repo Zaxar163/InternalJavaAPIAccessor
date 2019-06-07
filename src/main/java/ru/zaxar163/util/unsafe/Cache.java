@@ -55,7 +55,7 @@ public final class Cache<T> {
 
 	private Object cleanerReg(final Object obj) {
 		Cacher c = new Cacher(obj, this, null);
-		ProxyList.UNSAFE.putObject(c, CLEANER_F_OFFSET, ProxyList.CLEANER.create(obj, c));
+		ProxyList.UNSAFE.putObject(c, CLEANER_F_OFFSET, new WeakReference<Object>(ProxyList.CLEANER.create(obj, c)));
 		return obj;
 	}
 
