@@ -19,27 +19,7 @@ import ru.zaxar163.util.LookupUtil;
  * For lots of instances.
  */
 public final class FastDynamicProxy<T> {
-	private static Type[] typify(final Class<?>[] clazzs) {
-		final Type[] types = new Type[clazzs.length];
-		for (int i = 0; i < types.length; i++)
-			types[i] = Type.getType(clazzs[i]);
-		return types;
-	}
-
-	private final Class<?> clazz;
-	private final ClassLoader loader;
-
-	private final Class<T> proxy;
-	private final MethodHandle proxyC;
-
-	public FastDynamicProxy(final ClassLoader loader, final Class<?> clazz, final Class<T> proxy) {
-		this.loader = ProxyData.forProxy(loader).add(clazz).add(proxy);
-		this.clazz = clazz;
-		this.proxy = proxy;
-		this.proxyC = emitProxy();
-	}
-
-	private static Class<?>[] asClazz(final Type[] clazzs, ClassLoader ldr) {
+	private static Class<?>[] asClazz(final Type[] clazzs, final ClassLoader ldr) {
 		final Class<?>[] types = new Class<?>[clazzs.length];
 		for (int i = 0; i < types.length; i++)
 			switch (clazzs[i].getSort()) {
@@ -72,6 +52,27 @@ public final class FastDynamicProxy<T> {
 				break;
 			}
 		return types;
+	}
+
+	private static Type[] typify(final Class<?>[] clazzs) {
+		final Type[] types = new Type[clazzs.length];
+		for (int i = 0; i < types.length; i++)
+			types[i] = Type.getType(clazzs[i]);
+		return types;
+	}
+
+	private final Class<?> clazz;
+
+	private final ClassLoader loader;
+	private final Class<T> proxy;
+
+	private final MethodHandle proxyC;
+
+	public FastDynamicProxy(final ClassLoader loader, final Class<?> clazz, final Class<T> proxy) {
+		this.loader = ProxyData.forProxy(loader).add(clazz).add(proxy);
+		this.clazz = clazz;
+		this.proxy = proxy;
+		this.proxyC = emitProxy();
 	}
 
 	private Method asGet(final String name, final int args) {

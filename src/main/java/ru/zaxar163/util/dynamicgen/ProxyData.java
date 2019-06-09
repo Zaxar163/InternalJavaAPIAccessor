@@ -125,8 +125,8 @@ final class ProxyData {
 	}
 
 	static DelegatingClassLoader forConstructor(final Constructor<?> cons) {
-		return DelegatingClassLoader.forClassLoader(LookupUtil.getClassLoader(cons.getDeclaringClass())).add(MAGIC_CLASS)
-				.add(InvokerConstructor.class);
+		return DelegatingClassLoader.forClassLoader(LookupUtil.getClassLoader(cons.getDeclaringClass()))
+				.add(MAGIC_CLASS).add(InvokerConstructor.class);
 	}
 
 	static DelegatingClassLoader forMethodF(final Constructor<?> m) {

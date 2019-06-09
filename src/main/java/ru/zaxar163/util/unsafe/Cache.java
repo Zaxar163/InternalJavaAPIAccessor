@@ -12,8 +12,8 @@ import ru.zaxar163.util.proxies.ProxyList;
 public final class Cache<T> {
 	private static final class Cacher implements Runnable {
 		private final Cache<?> c;
-		private final WeakReference<Object> obj;
 		private final Object cleaner;
+		private final WeakReference<Object> obj;
 
 		private Cacher(final Object obj, final Cache<?> c, final Object cleaner) {
 			this.obj = new WeakReference<>(obj);
@@ -29,12 +29,14 @@ public final class Cache<T> {
 					c.cache[++c.current] = obj.get();
 				c.lock.notify();
 			}
-			if (((WeakReference<Object>)cleaner).get() != null)
-				ProxyList.CLEANER.add(((WeakReference<Object>)cleaner).get());
+			if (((WeakReference<Object>) cleaner).get() != null)
+				ProxyList.CLEANER.add(((WeakReference<Object>) cleaner).get());
 		}
 	}
-	private static final long CLEANER_F_OFFSET = ProxyList.UNSAFE.objectFieldOffset(
-			Arrays.stream(LookupUtil.getDeclaredFields(Cacher.class)).filter(e -> e.getType().equals(Object.class)).findFirst().get());
+
+	private static final long CLEANER_F_OFFSET = ProxyList.UNSAFE
+			.objectFieldOffset(Arrays.stream(LookupUtil.getDeclaredFields(Cacher.class))
+					.filter(e -> e.getType().equals(Object.class)).findFirst().get());
 
 	private final Object[] cache;
 	private int current;
@@ -54,7 +56,7 @@ public final class Cache<T> {
 	}
 
 	private Object cleanerReg(final Object obj) {
-		Cacher c = new Cacher(obj, this, null);
+		final Cacher c = new Cacher(obj, this, null);
 		ProxyList.UNSAFE.putObject(c, CLEANER_F_OFFSET, new WeakReference<Object>(ProxyList.CLEANER.create(obj, c)));
 		return obj;
 	}

@@ -72,8 +72,8 @@ public final class DynamicInterfaceEmitter {
 	}
 
 	public static void main(final String[] args) {
-		System.out.println(generate(ClassUtil.nonThrowingFirstClass("sun.misc.MessageUtils"), "MessageUtilsProxy",
-				"ru.zaxar163.util.proxies", false,
+		System.out.println(generate(ClassUtil.nonThrowingFirstClass("java.lang.ClassLoader$NativeLibrary"),
+				"NativeLibraryProxy", "ru.zaxar163.util.proxies", false,
 				Collections.emptySet()/* new HashSet<>(Arrays.asList("throwException")) */));
 	}
 

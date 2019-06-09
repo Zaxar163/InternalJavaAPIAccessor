@@ -17,12 +17,12 @@ import java.util.Objects;
 public final class LookupUtil {
 	public static final Lookup ALL_LOOKUP;
 	public static final int ALL_MODES = Lookup.PUBLIC | Lookup.PRIVATE | Lookup.PROTECTED | Lookup.PACKAGE;
+	private static final MethodHandle CLASSLOADER_GETTER;
 	private static final MethodHandle CONSTRUCTORS_GETTER;
 	private static final MethodHandle DECLAREDCLASSES_GETTER;
 	private static final MethodHandle FIELDS_GETTER;
 	private static final MethodHandle LOOKUP_CONSTRUCTOR;
 	private static final MethodHandle METHODS_GETTER;
-	private static final MethodHandle CLASSLOADER_GETTER;
 
 	static {
 		try {
@@ -77,6 +77,14 @@ public final class LookupUtil {
 
 	public static MethodHandle fromWrapped(final Object handle) {
 		return MethodHandleProxies.wrapperInstanceTarget(handle);
+	}
+
+	public static ClassLoader getClassLoader(final Class<?> clazz) {
+		try {
+			return (ClassLoader) CLASSLOADER_GETTER.invokeExact(clazz);
+		} catch (final Throwable e) {
+			throw new Error(e);
+		}
 	}
 
 	public static Constructor<?> getConstructor(final Class<?> cls, final Class<?>... types) {
@@ -150,14 +158,6 @@ public final class LookupUtil {
 
 	public static <T> T wrap(final Class<T> iFace, final MethodHandle handle) {
 		return MethodHandleProxies.asInterfaceInstance(iFace, handle);
-	}
-	
-	public static ClassLoader getClassLoader(Class<?> clazz) {
-		try {
-			return (ClassLoader) CLASSLOADER_GETTER.invokeExact(clazz);
-		} catch (Throwable e) {
-			throw new Error(e);
-		}
 	}
 
 	private LookupUtil() {

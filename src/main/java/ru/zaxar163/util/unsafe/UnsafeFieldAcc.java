@@ -19,13 +19,25 @@ public final class UnsafeFieldAcc {
 		}
 	}
 
+	public boolean getAndSetBoolean(final Object inst, final boolean to) {
+		if (base == null) {
+			final boolean ret = ProxyList.UNSAFE.getBooleanVolatile(inst, offset);
+			ProxyList.UNSAFE.putBooleanVolatile(inst, offset, to);
+			return ret;
+		} else {
+			final boolean ret = ProxyList.UNSAFE.getBooleanVolatile(base, offset);
+			ProxyList.UNSAFE.putBooleanVolatile(base, offset, to);
+			return ret;
+		}
+	}
+
 	public byte getAndSetByte(final Object inst, final byte to) {
 		if (base == null) {
 			final byte ret = ProxyList.UNSAFE.getByteVolatile(inst, offset);
 			ProxyList.UNSAFE.putByteVolatile(inst, offset, to);
 			return ret;
 		} else {
-			final byte ret = ProxyList.UNSAFE.getByte(base, offset);
+			final byte ret = ProxyList.UNSAFE.getByteVolatile(base, offset);
 			ProxyList.UNSAFE.putByteVolatile(base, offset, to);
 			return ret;
 		}
@@ -66,6 +78,11 @@ public final class UnsafeFieldAcc {
 		}
 	}
 
+	public boolean getBoolean(final Object inst) {
+		return base == null ? ProxyList.UNSAFE.getBooleanVolatile(inst, offset)
+				: ProxyList.UNSAFE.getBooleanVolatile(base, offset);
+	}
+
 	public byte getByte(final Object inst) {
 		return base == null ? ProxyList.UNSAFE.getByteVolatile(inst, offset)
 				: ProxyList.UNSAFE.getByteVolatile(base, offset);
@@ -99,6 +116,13 @@ public final class UnsafeFieldAcc {
 	public short getShort(final Object inst) {
 		return base == null ? ProxyList.UNSAFE.getShortVolatile(inst, offset)
 				: ProxyList.UNSAFE.getShortVolatile(base, offset);
+	}
+
+	public void setBoolean(final Object inst, final boolean to) {
+		if (base == null)
+			ProxyList.UNSAFE.putBooleanVolatile(inst, offset, to);
+		else
+			ProxyList.UNSAFE.putBooleanVolatile(base, offset, to);
 	}
 
 	public void setByte(final Object inst, final byte to) {

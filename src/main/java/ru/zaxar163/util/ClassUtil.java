@@ -8,8 +8,6 @@ import java.util.Arrays;
 public final class ClassUtil {
 	private final static MethodHandle DEFINECLASS_NATIVE0;
 	private final static MethodHandle DEFINECLASS_NATIVE1;
-	private final static MethodHandle DEFINECLASS0;
-	private final static MethodHandle DEFINECLASS1;
 	private final static MethodHandle FINDLOADEDCLASS;
 	private final static MethodHandle FINDLOADEDCLASS_SCL;
 	private final static MethodHandle FORNAME;
@@ -22,12 +20,6 @@ public final class ClassUtil {
 			FINDLOADEDCLASS = LookupUtil.ALL_LOOKUP.findVirtual(ClassLoader.class, "findLoadedClass0",
 					MethodType.methodType(Class.class, String.class));
 			FINDLOADEDCLASS_SCL = FINDLOADEDCLASS.bindTo(SCL);
-			DEFINECLASS0 = LookupUtil.ALL_LOOKUP.findSpecial(ClassLoader.class, "defineClass", MethodType
-					.methodType(Class.class, String.class, byte[].class, int.class, int.class, ProtectionDomain.class),
-					ClassLoader.class);
-			DEFINECLASS1 = LookupUtil.ALL_LOOKUP.findSpecial(ClassLoader.class, "defineClass",
-					MethodType.methodType(Class.class, String.class, java.nio.ByteBuffer.class, ProtectionDomain.class),
-					ClassLoader.class);
 			FORNAME = LookupUtil.ALL_LOOKUP.findStatic(Class.class, "forName0",
 					MethodType.methodType(Class.class, String.class, boolean.class, ClassLoader.class, Class.class));
 		} catch (final Throwable e) {
@@ -58,24 +50,6 @@ public final class ClassUtil {
 		} catch (final Throwable e) {
 		}
 		JAVA9 = java9;
-	}
-
-	public static Class<?> defineClass(final ClassLoader cl, final String name, final byte[] b, final int off,
-			final int len, final ProtectionDomain protectionDomain) {
-		try {
-			return (Class<?>) DEFINECLASS0.invokeExact(cl, name, b, off, len, protectionDomain);
-		} catch (final Throwable e) {
-			throw new Error(e);
-		}
-	}
-
-	public static Class<?> defineClass(final ClassLoader cl, final String name, final java.nio.ByteBuffer b,
-			final ProtectionDomain protectionDomain) {
-		try {
-			return (Class<?>) DEFINECLASS1.invokeExact(cl, name, b, protectionDomain);
-		} catch (final Throwable e) {
-			throw new Error(e);
-		}
 	}
 
 	public static Class<?> defineClass0_native(final ClassLoader cl, final String name, final byte[] b, final int off,

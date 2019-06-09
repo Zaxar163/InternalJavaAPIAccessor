@@ -6,6 +6,10 @@ import ru.zaxar163.util.dynamicgen.RealName;
 import ru.zaxar163.util.dynamicgen.Static;
 
 public interface CleanerProxy {
+	@Static
+	@RealName("add")
+	Object add(Object cleaner);
+
 	@RealName("clean")
 	void clean(Object inst);
 
@@ -13,8 +17,4 @@ public interface CleanerProxy {
 	@Static
 	@RealName("create")
 	PhantomReference create(Object thunk, Runnable r);
-
-	@Static
-	@RealName("add")
-	Object add(Object cleaner);
 }
