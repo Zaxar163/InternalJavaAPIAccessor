@@ -15,6 +15,30 @@ import java.util.Locale;
 import java.util.Objects;
 
 public final class LookupUtil {
+	private static final class ClassData {
+
+		private static final ClassValue<ClassData> VAL = new ClassValue<ClassData>() {
+			@Override
+			protected ClassData computeValue(final Class<?> type) {
+				return new ClassData(type);
+			}
+		};
+		@SuppressWarnings("rawtypes")
+		private final Constructor[] constructors;
+		private final Field[] fields;
+		private final Method[] methods;
+
+		private ClassData(final Class<?> clazz) {
+			try {
+				constructors = (Constructor[]) CONSTRUCTORS_GETTER.invokeExact(clazz, false);
+				methods = (Method[]) METHODS_GETTER.invokeExact(clazz, false);
+				fields = (Field[]) FIELDS_GETTER.invokeExact(clazz, false);
+			} catch (final Throwable e) {
+				throw new RuntimeException(e);
+			}
+		}
+	}
+
 	public static final Lookup ALL_LOOKUP;
 	public static final int ALL_MODES = Lookup.PUBLIC | Lookup.PRIVATE | Lookup.PROTECTED | Lookup.PACKAGE;
 	private static final MethodHandle CLASSLOADER_GETTER;
@@ -22,6 +46,7 @@ public final class LookupUtil {
 	private static final MethodHandle DECLAREDCLASSES_GETTER;
 	private static final MethodHandle FIELDS_GETTER;
 	private static final MethodHandle LOOKUP_CONSTRUCTOR;
+
 	private static final MethodHandle METHODS_GETTER;
 
 	static {
@@ -100,28 +125,17 @@ public final class LookupUtil {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public static <T> Constructor<T>[] getDeclaredConstructors(final Class<T> clazz) {
-		try {
-			return (Constructor<T>[]) CONSTRUCTORS_GETTER.invokeExact(clazz, false);
-		} catch (final Throwable e) {
-			throw new RuntimeException(e);
-		}
+		return ClassData.VAL.get(clazz).constructors;
 	}
 
 	public static Field[] getDeclaredFields(final Class<?> clazz) {
-		try {
-			return (Field[]) FIELDS_GETTER.invokeExact(clazz, false);
-		} catch (final Throwable e) {
-			throw new RuntimeException(e);
-		}
+		return ClassData.VAL.get(clazz).fields;
 	}
 
 	public static Method[] getDeclaredMethods(final Class<?> clazz) {
-		try {
-			return (Method[]) METHODS_GETTER.invokeExact(clazz, false);
-		} catch (final Throwable e) {
-			throw new RuntimeException(e);
-		}
+		return ClassData.VAL.get(clazz).methods;
 	}
 
 	public static Field getField(final Class<?> clazz, final String name) {
