@@ -40,9 +40,9 @@ class DataAccessor2 {
 
 final class ProxyData {
 	static final AtomicInteger cnter = new AtomicInteger(0);
-	static final Method invokeC = Method.getMethod(InvokerConstructor.class.getDeclaredMethods()[0]);
-	static final Method invokeF = Method.getMethod(InvokerMethodF.class.getDeclaredMethods()[0]);
-	static final Method invokeR = Method.getMethod(InvokerMethodR.class.getDeclaredMethods()[0]);
+	static final Method invokeC = Method.getMethod(LookupUtil.getDeclaredMethods(InvokerConstructor.class)[0]);
+	static final Method invokeF = Method.getMethod(LookupUtil.getDeclaredMethods(InvokerMethodF.class)[0]);
+	static final Method invokeR = Method.getMethod(LookupUtil.getDeclaredMethods(InvokerMethodR.class)[0]);
 	static final Class<?> MAGIC_CLASS;
 
 	static final String MAGIC_PACKAGE;
@@ -159,7 +159,8 @@ final class ProxyData {
 
 	static String nextName(final boolean magic) {
 		if (magic)
-			return MAGIC_PACKAGE + "/Proxy" + r.nextInt(Integer.MAX_VALUE) + "ImplGenerated";
+			return MAGIC_PACKAGE + "/Proxy" + r.nextInt(Integer.MAX_VALUE) + "N" + cnter.getAndIncrement()
+					+ "ImplGenerated";
 		return "ru/zaxar163/unsafe/Proxy" + r.nextInt(Integer.MAX_VALUE) + "N" + cnter.getAndIncrement()
 				+ "ImplGenerated";
 	}
