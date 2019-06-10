@@ -151,12 +151,6 @@ public interface UnsafeProxy {
 	@RealName("loadFence")
 	void loadFence();
 
-	@RealName("monitorEnter")
-	void monitorEnter(Object obj0);
-
-	@RealName("monitorExit")
-	void monitorExit(Object obj0);
-
 	@RealName("objectFieldOffset")
 	long objectFieldOffset(Field obj0);
 
@@ -168,9 +162,6 @@ public interface UnsafeProxy {
 
 	@RealName("putAddress")
 	void putAddress(long obj0, long obj1);
-
-	@RealName("putBoolean")
-	void putBoolean(Object obj0, int obj1, boolean obj2);
 
 	@RealName("putBoolean")
 	void putBoolean(Object obj0, long obj1, boolean obj2);
@@ -276,15 +267,6 @@ public interface UnsafeProxy {
 
 	@RealName("storeFence")
 	void storeFence();
-
-	@RealName("throwException")
-	void throwException(Throwable obj0);
-
-	@RealName("throwIllegalAccessError")
-	void throwIllegalAccessError();
-
-	@RealName("tryMonitorEnter")
-	boolean tryMonitorEnter(Object obj0);
 
 	@RealName("unpark")
 	void unpark(Object obj0);

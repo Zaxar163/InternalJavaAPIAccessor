@@ -5,18 +5,36 @@ import ru.zaxar163.util.LookupUtil;
 import ru.zaxar163.util.proxies.ProxyList;
 
 public final class StackTraceUtil {
+	private static class ContextGetterSM extends SecurityManager {
+		private static final long INITIALIZED_OFFSET = ProxyList.UNSAFE
+				.objectFieldOffset(LookupUtil.getField(SecurityManager.class, "initialized", boolean.class));
+
+		private ContextGetterSM() {
+		}
+
+		@Override
+		public Class<?>[] getClassContext() {
+			return super.getClassContext();
+		}
+
+		private ContextGetterSM selfInit() {
+			ProxyList.UNSAFE.putBoolean(this, INITIALIZED_OFFSET, true);
+			return this;
+		}
+	}
+
+	private static final ContextGetterSM CALLER_GETTER = ((ContextGetterSM) ProxyList.UNSAFE
+			.allocateInstance(ContextGetterSM.class)).selfInit();
+
 	private static final long CONTECT_LOADER_OFFSET = ProxyList.UNSAFE
 			.objectFieldOffset(LookupUtil.getField(Thread.class, "contextClassLoader", ClassLoader.class));
+
 	private static final StackTraceElement[] EMPTY_STACK_TRACE = new StackTraceElement[0];
 
-	public static Class<?>[] trace(final Class<?> caller) {
-		final StackTraceElement[] trace = uncheckedTrace(Thread.currentThread());
-		ClassLoader ldr = LookupUtil.getClassLoader(caller);
-		if (ldr == null)
-			ldr = ClassUtil.SCL;
-		final Class<?>[] ret = new Class<?>[trace.length - 2];
-		for (int i = 0; i < ret.length; i++)
-			ret[i] = ClassUtil.findLoadedClass(ldr, trace[i - 2].getClassName());
+	public static Class<?>[] trace() {
+		final Class<?>[] preRet = CALLER_GETTER.getClassContext();
+		final Class<?>[] ret = new Class<?>[preRet.length - 3];
+		System.arraycopy(preRet, 3, ret, 0, ret.length);
 		return ret;
 	}
 

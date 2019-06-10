@@ -18,14 +18,15 @@ repositories {
 
 dependencies {
 	compile 'org.ow2.asm:asm:7.1'
+	compile 'org.bytedeco.javacpp-presets:llvm-platform:7.0.1-1.4.4'
 }
 
 jar {
 	manifest.attributes("Main-Class": getProperty('mainClass'))
-	/*from(configurations.runtime.collect { it.isDirectory() ? it : zipTree(it) }) {
+	from(configurations.runtime.collect { it.isDirectory() ? it : zipTree(it) }) {
 		exclude "META-INF/*"
 		exclude "module-info.class"
-	}*/
+	}
 	exclude('ru/zaxar163/demonstration/**')
 	exclude('ru/zaxar163/unsafe/xlevel/**')
 }
