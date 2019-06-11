@@ -1,5 +1,6 @@
 plugins {
 	id 'java'
+	id 'io.franzbecker.gradle-lombok' version '1.14'
 	id 'eclipse'
 	id 'idea'
 }
@@ -29,4 +30,9 @@ jar {
 	}
 	exclude('ru/zaxar163/demonstration/**')
 	exclude('ru/zaxar163/unsafe/xlevel/**')
+}
+
+lombok {
+	version = '1.18.8'
+	sha256 = ''
 }
