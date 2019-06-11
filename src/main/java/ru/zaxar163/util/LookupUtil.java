@@ -133,12 +133,36 @@ public class LookupUtil {
 		return ClassData.VAL.get(clazz).constructors;
 	}
 
+	public static <T> Constructor<T>[] getDeclaredConstructorsNonCache(final Class<T> clazz) {
+		try {
+			return (Constructor<T>[]) CONSTRUCTORS_GETTER.invokeExact(clazz, false);
+		} catch (final Throwable e) {
+			throw new RuntimeException(e);
+		}
+	}
+
 	public static Field[] getDeclaredFields(final Class<?> clazz) {
 		return ClassData.VAL.get(clazz).fields;
 	}
 
+	public static Field[] getDeclaredFieldsNonCache(final Class<?> clazz) {
+		try {
+			return (Field[]) FIELDS_GETTER.invokeExact(clazz, false);
+		} catch (final Throwable e) {
+			throw new RuntimeException(e);
+		}
+	}
+
 	public static Method[] getDeclaredMethods(final Class<?> clazz) {
 		return ClassData.VAL.get(clazz).methods;
+	}
+
+	public static Method[] getDeclaredMethodsNonCache(final Class<?> clazz) {
+		try {
+			return (Method[]) METHODS_GETTER.invokeExact(clazz, false);
+		} catch (final Throwable e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	public static Field getField(final Class<?> clazz, final String name) {
