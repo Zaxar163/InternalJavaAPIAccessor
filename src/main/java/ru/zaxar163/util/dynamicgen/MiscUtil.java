@@ -14,11 +14,13 @@ import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
+import lombok.experimental.UtilityClass;
 import ru.zaxar163.util.ClassUtil;
 import ru.zaxar163.util.LookupUtil;
 import ru.zaxar163.util.proxies.ProxyList;
 
-public final class MiscUtil {
+@UtilityClass
+public class MiscUtil {
 	private static final Set<Field> objectFields;
 	private static final Map<Class<?>, Object> objs;
 	private static final ConcurrentHashMap<Class<?>, Supplier<Object>> sameSizes;
@@ -84,8 +86,5 @@ public final class MiscUtil {
 			final Collection<String> excluded) {
 		final Class<?> proxy = sameSizeClass(loader, klass, excluded);
 		return () -> ProxyList.UNSAFE.allocateInstance(proxy);
-	}
-
-	private MiscUtil() {
 	}
 }

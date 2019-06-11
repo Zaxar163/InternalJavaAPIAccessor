@@ -3,8 +3,10 @@ package ru.zaxar163.util.unsafe;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodType;
 
+import lombok.experimental.UtilityClass;
 import ru.zaxar163.util.LookupUtil;
 
+@UtilityClass
 public class ObjectUtil {
 	private static final MethodHandle toString;
 	static {
@@ -44,8 +46,5 @@ public class ObjectUtil {
 		} catch (final Throwable e) {
 			throw new Error(e);
 		}
-	}
-
-	private ObjectUtil() {
 	}
 }

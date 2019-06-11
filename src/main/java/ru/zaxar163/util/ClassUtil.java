@@ -5,7 +5,10 @@ import java.lang.invoke.MethodType;
 import java.security.ProtectionDomain;
 import java.util.Arrays;
 
-public final class ClassUtil {
+import lombok.experimental.UtilityClass;
+
+@UtilityClass
+public class ClassUtil {
 	private final static MethodHandle DEFINECLASS_NATIVE0;
 	private final static MethodHandle DEFINECLASS_NATIVE1;
 	private final static MethodHandle FINDLOADEDCLASS;
@@ -127,8 +130,5 @@ public final class ClassUtil {
 
 	public static Class<?> nonThrowingFirstClass(final String... search) {
 		return nonThrowingFirstClass(SCL, search);
-	}
-
-	private ClassUtil() {
 	}
 }

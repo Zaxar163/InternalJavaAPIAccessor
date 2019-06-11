@@ -11,10 +11,12 @@ import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
+import lombok.experimental.UtilityClass;
 import ru.zaxar163.util.dynamicgen.reflect.InvokerMethodF;
 import ru.zaxar163.util.proxies.ProxyList;
 
-public final class MethodAccGenF {
+@UtilityClass
+public class MethodAccGenF {
 	public static void emit(final Type clazz, final Method method, final int type, final ClassVisitor cw,
 			final Type ret) {
 		final GeneratorAdapter m = new GeneratorAdapter(Opcodes.ACC_PUBLIC, invokeF, null,
@@ -66,8 +68,5 @@ public final class MethodAccGenF {
 		} catch (final Throwable e) {
 			throw new RuntimeException(e);
 		}
-	}
-
-	private MethodAccGenF() {
 	}
 }

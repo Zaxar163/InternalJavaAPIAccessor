@@ -5,12 +5,14 @@ import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Locale;
 
+import lombok.experimental.UtilityClass;
 import ru.zaxar163.util.LookupUtil;
 import ru.zaxar163.util.dynamicgen.ConstructorAccGenF;
 import ru.zaxar163.util.dynamicgen.reflect.InvokerConstructor;
 import ru.zaxar163.util.proxies.ProxyList;
 
-public final class InstanceLookupUtil {
+@UtilityClass
+public class InstanceLookupUtil {
 	private static final InvokerConstructor LOOKUP_SUPERPERM_CONSTRUCTOR;
 	private static final InvokerConstructor LOOKUP_UNSAFE_CONSTRUCTOR;
 	public static final int TRUSTED;
@@ -73,8 +75,5 @@ public final class InstanceLookupUtil {
 		} catch (final Throwable e) {
 			throw new Error(e);
 		}
-	}
-
-	private InstanceLookupUtil() {
 	}
 }

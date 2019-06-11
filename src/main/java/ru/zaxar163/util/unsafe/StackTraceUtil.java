@@ -1,9 +1,11 @@
 package ru.zaxar163.util.unsafe;
 
+import lombok.experimental.UtilityClass;
 import ru.zaxar163.util.ClassUtil;
 import ru.zaxar163.util.LookupUtil;
 import ru.zaxar163.util.proxies.ProxyList;
 
+@UtilityClass
 public final class StackTraceUtil {
 	private static class ContextGetterSM extends SecurityManager {
 		private static final long INITIALIZED_OFFSET = ProxyList.UNSAFE
@@ -54,8 +56,5 @@ public final class StackTraceUtil {
 		if (stackTrace == null)
 			return EMPTY_STACK_TRACE;
 		return stackTrace;
-	}
-
-	private StackTraceUtil() {
 	}
 }

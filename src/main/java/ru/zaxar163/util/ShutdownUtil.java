@@ -3,7 +3,10 @@ package ru.zaxar163.util;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodType;
 
-public final class ShutdownUtil {
+import lombok.experimental.UtilityClass;
+
+@UtilityClass
+public class ShutdownUtil {
 	private static final MethodHandle ShutdownExit;
 	private static final MethodHandle ShutdownHalt;
 	private static final MethodHandle ShutdownHalt0;
@@ -46,8 +49,5 @@ public final class ShutdownUtil {
 		} catch (final Throwable e) {
 			throw new Error(e);
 		}
-	}
-
-	private ShutdownUtil() {
 	}
 }

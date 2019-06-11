@@ -1,5 +1,6 @@
 package ru.zaxar163.util.unsafe;
 
+import lombok.experimental.UtilityClass;
 import ru.zaxar163.util.ClassUtil;
 import ru.zaxar163.util.LookupUtil;
 import ru.zaxar163.util.dynamicgen.ConstructorAccGenR;
@@ -7,7 +8,8 @@ import ru.zaxar163.util.dynamicgen.MethodAccGenF;
 import ru.zaxar163.util.dynamicgen.reflect.InvokerConstructor;
 import ru.zaxar163.util.dynamicgen.reflect.InvokerMethodF;
 
-public final class InnocuousThreadUtil {
+@UtilityClass
+public class InnocuousThreadUtil {
 	private static final Class<?> CLASS_THREAD;
 	private static final InvokerConstructor CONSTRUCTOR_FULL;
 	private static final InvokerConstructor CONSTRUCTOR_RUNNABLE;
@@ -71,8 +73,5 @@ public final class InnocuousThreadUtil {
 		} catch (final Throwable t) {
 			throw new Error(t);
 		}
-	}
-
-	private InnocuousThreadUtil() {
 	}
 }

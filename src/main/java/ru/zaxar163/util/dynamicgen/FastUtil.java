@@ -1,9 +1,11 @@
 package ru.zaxar163.util.dynamicgen;
 
+import lombok.experimental.UtilityClass;
 import ru.zaxar163.util.proxies.ProxyList;
 import ru.zaxar163.util.proxies.UnsafeProxy;
 
-public final class FastUtil {
+@UtilityClass
+public class FastUtil {
 	private static final UnsafeProxy acc = ProxyList.UNSAFE;
 	private static final int bbaseOffset = (Integer) ProxyList.UNSAFE_FIELDS.get("ARRAY_BYTE_BASE_OFFSET");
 
@@ -22,8 +24,5 @@ public final class FastUtil {
 				return false;
 		}
 		return true;
-	}
-
-	private FastUtil() {
 	}
 }

@@ -8,12 +8,14 @@ import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.WritableByteChannel;
 
+import lombok.experimental.UtilityClass;
 import ru.zaxar163.util.ClassUtil;
 import ru.zaxar163.util.LookupUtil;
 import ru.zaxar163.util.dynamicgen.ConstructorAccGenR;
 import ru.zaxar163.util.dynamicgen.reflect.InvokerConstructor;
 
-public final class ChannelUtil {
+@UtilityClass
+public class ChannelUtil {
 	private static final InvokerConstructor CONSTRUCTOR_FILECH;
 	static {
 		try {
@@ -41,8 +43,5 @@ public final class ChannelUtil {
 
 	public static OutputStream outputFromChannel(final WritableByteChannel ch) {
 		return Channels.newOutputStream(ch);
-	}
-
-	private ChannelUtil() {
 	}
 }

@@ -7,12 +7,14 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import lombok.experimental.UtilityClass;
 import ru.zaxar163.util.ClassUtil;
 import ru.zaxar163.util.LookupUtil;
 import ru.zaxar163.util.dynamicgen.FastDynamicProxy;
 import ru.zaxar163.util.dynamicgen.FastStaticProxy;
 
-public final class ProxyList {
+@UtilityClass
+public class ProxyList {
 	public static final ClassLoaderProxy CLASSLOADER;
 	public static final CleanerProxy CLEANER;
 	public static final ThreadProxy THREAD;
@@ -44,8 +46,5 @@ public final class ProxyList {
 		} catch (final Throwable e) {
 			throw new Error(e);
 		}
-	}
-
-	private ProxyList() {
 	}
 }

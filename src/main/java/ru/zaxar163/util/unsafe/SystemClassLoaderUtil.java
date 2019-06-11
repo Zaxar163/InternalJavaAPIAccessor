@@ -6,12 +6,14 @@ import java.net.URLClassLoader;
 import java.util.Locale;
 import java.util.function.Predicate;
 
+import lombok.experimental.UtilityClass;
 import ru.zaxar163.util.ClassUtil;
 import ru.zaxar163.util.LookupUtil;
 import ru.zaxar163.util.dynamicgen.MethodAccGenR;
 import ru.zaxar163.util.dynamicgen.reflect.InvokerMethodR;
 
-public final class SystemClassLoaderUtil {
+@UtilityClass
+public class SystemClassLoaderUtil {
 	private static final InvokerMethodR MH_ADD;
 	public static final Object SYSTEM_CP;
 	public static final ClassLoader SYSYEM_LOADER;
@@ -61,8 +63,5 @@ public final class SystemClassLoaderUtil {
 
 	public static Object getURLCP(final URLClassLoader loader) {
 		return URLCL_CP_F.getObject(loader);
-	}
-
-	private SystemClassLoaderUtil() {
 	}
 }

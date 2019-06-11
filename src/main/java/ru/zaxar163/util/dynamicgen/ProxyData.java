@@ -8,6 +8,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
+import lombok.experimental.UtilityClass;
 import ru.zaxar163.util.ClassUtil;
 import ru.zaxar163.util.DelegatingClassLoader;
 import ru.zaxar163.util.LookupUtil;
@@ -16,29 +17,26 @@ import ru.zaxar163.util.dynamicgen.reflect.InvokerMethodF;
 import ru.zaxar163.util.dynamicgen.reflect.InvokerMethodR;
 import ru.zaxar163.util.proxies.ProxyList;
 
+@UtilityClass
 @Keep
 class DataAccessor1 {
 	@Keep
 	static Object newInstance(final Class<?> clazz) {
 		return ProxyList.UNSAFE.allocateInstance(clazz);
 	}
-
-	private DataAccessor1() {
-	}
 }
 
+@UtilityClass
 @Keep
 class DataAccessor2 {
 	@Keep
 	static Object newInstance(final Class<?> clazz) {
 		return MiscUtil.newInstance(clazz);
 	}
-
-	private DataAccessor2() {
-	}
 }
 
-final class ProxyData {
+@UtilityClass
+class ProxyData {
 	static final AtomicInteger cnter = new AtomicInteger(0);
 	static final Method invokeC = Method.getMethod(LookupUtil.getDeclaredMethods(InvokerConstructor.class)[0]);
 	static final Method invokeF = Method.getMethod(LookupUtil.getDeclaredMethods(InvokerMethodF.class)[0]);
@@ -181,8 +179,5 @@ final class ProxyData {
 		} catch (final Throwable e) {
 			throw new Error(e); // should never happen
 		}
-	}
-
-	private ProxyData() {
 	}
 }

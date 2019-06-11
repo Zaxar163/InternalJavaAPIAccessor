@@ -14,7 +14,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
-public final class LookupUtil {
+import lombok.experimental.UtilityClass;
+
+@UtilityClass
+public class LookupUtil {
 	private static final class ClassData {
 
 		private static final ClassValue<ClassData> VAL = new ClassValue<ClassData>() {
@@ -172,8 +175,5 @@ public final class LookupUtil {
 
 	public static <T> T wrap(final Class<T> iFace, final MethodHandle handle) {
 		return MethodHandleProxies.asInterfaceInstance(iFace, handle);
-	}
-
-	private LookupUtil() {
 	}
 }

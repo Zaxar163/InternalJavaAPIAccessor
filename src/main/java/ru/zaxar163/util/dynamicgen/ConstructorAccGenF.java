@@ -10,11 +10,13 @@ import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
+import lombok.experimental.UtilityClass;
 import ru.zaxar163.util.LookupUtil;
 import ru.zaxar163.util.dynamicgen.reflect.InvokerConstructor;
 import ru.zaxar163.util.proxies.ProxyList;
 
-public final class ConstructorAccGenF {
+@UtilityClass
+public class ConstructorAccGenF {
 	private static final Method newInst = Method.getMethod(LookupUtil.getDeclaredMethods(DataAccessor1.class)[0]);
 	private static final Type newInstC = Type.getType(DataAccessor1.class);
 
@@ -53,8 +55,5 @@ public final class ConstructorAccGenF {
 		} catch (final Throwable e) {
 			throw new RuntimeException(e);
 		}
-	}
-
-	private ConstructorAccGenF() {
 	}
 }

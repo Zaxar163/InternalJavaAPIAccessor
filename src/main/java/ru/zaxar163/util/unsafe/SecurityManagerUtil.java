@@ -2,9 +2,11 @@ package ru.zaxar163.util.unsafe;
 
 import java.lang.reflect.Field;
 
+import lombok.experimental.UtilityClass;
 import ru.zaxar163.util.LookupUtil;
 import ru.zaxar163.util.proxies.ProxyList;
 
+@UtilityClass
 public final class SecurityManagerUtil {
 	private static final Object secManagerBase;
 	private static final long secManagerOffset;
@@ -24,8 +26,5 @@ public final class SecurityManagerUtil {
 
 	public static void setSMNoCheck(final SecurityManager sm) {
 		ProxyList.UNSAFE.putObject(secManagerBase, secManagerOffset, sm);
-	}
-
-	private SecurityManagerUtil() {
 	}
 }
