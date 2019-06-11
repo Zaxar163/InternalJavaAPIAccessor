@@ -24,6 +24,9 @@ public interface ThreadProxy {
 	@RealName("setPriority0")
 	void setPriority(Thread thr, int newPriority);
 
+	@RealName("start0")
+	void start(Thread thr);
+
 	@RealName("suspend0")
 	void suspend(Thread thr);
 }
