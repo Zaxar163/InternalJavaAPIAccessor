@@ -59,7 +59,7 @@ public class MiscUtil {
 			final Collection<String> excluded) {
 		if (klass.equals(Object.class))
 			return Object.class;
-		final String className = ProxyData.nextName(true);
+		final String className = ProxyData.nextName();
 		final ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS);
 		cw.visit(Opcodes.V1_8, Opcodes.ACC_PUBLIC, className, null, ProxyData.MAGIC_SUPER, null);
 		int i = 0;
@@ -76,7 +76,7 @@ public class MiscUtil {
 		}
 		final byte[] code = cw.toByteArray();
 		try {
-			return ClassUtil.defineClass1_native(loader, className, code, 0, code.length, null, null);
+			return ClassUtil.defineClass(loader, className, code, 0, code.length, null);
 		} catch (final Throwable e) {
 			throw new RuntimeException(e);
 		}

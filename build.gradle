@@ -9,7 +9,7 @@ sourceCompatibility = targetCompatibility = '1.8'
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
 if (!hasProperty('mainClass')) {
-	ext.mainClass = 'ru.zaxar163.demonstration.InternalPlayGround'
+	ext.mainClass = 'ru.zaxar163.demonstration.JVMPlayGround'
 }
 
 repositories {
@@ -19,7 +19,7 @@ repositories {
 
 dependencies {
 	compile 'org.ow2.asm:asm:7.1'
-	compile 'org.bytedeco.javacpp-presets:llvm-platform:7.0.1-1.4.4'
+	compileOnly 'org.bytedeco.javacpp-presets:llvm-platform:7.0.1-1.4.4'
 }
 
 jar {
@@ -28,7 +28,7 @@ jar {
 		exclude "META-INF/*"
 		exclude "module-info.class"
 	}
-	exclude('ru/zaxar163/demonstration/**')
+	//exclude('ru/zaxar163/demonstration/**')
 	exclude('ru/zaxar163/unsafe/xlevel/**')
 }
 

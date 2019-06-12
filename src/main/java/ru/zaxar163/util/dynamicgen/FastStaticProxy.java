@@ -82,15 +82,15 @@ public final class FastStaticProxy<T> {
 								? new Method(m.getAnnotation(RealName.class).value(), Type.getMethodDescriptor(m))
 								: new Method(m.getName(), Type.getMethodDescriptor(m))));
 		final ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS);
-		final String name = ProxyData.nextName(true);
+		final String name = ProxyData.nextName();
 		cw.visit(Opcodes.V1_8, Opcodes.ACC_PUBLIC, name, null, ProxyData.MAGIC_SUPER,
 				new String[] { Type.getInternalName(proxy) });
 		emit(methods, cw, Type.getObjectType(name), Type.getObjectType(ProxyData.MAGIC_SUPER));
 		cw.visitEnd();
 		final byte[] code = cw.toByteArray();
 		try {
-			return LookupUtil.ALL_LOOKUP.unreflectConstructor(ClassUtil
-					.defineClass1_native(loader, name, code, 0, code.length, null, null).getDeclaredConstructors()[0]);
+			return LookupUtil.ALL_LOOKUP.unreflectConstructor(
+					ClassUtil.defineClass(loader, name, code, 0, code.length, null).getDeclaredConstructors()[0]);
 		} catch (final Throwable e) {
 			throw new RuntimeException(e);
 		}

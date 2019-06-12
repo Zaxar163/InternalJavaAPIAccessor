@@ -8,6 +8,7 @@ import ru.zaxar163.util.proxies.ProxyList;
 public final class UnsafeFieldAcc {
 	private final Object base;
 	private final long offset;
+	private final Class<?> type;
 
 	public UnsafeFieldAcc(final Field f) {
 		if ((f.getModifiers() & Modifier.STATIC) == 0) {
@@ -17,6 +18,33 @@ public final class UnsafeFieldAcc {
 			offset = ProxyList.UNSAFE.staticFieldOffset(f);
 			base = ProxyList.UNSAFE.staticFieldBase(f);
 		}
+		type = f.getType();
+	}
+
+	public Object get(final Object inst) {
+		if (type.isPrimitive())
+			switch (type.getName()) {
+			case "long":
+				return getLong(inst);
+			case "int":
+				return getInt(inst);
+			case "char":
+				return (char) getShort(inst);
+			case "byte":
+				return getByte(inst);
+			case "short":
+				return getShort(inst);
+			case "double":
+				return getDouble(inst);
+			case "float":
+				return getFloat(inst);
+			case "boolean":
+				return getBoolean(inst);
+			default:
+				return null;
+			}
+		else
+			return getObject(inst);
 	}
 
 	public boolean getAndSetBoolean(final Object inst, final boolean to) {
@@ -166,12 +194,5 @@ public final class UnsafeFieldAcc {
 		else
 			ProxyList.UNSAFE.putObjectVolatile(base, offset, to);
 
-	}
-
-	public void setShort(final Object inst, final short to) {
-		if (base == null)
-			ProxyList.UNSAFE.putShortVolatile(inst, offset, to);
-		else
-			ProxyList.UNSAFE.putShortVolatile(base, offset, to);
 	}
 }

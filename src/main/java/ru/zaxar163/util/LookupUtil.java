@@ -48,12 +48,19 @@ public class LookupUtil {
 	private static final MethodHandle CONSTRUCTORS_GETTER;
 	private static final MethodHandle DECLAREDCLASSES_GETTER;
 	private static final MethodHandle FIELDS_GETTER;
+	public static final boolean JAVA9;
 	private static final MethodHandle LOOKUP_CONSTRUCTOR;
-
 	private static final MethodHandle METHODS_GETTER;
 
 	static {
 		try {
+			boolean java9 = false;
+			try {
+				Class.forName("java.lang.StackWalker");
+				java9 = true;
+			} catch (final Throwable e) {
+			}
+			JAVA9 = java9;
 			MethodHandles.publicLookup(); // hack to cause classloading of Lookup
 			final Field allPermsLookup = Arrays.stream(Lookup.class.getDeclaredFields())
 					.filter(e -> e.getType().equals(Lookup.class)
@@ -61,8 +68,7 @@ public class LookupUtil {
 							&& e.getName().toLowerCase(Locale.US).contains("impl")
 							&& !e.getName().toLowerCase(Locale.US).contains("public"))
 					.findFirst().get();
-			allPermsLookup.setAccessible(true);
-			ALL_LOOKUP = (Lookup) allPermsLookup.get(null);
+			ALL_LOOKUP = JAVA9 ? Data1.newGet(allPermsLookup) : Data1.oldGet(allPermsLookup);
 			LOOKUP_CONSTRUCTOR = ALL_LOOKUP
 					.findVirtual(Lookup.class, "in", MethodType.methodType(Lookup.class, Class.class))
 					.bindTo(ALL_LOOKUP);

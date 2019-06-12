@@ -155,11 +155,8 @@ class ProxyData {
 		return DelegatingClassLoader.forClassLoader(loader).add(MAGIC_CLASS);
 	}
 
-	static String nextName(final boolean magic) {
-		if (magic)
-			return MAGIC_PACKAGE + "/Proxy" + r.nextInt(Integer.MAX_VALUE) + "N" + cnter.getAndIncrement()
-					+ "ImplGenerated";
-		return "ru/zaxar163/unsafe/Proxy" + r.nextInt(Integer.MAX_VALUE) + "N" + cnter.getAndIncrement()
+	static String nextName() {
+		return MAGIC_PACKAGE + "/Proxy" + r.nextInt(Integer.MAX_VALUE) + "N" + cnter.getAndIncrement()
 				+ "ImplGenerated";
 	}
 

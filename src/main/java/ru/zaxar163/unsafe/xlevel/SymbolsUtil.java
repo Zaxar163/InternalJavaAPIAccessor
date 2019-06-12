@@ -30,36 +30,11 @@ public class SymbolsUtil {
 			}
 		}
 
-		public static Object getFromNarrowPtr(final long address) {
-			if (address == 0)
-				return null;
-			final Ptr2Obj ptr2Obj = new Ptr2Obj();
-			ProxyList.UNSAFE.compareAndSwapInt(ptr2Obj, objFieldOffset, 0, (int) address);
-			return ptr2Obj.obj;
-		}
-
-		public static Object getFromPtr(final long address) {
-			if (address == 0)
-				return null;
-			final Ptr2Obj ptr2Obj = new Ptr2Obj();
-			ProxyList.UNSAFE.compareAndSwapInt(ptr2Obj, objFieldOffset, 0,
-					(int) (address - _narrow_oop_base >> _narrow_oop_shift));
-			return ptr2Obj.obj;
-		}
-
-		public static Object getFromPtr2NarrowPtr(final long address) {
-			if (address == 0)
-				return null;
-			final Ptr2Obj ptr2Obj = new Ptr2Obj();
-			ProxyList.UNSAFE.compareAndSwapInt(ptr2Obj, objFieldOffset, 0, (int) ProxyList.UNSAFE.getAddress(address));
-			return ptr2Obj.obj;
-		}
-
 		public static Object getFromPtr2Ptr(final long address) {
 			if (address == 0)
 				return null;
 			final Ptr2Obj ptr2Obj = new Ptr2Obj();
-			ProxyList.UNSAFE.compareAndSwapInt(ptr2Obj, objFieldOffset, 0,
+			ProxyList.UNSAFE.putIntVolatile(ptr2Obj, objFieldOffset,
 					(int) (ProxyList.UNSAFE.getAddress(address) - _narrow_oop_base >> _narrow_oop_shift));
 			return ptr2Obj.obj;
 		}

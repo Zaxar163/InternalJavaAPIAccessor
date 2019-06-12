@@ -9,15 +9,14 @@ import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class ClassUtil {
-	private final static MethodHandle DEFINECLASS_NATIVE0;
 	private final static MethodHandle DEFINECLASS_NATIVE1;
 	private final static MethodHandle FINDLOADEDCLASS;
 	private final static MethodHandle FINDLOADEDCLASS_SCL;
 	private final static MethodHandle FORNAME;
-	public static final boolean JAVA9;
 	public static final ClassLoader SCL;
 
 	static {
+		MethodHandle TDEFINECLASS_NATIVE1 = null;
 		try {
 			SCL = ClassLoader.getSystemClassLoader();
 			FINDLOADEDCLASS = LookupUtil.ALL_LOOKUP.findVirtual(ClassLoader.class, "findLoadedClass0",
@@ -25,53 +24,28 @@ public class ClassUtil {
 			FINDLOADEDCLASS_SCL = FINDLOADEDCLASS.bindTo(SCL);
 			FORNAME = LookupUtil.ALL_LOOKUP.findStatic(Class.class, "forName0",
 					MethodType.methodType(Class.class, String.class, boolean.class, ClassLoader.class, Class.class));
+			if (LookupUtil.JAVA9)
+				TDEFINECLASS_NATIVE1 = LookupUtil.ALL_LOOKUP.findStatic(ClassLoader.class, "defineClass1",
+						MethodType.methodType(Class.class, ClassLoader.class, String.class, byte[].class, int.class,
+								int.class, ProtectionDomain.class, String.class));
+
+			else
+				TDEFINECLASS_NATIVE1 = LookupUtil.ALL_LOOKUP.findSpecial(
+						ClassLoader.class, "defineClass1", MethodType.methodType(Class.class, String.class,
+								byte[].class, int.class, int.class, ProtectionDomain.class, String.class),
+						ClassLoader.class);
 		} catch (final Throwable e) {
 			throw new Error(e);
-		}
-		MethodHandle TDEFINECLASS_NATIVE0 = null;
-		try {
-			TDEFINECLASS_NATIVE0 = LookupUtil.ALL_LOOKUP.findSpecial(ClassLoader.class, "defineClass0", MethodType
-					.methodType(Class.class, String.class, byte[].class, int.class, int.class, ProtectionDomain.class),
-					ClassLoader.class);
-		} catch (final Throwable e) {
-		}
-		DEFINECLASS_NATIVE0 = TDEFINECLASS_NATIVE0;
-		MethodHandle TDEFINECLASS_NATIVE1 = null;
-		try {
-			TDEFINECLASS_NATIVE1 = LookupUtil.ALL_LOOKUP
-					.findSpecial(
-							ClassLoader.class, "defineClass1", MethodType.methodType(Class.class, String.class,
-									byte[].class, int.class, int.class, ProtectionDomain.class, String.class),
-							ClassLoader.class);
-		} catch (final Throwable e) {
 		}
 		DEFINECLASS_NATIVE1 = TDEFINECLASS_NATIVE1;
-		boolean java9 = false;
-		try {
-			Class.forName("java.lang.StackWalker");
-			java9 = true;
-		} catch (final Throwable e) {
-		}
-		JAVA9 = java9;
 	}
 
-	public static Class<?> defineClass0_native(final ClassLoader cl, final String name, final byte[] b, final int off,
+	public static Class<?> defineClass(final ClassLoader cl, final String name, final byte[] b, final int off,
 			final int len, final ProtectionDomain pd) {
-		if (DEFINECLASS_NATIVE0 == null)
-			return null;
+		if (name.startsWith("jdk") && LookupUtil.JAVA9)
+			return Data2.defineClass(name, b, off, len, cl);
 		try {
-			return (Class<?>) DEFINECLASS_NATIVE0.invokeExact(cl, name, b, off, len, pd);
-		} catch (final Throwable e) {
-			throw new Error(e);
-		}
-	}
-
-	public static Class<?> defineClass1_native(final ClassLoader cl, final String name, final byte[] b, final int off,
-			final int len, final ProtectionDomain pd, final String code) {
-		if (DEFINECLASS_NATIVE1 == null)
-			return null;
-		try {
-			return (Class<?>) DEFINECLASS_NATIVE1.invokeExact(cl, name, b, off, len, pd, code);
+			return (Class<?>) DEFINECLASS_NATIVE1.invokeExact(cl, name, b, off, len, pd, (String) null);
 		} catch (final Throwable e) {
 			throw new Error(e);
 		}

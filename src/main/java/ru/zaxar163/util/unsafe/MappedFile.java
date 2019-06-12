@@ -10,15 +10,14 @@ public final class MappedFile implements Closeable {
 	private volatile long addr;
 	private final long size;
 
-	public MappedFile(final String name, long size) throws IOException {
-		size = size + 0xfffL & ~0xfffL;
+	public MappedFile(final String name, final long size) throws IOException {
 		this.size = size;
 		final AtomicReference<Throwable> ex = new AtomicReference<>(null);
 		SecurityManagerUtil.suspendRunAndContinue(() -> {
 			try (RandomAccessFile f = new RandomAccessFile(name, "rw")) {
-				f.setLength(MappedFile.this.size);
+				f.setLength(size);
 				try (FileChannel ch = f.getChannel()) {
-					addr = ChannelUtil.map0(ch, ChannelUtil.MAP_RW, 0L, MappedFile.this.size);
+					addr = ChannelUtil.map0(ch, ChannelUtil.MAP_RW, 0L, size);
 				}
 			} catch (final Throwable e) {
 				ex.set(e);

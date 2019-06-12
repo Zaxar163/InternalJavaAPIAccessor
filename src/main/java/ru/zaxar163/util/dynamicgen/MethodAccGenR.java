@@ -12,6 +12,7 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
 import lombok.experimental.UtilityClass;
+import ru.zaxar163.util.ClassUtil;
 import ru.zaxar163.util.dynamicgen.reflect.InvokerMethodR;
 import ru.zaxar163.util.proxies.ProxyList;
 
@@ -37,15 +38,14 @@ public class MethodAccGenR {
 
 	public static InvokerMethodR method(final java.lang.reflect.Constructor<?> m) {
 		final ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS);
-		final String name = ProxyData.nextName(true);
+		final String name = ProxyData.nextName();
 		cw.visit(Opcodes.V1_8, Opcodes.ACC_PUBLIC, name, null, ProxyData.MAGIC_SUPER,
 				new String[] { Type.getInternalName(InvokerMethodR.class) });
 		emit(Type.getType(m.getDeclaringClass()), Method.getMethod(m), Opcodes.INVOKESPECIAL, cw, Type.VOID_TYPE);
 		cw.visitEnd();
 		final byte[] code = cw.toByteArray();
 		try {
-			final Class<?> clazz = ProxyList.UNSAFE.defineClass(name, code, 0, code.length, ProxyData.forMethodR(m),
-					null);
+			final Class<?> clazz = ClassUtil.defineClass(ProxyData.forMethodR(m), name, code, 0, code.length, null);
 			return (InvokerMethodR) ProxyList.UNSAFE.allocateInstance(clazz);
 		} catch (final Throwable e) {
 			throw new RuntimeException(e);
@@ -54,7 +54,7 @@ public class MethodAccGenR {
 
 	public static InvokerMethodR method(final java.lang.reflect.Method m) {
 		final ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS);
-		final String name = ProxyData.nextName(true);
+		final String name = ProxyData.nextName();
 		cw.visit(Opcodes.V1_8, Opcodes.ACC_PUBLIC, name, null, ProxyData.MAGIC_SUPER,
 				new String[] { Type.getInternalName(InvokerMethodR.class) });
 		emit(Type.getType(m.getDeclaringClass()), Method.getMethod(m), switchType(m), cw,
@@ -62,8 +62,7 @@ public class MethodAccGenR {
 		cw.visitEnd();
 		final byte[] code = cw.toByteArray();
 		try {
-			final Class<?> clazz = ProxyList.UNSAFE.defineClass(name, code, 0, code.length, ProxyData.forMethodR(m),
-					null);
+			final Class<?> clazz = ClassUtil.defineClass(ProxyData.forMethodR(m), name, code, 0, code.length, null);
 			return (InvokerMethodR) ProxyList.UNSAFE.allocateInstance(clazz);
 		} catch (final Throwable e) {
 			throw new RuntimeException(e);

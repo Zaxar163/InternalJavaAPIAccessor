@@ -6,7 +6,7 @@ public final class InternalPlayGround {
 	public static void main(final String... args) throws Throwable {
 		System.out.println("Get list of all threads in JVM excluding JVM management thread:");
 		ThreadList.getThreads().forEach((n, t) -> {
-			System.out.println("Thread # " + n + " Data: " + t + " Classloader: " + t.getContextClassLoader());
+			System.out.println("Thread # " + n + " Data2: " + t + " Classloader: " + t.getContextClassLoader());
 		});
 		JVMPlayGround.main(args);
 	}

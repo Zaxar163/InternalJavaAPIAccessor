@@ -22,15 +22,6 @@ public interface UnsafeProxy {
 	@RealName("arrayIndexScale")
 	int arrayIndexScale(Class obj0);
 
-	@RealName("compareAndSwapInt")
-	boolean compareAndSwapInt(Object obj0, long obj1, int obj2, int obj3);
-
-	@RealName("compareAndSwapLong")
-	boolean compareAndSwapLong(Object obj0, long obj1, long obj2, long obj3);
-
-	@RealName("compareAndSwapObject")
-	boolean compareAndSwapObject(Object obj0, long obj1, Object obj2, Object obj3);
-
 	@RealName("copyMemory")
 	void copyMemory(long obj0, long obj1, long obj2);
 
@@ -228,15 +219,6 @@ public interface UnsafeProxy {
 
 	@RealName("putObjectVolatile")
 	void putObjectVolatile(Object obj0, long obj1, Object obj2);
-
-	@RealName("putOrderedInt")
-	void putOrderedInt(Object obj0, long obj1, int obj2);
-
-	@RealName("putOrderedLong")
-	void putOrderedLong(Object obj0, long obj1, long obj2);
-
-	@RealName("putOrderedObject")
-	void putOrderedObject(Object obj0, long obj1, Object obj2);
 
 	@RealName("putShort")
 	void putShort(long obj0, short obj1);

@@ -11,6 +11,7 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
 import lombok.experimental.UtilityClass;
+import ru.zaxar163.util.ClassUtil;
 import ru.zaxar163.util.LookupUtil;
 import ru.zaxar163.util.dynamicgen.reflect.InvokerConstructor;
 import ru.zaxar163.util.proxies.ProxyList;
@@ -42,15 +43,14 @@ public class ConstructorAccGenF {
 
 	public static InvokerConstructor instancer(final java.lang.reflect.Constructor<?> m) {
 		final ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS);
-		final String name = ProxyData.nextName(true);
+		final String name = ProxyData.nextName();
 		cw.visit(Opcodes.V1_8, Opcodes.ACC_PUBLIC, name, null, ProxyData.MAGIC_SUPER,
 				new String[] { Type.getInternalName(InvokerConstructor.class) });
 		emit(Type.getType(m.getDeclaringClass()), Method.getMethod(m), Opcodes.INVOKESPECIAL, cw, Type.VOID_TYPE);
 		cw.visitEnd();
 		final byte[] code = cw.toByteArray();
 		try {
-			final Class<?> clazz = ProxyList.UNSAFE.defineClass(name, code, 0, code.length, ProxyData.forConstructor(m),
-					null);
+			final Class<?> clazz = ClassUtil.defineClass(ProxyData.forConstructor(m), name, code, 0, code.length, null);
 			return (InvokerConstructor) ProxyList.UNSAFE.allocateInstance(clazz);
 		} catch (final Throwable e) {
 			throw new RuntimeException(e);
