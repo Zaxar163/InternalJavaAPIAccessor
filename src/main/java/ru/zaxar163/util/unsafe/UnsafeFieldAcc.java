@@ -29,7 +29,7 @@ public final class UnsafeFieldAcc {
 			case "int":
 				return getInt(inst);
 			case "char":
-				return (char) getShort(inst);
+				return getChar(inst);
 			case "byte":
 				return getByte(inst);
 			case "short":
@@ -67,6 +67,18 @@ public final class UnsafeFieldAcc {
 		} else {
 			final byte ret = ProxyList.UNSAFE.getByteVolatile(base, offset);
 			ProxyList.UNSAFE.putByteVolatile(base, offset, to);
+			return ret;
+		}
+	}
+
+	public char getAndSetChar(final Object inst, final char to) {
+		if (base == null) {
+			final char ret = ProxyList.UNSAFE.getCharVolatile(inst, offset);
+			ProxyList.UNSAFE.putCharVolatile(inst, offset, to);
+			return ret;
+		} else {
+			final char ret = ProxyList.UNSAFE.getCharVolatile(base, offset);
+			ProxyList.UNSAFE.putCharVolatile(base, offset, to);
 			return ret;
 		}
 	}
@@ -116,6 +128,11 @@ public final class UnsafeFieldAcc {
 				: ProxyList.UNSAFE.getByteVolatile(base, offset);
 	}
 
+	public char getChar(final Object inst) {
+		return base == null ? ProxyList.UNSAFE.getCharVolatile(inst, offset)
+				: ProxyList.UNSAFE.getCharVolatile(base, offset);
+	}
+
 	public double getDouble(final Object inst) {
 		return base == null ? ProxyList.UNSAFE.getDoubleVolatile(inst, offset)
 				: ProxyList.UNSAFE.getDoubleVolatile(base, offset);
@@ -160,6 +177,13 @@ public final class UnsafeFieldAcc {
 			ProxyList.UNSAFE.putByteVolatile(base, offset, to);
 	}
 
+	public void setChar(final Object inst, final char to) {
+		if (base == null)
+			ProxyList.UNSAFE.putCharVolatile(inst, offset, to);
+		else
+			ProxyList.UNSAFE.putCharVolatile(base, offset, to);
+	}
+
 	public void setDouble(final Object inst, final double to) {
 		if (base == null)
 			ProxyList.UNSAFE.putDoubleVolatile(inst, offset, to);
@@ -194,5 +218,12 @@ public final class UnsafeFieldAcc {
 		else
 			ProxyList.UNSAFE.putObjectVolatile(base, offset, to);
 
+	}
+
+	public void setShort(final Object inst, final short to) {
+		if (base == null)
+			ProxyList.UNSAFE.putShortVolatile(inst, offset, to);
+		else
+			ProxyList.UNSAFE.putShortVolatile(base, offset, to);
 	}
 }
