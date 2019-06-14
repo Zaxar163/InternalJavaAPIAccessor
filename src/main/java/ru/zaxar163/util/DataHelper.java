@@ -18,15 +18,24 @@ final class Data1 {
 	}
 
 	public static Lookup newGet(final Field lookup) throws Throwable {
-		final Class<?> unsafe = Class.forName("sun.misc.Unsafe");
-		final Field unsafeInst = Arrays.stream(unsafe.getDeclaredFields())
-				.filter(e -> e.getType().equals(unsafe) && e.getName().toLowerCase(Locale.US).contains("unsafe"))
-				.findFirst().get();
-		unsafeInst.setAccessible(true);
-		final Object inst = unsafeInst.get(null);
-		return (Lookup) a(unsafe.getDeclaredMethod("getObject", Object.class, long.class)).invoke(inst,
-				a(unsafe.getDeclaredMethod("staticFieldBase", Field.class)).invoke(inst, lookup),
-				(long) a(unsafe.getDeclaredMethod("staticFieldOffset", Field.class)).invoke(inst, lookup));
+		try {
+			final Class<?> unsafe = Class.forName("sun.misc.Unsafe");
+			final Field unsafeInst = Arrays.stream(unsafe.getDeclaredFields())
+					.filter(e -> e.getType().equals(unsafe) && e.getName().toLowerCase(Locale.US).contains("unsafe"))
+					.findFirst().get();
+			unsafeInst.setAccessible(true);
+			final Object inst = unsafeInst.get(null);
+			return (Lookup) a(unsafe.getDeclaredMethod("getObject", Object.class, long.class)).invoke(inst,
+					a(unsafe.getDeclaredMethod("staticFieldBase", Field.class)).invoke(inst, lookup),
+					(long) a(unsafe.getDeclaredMethod("staticFieldOffset", Field.class)).invoke(inst, lookup));
+		} catch (final Throwable e) {
+			try {
+				return oldGet(lookup);
+			} catch (final Throwable t) {
+				e.addSuppressed(t);
+				throw e;
+			}
+		}
 	}
 
 	public static Lookup oldGet(final Field lookup) throws Throwable {
