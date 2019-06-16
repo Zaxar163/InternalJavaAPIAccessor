@@ -19,7 +19,7 @@ repositories {
 
 dependencies {
 	compile 'org.ow2.asm:asm:7.1'
-	compileOnly 'org.bytedeco.javacpp-presets:llvm-platform:7.0.1-1.4.4'
+	//compileOnly 'org.bytedeco.javacpp-presets:llvm-platform:7.0.1-1.4.4'
 }
 
 jar {
@@ -28,8 +28,7 @@ jar {
 		exclude "META-INF/*"
 		exclude "module-info.class"
 	}
-	//exclude('ru/zaxar163/demonstration/**')
-	exclude('ru/zaxar163/unsafe/xlevel/**')
+	exclude('ru/zaxar163/demonstration/utilty/**')
 }
 
 lombok {

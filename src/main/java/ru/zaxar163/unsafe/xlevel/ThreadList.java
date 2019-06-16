@@ -7,11 +7,11 @@ import java.util.Map;
 import ru.zaxar163.util.proxies.ProxyList;
 
 public class ThreadList {
-	private static final long _next = SymbolsUtil.getInstance().type("JavaThread").field("_next").offset;
-	private static final long _osthread = SymbolsUtil.getInstance().type("JavaThread").field("_osthread").offset;
-	private static final long _thread_id = SymbolsUtil.getInstance().type("OSThread").field("_thread_id").offset;
-	private static final long _thread_list = SymbolsUtil.getInstance().type("Threads").global("_thread_list");
-	private static final long _threadObj = SymbolsUtil.getInstance().type("JavaThread").field("_threadObj").offset;
+	private static final long _next = SymbolsUtil.INSTANCE.type("JavaThread").field("_next").offset;
+	private static final long _osthread = SymbolsUtil.INSTANCE.type("JavaThread").field("_osthread").offset;
+	private static final long _thread_id = SymbolsUtil.INSTANCE.type("OSThread").field("_thread_id").offset;
+	private static final long _thread_list = SymbolsUtil.INSTANCE.type("Threads").global("_thread_list");
+	private static final long _threadObj = SymbolsUtil.INSTANCE.type("JavaThread").field("_threadObj").offset;
 
 	public static Map<Integer, Thread> getThreads() {
 		long curThread = ProxyList.UNSAFE.getAddress(_thread_list);

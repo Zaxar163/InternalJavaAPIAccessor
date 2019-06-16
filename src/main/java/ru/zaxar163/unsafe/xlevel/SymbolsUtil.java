@@ -24,7 +24,7 @@ public class SymbolsUtil {
 				final java.lang.reflect.Field objField = Arrays.stream(Ptr2Obj.class.getDeclaredFields())
 						.filter(e -> !Modifier.isStatic(e.getModifiers()) && Modifier.isVolatile(e.getModifiers()))
 						.findFirst().get();
-				objFieldOffset = INSTANCE.fieldOffset(objField);
+				objFieldOffset = ProxyList.UNSAFE.objectFieldOffset(objField);
 			} catch (final Throwable e) {
 				throw new Error("Couldn't obtain obj field of own class");
 			}
@@ -42,11 +42,7 @@ public class SymbolsUtil {
 		private volatile Object obj;
 	}
 
-	private static final SymbolsUtil INSTANCE = new SymbolsUtil();
-
-	public static SymbolsUtil getInstance() {
-		return INSTANCE;
-	}
+	public static final SymbolsUtil INSTANCE = new SymbolsUtil();
 
 	private final Map<String, Number> constants = new LinkedHashMap<>();
 
@@ -76,10 +72,6 @@ public class SymbolsUtil {
 		out.println("Types:");
 		for (final Type type : types.values())
 			out.println(type);
-	}
-
-	public long fieldOffset(final java.lang.reflect.Field field) {
-		return ProxyList.UNSAFE.objectFieldOffset(field);
 	}
 
 	public String getString(final long addr) {

@@ -16,9 +16,13 @@ public class SymbolsResolver {
 			final String dll = vmName.contains("Client VM") ? "/bin/client/jvm.dll" : "/bin/server/jvm.dll";
 			try {
 				System.load(System.getProperty("java.home") + dll);
-			} catch (final UnsatisfiedLinkError e) {
-				// Works fine without it!
-				// throw new JVMException("Cannot find jvm.dll. Unsupported JVM?");
+			} catch (final UnsatisfiedLinkError e1) {
+				try {
+					System.load(System.getProperty("java.home") + "/jre" + dll); // Try for JDK.
+				} catch (final UnsatisfiedLinkError e2) {
+					// Works fine without it!
+					// throw new JVMException("Cannot find jvm.dll. Unsupported JVM?");
+				}
 			}
 			classLoader = SymbolsResolver.class.getClassLoader();
 		} else

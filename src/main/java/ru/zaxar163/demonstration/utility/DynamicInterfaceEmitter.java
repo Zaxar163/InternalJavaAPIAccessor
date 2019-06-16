@@ -1,4 +1,4 @@
-package ru.zaxar163.demonstration;
+package ru.zaxar163.demonstration.utility;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
