@@ -19,7 +19,6 @@ repositories {
 
 dependencies {
 	compile 'org.ow2.asm:asm:7.1'
-	//compileOnly 'org.bytedeco.javacpp-presets:llvm-platform:7.0.1-1.4.4'
 }
 
 jar {
