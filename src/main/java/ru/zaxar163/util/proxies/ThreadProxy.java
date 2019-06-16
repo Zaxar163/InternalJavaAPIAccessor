@@ -32,7 +32,7 @@ public interface ThreadProxy {
 
 	@OptionalMethod
 	@RealName("stop0")
-	void stop(Throwable t);
+	void stop(Thread thr, Throwable t);
 
 	@OptionalMethod
 	@RealName("suspend0")
