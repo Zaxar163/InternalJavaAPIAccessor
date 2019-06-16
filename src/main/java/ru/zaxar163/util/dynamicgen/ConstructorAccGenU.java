@@ -18,7 +18,8 @@ import ru.zaxar163.util.proxies.ProxyList;
 
 @UtilityClass
 public class ConstructorAccGenU {
-	private static final Method newInst = Method.getMethod(LookupUtil.getDeclaredMethods(DataAccessor2.class)[0]);
+	private static final Method newInst = Method
+			.getMethod(LookupUtil.getDeclaredMethodsNonCache(DataAccessor2.class)[0]);
 	private static final Type newInstC = Type.getType(DataAccessor2.class);
 
 	public static void emit(final Type clazz, final Method method, final int type, final ClassVisitor cw,

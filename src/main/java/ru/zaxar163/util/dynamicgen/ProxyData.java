@@ -38,17 +38,17 @@ class DataAccessor2 {
 @UtilityClass
 class ProxyData {
 	static final AtomicInteger cnter = new AtomicInteger(0);
-	static final Method invokeC = Method.getMethod(LookupUtil.getDeclaredMethods(InvokerConstructor.class)[0]);
-	static final Method invokeF = Method.getMethod(LookupUtil.getDeclaredMethods(InvokerMethodF.class)[0]);
-	static final Method invokeR = Method.getMethod(LookupUtil.getDeclaredMethods(InvokerMethodR.class)[0]);
+	static final Method invokeC = Method.getMethod(LookupUtil.getDeclaredMethodsNonCache(InvokerConstructor.class)[0]);
+	static final Method invokeF = Method.getMethod(LookupUtil.getDeclaredMethodsNonCache(InvokerMethodF.class)[0]);
+	static final Method invokeR = Method.getMethod(LookupUtil.getDeclaredMethodsNonCache(InvokerMethodR.class)[0]);
 	static final Class<?> MAGIC_CLASS;
-
 	static final String MAGIC_PACKAGE;
-
 	static final String MAGIC_SUPER;
 
 	static final Type OT = Type.getType(Object.class);
+
 	static final Random r = new Random(System.currentTimeMillis());
+	static final Method unsupported = Method.getMethod(LookupUtil.getDeclaredMethodsNonCache(ProxyUtil.class)[0]);
 
 	static {
 		MAGIC_CLASS = ClassUtil.nonThrowingFirstClass("jdk.internal.reflect.MagicAccessorImpl",
@@ -176,5 +176,14 @@ class ProxyData {
 		} catch (final Throwable e) {
 			throw new Error(e); // should never happen
 		}
+	}
+}
+
+@UtilityClass
+@Keep
+class ProxyUtil {
+	@Keep
+	static void unsupported() {
+		throw new IllegalStateException("unsupported on current JVM method");
 	}
 }

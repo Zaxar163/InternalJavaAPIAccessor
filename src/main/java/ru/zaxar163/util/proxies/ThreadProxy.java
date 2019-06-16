@@ -1,5 +1,6 @@
 package ru.zaxar163.util.proxies;
 
+import ru.zaxar163.util.dynamicgen.OptionalMethod;
 import ru.zaxar163.util.dynamicgen.RealName;
 import ru.zaxar163.util.dynamicgen.Static;
 
@@ -15,9 +16,11 @@ public interface ThreadProxy {
 	@RealName("interrupt0")
 	void interrupt(Thread thr);
 
+	@OptionalMethod
 	@RealName("resume0")
 	void resume(Thread thr);
 
+	@OptionalMethod
 	@RealName("setNativeName")
 	void setNativeName(Thread thr, String name);
 
@@ -27,6 +30,11 @@ public interface ThreadProxy {
 	@RealName("start0")
 	void start(Thread thr);
 
+	@OptionalMethod
+	@RealName("stop0")
+	void stop(Throwable t);
+
+	@OptionalMethod
 	@RealName("suspend0")
 	void suspend(Thread thr);
 }
