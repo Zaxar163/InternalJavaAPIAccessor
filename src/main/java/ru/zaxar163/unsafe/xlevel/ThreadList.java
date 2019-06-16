@@ -3,6 +3,7 @@ package ru.zaxar163.unsafe.xlevel;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.BiConsumer;
 
 import ru.zaxar163.util.proxies.ProxyList;
 
@@ -22,6 +23,15 @@ public class ThreadList {
 			curThread = ProxyList.UNSAFE.getAddress(curThread + _next);
 		} while (curThread != 0);
 		return Collections.unmodifiableMap(threads);
+	}
+
+	public static void iterateList(final BiConsumer<Integer, Thread> c) {
+		long curThread = ProxyList.UNSAFE.getAddress(_thread_list);
+		do {
+			c.accept(ProxyList.UNSAFE.getInt(ProxyList.UNSAFE.getAddress(curThread + _osthread) + _thread_id),
+					(Thread) SymbolsUtil.Ptr2Obj.getFromPtr2Ptr(curThread + _threadObj));
+			curThread = ProxyList.UNSAFE.getAddress(curThread + _next);
+		} while (curThread != 0);
 	}
 
 	private ThreadList() {

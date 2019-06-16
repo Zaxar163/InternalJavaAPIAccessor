@@ -21,41 +21,6 @@ import ru.zaxar163.util.LookupUtil;
 public final class FastDynamicProxy<T> {
 	private static final Type EXCEPTION_NOT_IMPL = Type.getType(IllegalStateException.class);
 
-	private static Class<?>[] asClazz(final Type[] clazzs, final ClassLoader ldr) {
-		final Class<?>[] types = new Class<?>[clazzs.length];
-		for (int i = 0; i < types.length; i++)
-			switch (clazzs[i].getSort()) {
-			case Type.BOOLEAN:
-				types[i] = boolean.class;
-				break;
-			case Type.CHAR:
-				types[i] = char.class;
-				break;
-			case Type.BYTE:
-				types[i] = byte.class;
-				break;
-			case Type.SHORT:
-				types[i] = short.class;
-				break;
-			case Type.INT:
-				types[i] = int.class;
-				break;
-			case Type.FLOAT:
-				types[i] = float.class;
-				break;
-			case Type.LONG:
-				types[i] = long.class;
-				break;
-			case Type.DOUBLE:
-				types[i] = double.class;
-				break;
-			default:
-				types[i] = ClassUtil.nonThrowingFirstClass(ldr, clazzs[i].getInternalName().replace('/', '.'));
-				break;
-			}
-		return types;
-	}
-
 	private static Type[] typify(final Class<?>[] clazzs) {
 		final Type[] types = new Type[clazzs.length];
 		for (int i = 0; i < types.length; i++)
@@ -77,14 +42,13 @@ public final class FastDynamicProxy<T> {
 		this.proxyC = emitProxy();
 	}
 
-	private Method asGet(final String name, final int args, final boolean isOptional) {
+	private java.lang.reflect.Method asGet(final String name, final int args, final boolean isOptional) {
 		return Arrays.stream(LookupUtil.getDeclaredMethods(clazz)).filter(e -> name.equals(e.getName()))
-				.filter(e -> e.getParameterCount() == args).findFirst().map(Method::getMethod)
-				.orElse(ProxyData.unsupported);
+				.filter(e -> e.getParameterCount() == args).findFirst().orElse(ProxyData.unsupported);
 	}
 
-	private void emit(final Map<java.lang.reflect.Method, Method> methods, final ClassVisitor cw, final Type vt,
-			final Type sn) {
+	private void emit(final Map<java.lang.reflect.Method, java.lang.reflect.Method> methods, final ClassVisitor cw,
+			final Type vt, final Type sn) {
 		final Type handleT = Type.getType(clazz);
 		final MethodVisitor init = cw.visitMethod(Opcodes.ACC_PUBLIC, "<init>", "()V", null, null);
 		init.visitCode();
@@ -93,7 +57,7 @@ public final class FastDynamicProxy<T> {
 		init.visitInsn(Opcodes.RETURN);
 		init.visitMaxs(-1, -1);
 		init.visitEnd();
-		for (final Map.Entry<java.lang.reflect.Method, Method> method : methods.entrySet()) {
+		for (final Map.Entry<java.lang.reflect.Method, java.lang.reflect.Method> method : methods.entrySet()) {
 			final GeneratorAdapter m = new GeneratorAdapter(Opcodes.ACC_PUBLIC, Method.getMethod(method.getKey()), null,
 					typify(method.getKey().getExceptionTypes()), cw);
 			m.visitCode();
@@ -102,11 +66,10 @@ public final class FastDynamicProxy<T> {
 						+ "\" not found in proxified class \"" + clazz.getName() + '\"');
 			else {
 				m.loadArgs();
-				if (Modifier.isStatic(LookupUtil.getMethod(clazz, method.getKey().getName(),
-						asClazz(method.getValue().getArgumentTypes(), loader)).getModifiers()))
-					m.invokeStatic(handleT, method.getValue());
+				if (Modifier.isStatic(method.getValue().getModifiers()))
+					m.invokeStatic(handleT, Method.getMethod(method.getValue()));
 				else
-					m.invokeVirtual(handleT, method.getValue());
+					m.invokeVirtual(handleT, Method.getMethod(method.getValue()));
 				m.returnValue();
 			}
 			m.visitEnd();
@@ -114,7 +77,8 @@ public final class FastDynamicProxy<T> {
 	}
 
 	private MethodHandle emitProxy() {
-		final Map<java.lang.reflect.Method, Method> methods = Arrays.stream(proxy.getDeclaredMethods())
+		final Map<java.lang.reflect.Method, java.lang.reflect.Method> methods = Arrays
+				.stream(proxy.getDeclaredMethods())
 				.collect(Collectors.toMap(m -> m,
 						m -> m.isAnnotationPresent(RealName.class)
 								? asGet(m.getAnnotation(RealName.class).value(), params(m),

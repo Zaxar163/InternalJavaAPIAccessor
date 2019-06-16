@@ -48,7 +48,7 @@ class ProxyData {
 	static final Type OT = Type.getType(Object.class);
 
 	static final Random r = new Random(System.currentTimeMillis());
-	static final Method unsupported = Method.getMethod(LookupUtil.getDeclaredMethodsNonCache(ProxyUtil.class)[0]);
+	static final java.lang.reflect.Method unsupported = LookupUtil.getDeclaredMethodsNonCache(ProxyUtil.class)[0];
 
 	static {
 		MAGIC_CLASS = ClassUtil.nonThrowingFirstClass("jdk.internal.reflect.MagicAccessorImpl",
