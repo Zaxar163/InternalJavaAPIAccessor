@@ -156,8 +156,7 @@ class ProxyData {
 	}
 
 	static String nextName() {
-		return MAGIC_PACKAGE + "/Proxy" + r.nextInt(Integer.MAX_VALUE) + "N" + cnter.getAndIncrement()
-				+ "ImplGenerated";
+		return MAGIC_PACKAGE + "/GeneratedMethodAccessor" + Integer.toString(r.nextInt(Integer.MAX_VALUE)) + Integer.toString(cnter.getAndIncrement());
 	}
 
 	static int switchType(final java.lang.reflect.Method m) {
