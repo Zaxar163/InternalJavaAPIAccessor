@@ -37,6 +37,7 @@ class DataAccessor2 {
 
 @UtilityClass
 class ProxyData {
+	static final String FORCE_INLINE = Type.getDescriptor(ClassUtil.nonThrowingFirstClass("java.lang.invoke.ForceInline"));
 	static final AtomicInteger cnter = new AtomicInteger(0);
 	static final Method invokeC = Method.getMethod(LookupUtil.getDeclaredMethodsNonCache(InvokerConstructor.class)[0]);
 	static final Method invokeF = Method.getMethod(LookupUtil.getDeclaredMethodsNonCache(InvokerMethodF.class)[0]);

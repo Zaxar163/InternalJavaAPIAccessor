@@ -60,6 +60,7 @@ public final class FastDynamicProxy<T> {
 		for (final Map.Entry<java.lang.reflect.Method, java.lang.reflect.Method> method : methods.entrySet()) {
 			final GeneratorAdapter m = new GeneratorAdapter(Opcodes.ACC_PUBLIC, Method.getMethod(method.getKey()), null,
 					typify(method.getKey().getExceptionTypes()), cw);
+			m.visitAnnotation(ProxyData.FORCE_INLINE, true).visitEnd();
 			m.visitCode();
 			if (method.getValue() == ProxyData.unsupported) // only in 1 case
 				m.throwException(EXCEPTION_NOT_IMPL, "Method \"" + method.getKey().getName()

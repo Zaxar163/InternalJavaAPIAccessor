@@ -61,6 +61,7 @@ public final class FastStaticProxy<T> {
 					typify(method.getKey().getExceptionTypes()), cw);
 			final boolean isStatic = Modifier.isStatic(LookupUtil
 					.getMethod(clazz, method.getKey().getName(), method.getKey().getParameterTypes()).getModifiers());
+			m.visitAnnotation(ProxyData.FORCE_INLINE, true).visitEnd();
 			m.visitCode();
 			m.loadThis();
 			if (!isStatic)
